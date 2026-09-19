@@ -1,45 +1,61 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Operacional & Vendas - GRU</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
+    :root {
+      --background: #09090b;
+      --card: #121215;
+      --content: #18181b;
+      --border: #27272a;
+      --foreground: #f4f4f5;
+      --muted-foreground: #a1a1aa;
+      --primary: #2563eb;
+      --primary-foreground: #ffffff;
+      --accent: #27272a;
+    }
+    body {
+      background-color: #09090b !important;
+      color: #f4f4f5 !important;
+    }
     .card-hover { transition: all 0.15s ease; }
-    .card-hover:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .card-hover:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
     .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:9999px; font-size:0.7rem; font-weight:600; }
     .gru-row { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0.75rem; border-radius:0.5rem; }
     .metric-card { transition: all 0.2s ease; }
     .metric-card:hover { transform: translateY(-2px); }
-    .progress-bar-glow { box-shadow: 0 0 12px rgba(234, 179, 8, 0.45); }
+    .progress-bar-glow { box-shadow: 0 0 14px rgba(234, 179, 8, 0.45); }
   </style>
 </head>
-<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
+<body class="bg-[#09090b] text-[#f4f4f5] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
 
   <!-- BARRA DE NAVEGAÇÃO ENTRE ABAS -->
-  <nav class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-2.5 shadow-sm flex items-center justify-between gap-3 sticky top-2 z-50 backdrop-blur-md bg-opacity-95">
+  <nav class="bg-[#121215] border border-[#27272a] rounded-2xl p-2.5 shadow-lg flex items-center justify-between gap-3 sticky top-2 z-50 backdrop-blur-md bg-opacity-95">
     <div class="flex items-center gap-2 pl-2">
       <span class="text-2xl">✈️</span>
-      <span class="font-black text-base sm:text-lg tracking-tight hidden sm:inline">GRU PORTAL</span>
+      <span class="font-black text-base sm:text-lg tracking-tight hidden sm:inline text-white">GRU PORTAL</span>
     </div>
     
-    <div class="flex items-center gap-2 bg-[var(--content)] border border-[var(--border)] p-1 rounded-xl">
-      <button id="tab-btn-escala" onclick="switchTab('escala')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm">
+    <div class="flex items-center gap-2 bg-[#18181b] border border-[#27272a] p-1 rounded-xl">
+      <button id="tab-btn-escala" onclick="switchTab('escala')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm">
         <span>📅</span> <span>Escala & Postos GRU</span>
       </button>
-      <button id="tab-btn-vendas" onclick="switchTab('vendas')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]">
+      <button id="tab-btn-vendas" onclick="switchTab('vendas')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]">
         <span>💰</span> <span>Vendas & Metas OneBoss</span>
       </button>
     </div>
 
-    <div class="pr-2 text-xs text-[var(--muted-foreground)] hidden md:block font-medium">
+    <div class="pr-2 text-xs text-[#a1a1aa] hidden md:block font-medium">
       Setembro 2026
     </div>
   </nav>
 
   <!-- CONTEÚDO DA ABA ESCALA -->
   <main id="tab-content-escala" class="space-y-4">
+
 
 <script>
 // ═══════════════════════════════════════
@@ -411,6 +427,7 @@ function renderFairness() {
 render();
 </script>
 
+  
   </main>
 
   <!-- CONTEÚDO DA ABA VENDAS -->
@@ -733,13 +750,13 @@ render();
       if (tab === 'escala') {
         contentEscala.classList.remove('hidden');
         contentVendas.classList.add('hidden');
-        btnEscala.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm';
-        btnVendas.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]';
+        btnEscala.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm';
+        btnVendas.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]';
       } else {
         contentEscala.classList.add('hidden');
         contentVendas.classList.remove('hidden');
-        btnVendas.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm';
-        btnEscala.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]';
+        btnVendas.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm';
+        btnEscala.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]';
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
