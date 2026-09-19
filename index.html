@@ -1,15 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Operacional & Vendas - GRU</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     .card-hover { transition: all 0.15s ease; }
     .card-hover:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:9999px; font-size:0.7rem; font-weight:600; }
     .gru-row { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0.75rem; border-radius:0.5rem; }
+    .metric-card { transition: all 0.2s ease; }
+    .metric-card:hover { transform: translateY(-2px); }
+    .progress-bar-glow { box-shadow: 0 0 12px rgba(234, 179, 8, 0.45); }
   </style>
 </head>
-<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4">
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
+
+  <!-- BARRA DE NAVEGAÇÃO ENTRE ABAS -->
+  <nav class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-2.5 shadow-sm flex items-center justify-between gap-3 sticky top-2 z-50 backdrop-blur-md bg-opacity-95">
+    <div class="flex items-center gap-2 pl-2">
+      <span class="text-2xl">✈️</span>
+      <span class="font-black text-base sm:text-lg tracking-tight hidden sm:inline">GRU PORTAL</span>
+    </div>
+    
+    <div class="flex items-center gap-2 bg-[var(--content)] border border-[var(--border)] p-1 rounded-xl">
+      <button id="tab-btn-escala" onclick="switchTab('escala')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm">
+        <span>📅</span> <span>Escala & Postos GRU</span>
+      </button>
+      <button id="tab-btn-vendas" onclick="switchTab('vendas')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]">
+        <span>💰</span> <span>Vendas & Metas OneBoss</span>
+      </button>
+    </div>
+
+    <div class="pr-2 text-xs text-[var(--muted-foreground)] hidden md:block font-medium">
+      Setembro 2026
+    </div>
+  </nav>
+
+  <!-- CONTEÚDO DA ABA ESCALA -->
+  <main id="tab-content-escala" class="space-y-4">
+
 <script>
 // ═══════════════════════════════════════
 // DATA — Turno A only
@@ -379,5 +410,339 @@ function renderFairness() {
 
 render();
 </script>
+
+  </main>
+
+  <!-- CONTEÚDO DA ABA VENDAS -->
+  <main id="tab-content-vendas" class="space-y-6 hidden">
+
+
+  <!-- CABEÇALHO -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="text-3xl">✈️</span>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Performance & Metas de Vendas</h1>
+      </div>
+      <p class="text-[var(--muted-foreground)] text-sm mt-1">
+        Monitoramento Oficial • Setembro 2026 (01 a 19/09 • 19 de 30 dias) • Base OneBoss
+      </p>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Atualizado Automático
+      </span>
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+        5,241 Malas Totais
+      </span>
+    </div>
+  </div>
+
+  <!-- TERMÔMETRO DE METAS -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-5">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+      <div>
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          🎯 Termômetro de Faturamento vs. Metas
+        </h2>
+        <p class="text-xs text-[var(--muted-foreground)]">Acompanhamento do realizado acumulado em direção aos patamares de premiação</p>
+      </div>
+      <div class="text-right">
+        <span class="text-xs text-[var(--muted-foreground)]">Faturamento Realizado</span>
+        <p class="text-3xl font-extrabold text-amber-400">R$ 985.979,00</p>
+      </div>
+    </div>
+
+    <div class="relative pt-6 pb-4">
+      <div class="w-full bg-[var(--border)]/30 rounded-full h-5 overflow-hidden flex">
+        <div class="bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-300 h-5 rounded-full transition-all duration-1000 progress-bar-glow" style="width: 65.73%;"></div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 pt-2 border-t border-[var(--border)]/40 text-xs sm:text-sm">
+        <div class="p-3.5 rounded-xl bg-orange-950/20 border border-orange-700/30">
+          <div class="flex justify-between items-center font-bold text-amber-600">
+            <span>🥉 1ª Bronze</span>
+            <span>R$ 1.500.000,00</span>
+          </div>
+          <div class="text-xs text-[var(--muted-foreground)] mt-1.5 flex justify-between">
+            <span>Falta para Meta:</span>
+            <span class="font-semibold text-[var(--foreground)]">R$ 514.021,00</span>
+          </div>
+          <div class="text-[11px] font-bold text-amber-500 mt-1">65.7% alcançado</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-500/30">
+          <div class="flex justify-between items-center font-bold text-slate-300">
+            <span>🥈 2ª Prata</span>
+            <span>R$ 1.550.000,00</span>
+          </div>
+          <div class="text-xs text-[var(--muted-foreground)] mt-1.5 flex justify-between">
+            <span>Falta para Meta:</span>
+            <span class="font-semibold text-[var(--foreground)]">R$ 564.021,00</span>
+          </div>
+          <div class="text-[11px] font-bold text-slate-400 mt-1">63.6% alcançado</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-yellow-950/20 border border-yellow-600/30">
+          <div class="flex justify-between items-center font-bold text-yellow-400">
+            <span>🥇 3ª Ouro</span>
+            <span>R$ 1.650.000,00</span>
+          </div>
+          <div class="text-xs text-[var(--muted-foreground)] mt-1.5 flex justify-between">
+            <span>Falta para Meta:</span>
+            <span class="font-semibold text-[var(--foreground)]">R$ 664.021,00</span>
+          </div>
+          <div class="text-[11px] font-bold text-yellow-500 mt-1">59.8% alcançado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS PRINCIPAIS -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="metric-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+      <div class="text-xs font-semibold uppercase text-[var(--muted-foreground)] tracking-wider">Projeção Final do Mês</div>
+      <div class="text-2xl font-black mt-2 text-emerald-400">R$ 1.556.808,95</div>
+      <p class="text-xs text-[var(--muted-foreground)] mt-1">Ritmo nos 30 dias corridos</p>
+      <div class="mt-2 text-xs font-bold text-slate-300 bg-slate-500/10 px-2 py-0.5 rounded-md inline-block">
+        🥈 PRATA
+      </div>
+    </div>
+
+    <div class="metric-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+      <div class="text-xs font-semibold uppercase text-[var(--muted-foreground)] tracking-wider">Média Diária Realizada</div>
+      <div class="text-2xl font-black mt-2 text-blue-400">R$ 51.893,63</div>
+      <p class="text-xs text-[var(--muted-foreground)] mt-1">Média dos 19 dias corridos</p>
+      <div class="mt-2 text-xs font-medium text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-md inline-block">
+        ~275 malas/dia
+      </div>
+    </div>
+
+    <div class="metric-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+      <div class="text-xs font-semibold uppercase text-[var(--muted-foreground)] tracking-wider">Média Necessária (Bronze)</div>
+      <div class="text-2xl font-black mt-2 text-amber-400">R$ 46.729,18</div>
+      <p class="text-xs text-[var(--muted-foreground)] mt-1">Meta diária p/ 11 dias restantes</p>
+      <div class="mt-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md inline-block">
+        ✅ Ritmo Atual Supera a Meta!
+      </div>
+    </div>
+
+    <div class="metric-card bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+      <div class="text-xs font-semibold uppercase text-[var(--muted-foreground)] tracking-wider">Total de Atendimentos</div>
+      <div class="text-2xl font-black mt-2 text-purple-400">5,241 malas</div>
+      <p class="text-xs text-[var(--muted-foreground)] mt-1">Serviços executados no OneBoss</p>
+      <div class="mt-2 text-xs font-medium text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-md inline-block">
+        Ticket médio: R$ 188,13
+      </div>
+    </div>
+  </div>
+
+  <!-- POR TURNO -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
+    <div class="flex justify-between items-center flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold">⏱️ Desempenho Oficial por Turno</h2>
+        <p class="text-xs text-[var(--muted-foreground)]">Turno A (Manhã: 05h-13h40) • Turno B (Tarde: 13h41-21h40) • Turno D (Madrugada: 21h41-04h59)</p>
+      </div>
+      <span class="text-xs text-[var(--muted-foreground)]">Total 100%: R$ 985.979,00</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+      <div class="p-4 rounded-xl border border-cyan-500/30 bg-cyan-500/5 space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-cyan-400">TURNO B (Tarde)</span>
+          <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">52.7%</span>
+        </div>
+        <div class="text-2xl font-bold">R$ 519.459,00</div>
+        <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+          <span>🧳 Malas: <strong class="text-[var(--foreground)]">2,730</strong></span>
+          <span>Média/dia: <strong class="text-[var(--foreground)]">R$ 27.339,95</strong></span>
+        </div>
+        <div class="w-full bg-[var(--border)]/40 rounded-full h-2 mt-2">
+          <div class="bg-cyan-500 h-2 rounded-full" style="width: 52.68459064543971%;"></div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl border border-purple-500/30 bg-purple-500/5 space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-purple-400">TURNO A (Manhã)</span>
+          <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">38.2%</span>
+        </div>
+        <div class="text-2xl font-bold">R$ 376.905,00</div>
+        <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+          <span>🧳 Malas: <strong class="text-[var(--foreground)]">2,035</strong></span>
+          <span>Média/dia: <strong class="text-[var(--foreground)]">R$ 19.837,11</strong></span>
+        </div>
+        <div class="w-full bg-[var(--border)]/40 rounded-full h-2 mt-2">
+          <div class="bg-purple-500 h-2 rounded-full" style="width: 38.22647338330735%;"></div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-indigo-400">TURNO D (Madrugada)</span>
+          <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">9.1%</span>
+        </div>
+        <div class="text-2xl font-bold">R$ 89.615,00</div>
+        <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+          <span>🧳 Malas: <strong class="text-[var(--foreground)]">476</strong></span>
+          <span>Média/dia: <strong class="text-[var(--foreground)]">R$ 4.716,58</strong></span>
+        </div>
+        <div class="w-full bg-[var(--border)]/40 rounded-full h-2 mt-2">
+          <div class="bg-indigo-500 h-2 rounded-full" style="width: 9.088935971252937%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO DIÁRIO -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
+    <div class="flex justify-between items-center flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold">📈 Evolução Diária de Vendas (01 a 19/09)</h2>
+        <p class="text-xs text-[var(--muted-foreground)]">Faturamento diário total registrado no OneBoss</p>
+      </div>
+      <div class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-3 py-1 rounded-full">
+        Pico: Dia 07 (R$ 71.690,00)
+      </div>
+    </div>
+
+    <div class="pt-4 pb-2 overflow-x-auto">
+      <div class="flex items-end gap-2 min-w-[700px] h-48 border-b border-[var(--border)] pb-2" id="dailyBars"></div>
+    </div>
+  </div>
+
+  <!-- RANKING -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div>
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          🏆 Ranking de Vendas por Colaborador (38 Colaboradores)
+        </h2>
+        <p class="text-xs text-[var(--muted-foreground)]">Ordenado por faturamento acumulado no período de apuração</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="filterTurno('TODOS')" class="t-btn active px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer" id="btn-TODOS">Todos</button>
+        <button onclick="filterTurno('A')" class="t-btn px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--content)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--accent)] cursor-pointer" id="btn-A">Turno A</button>
+        <button onclick="filterTurno('B')" class="t-btn px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--content)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--accent)] cursor-pointer" id="btn-B">Turno B</button>
+        <button onclick="filterTurno('D')" class="t-btn px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--content)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--accent)] cursor-pointer" id="btn-D">Turno D</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="border-b border-[var(--border)] text-[var(--muted-foreground)] text-xs font-semibold uppercase tracking-wider">
+            <th class="py-3 px-3 w-12 text-center">#</th>
+            <th class="py-3 px-3">Colaborador</th>
+            <th class="py-3 px-3">Turno Predominante</th>
+            <th class="py-3 px-3 text-right">Malas</th>
+            <th class="py-3 px-3 text-right">Média/Dia</th>
+            <th class="py-3 px-3 text-right">Faturamento Total</th>
+            <th class="py-3 px-3 w-36">Desempenho</th>
+          </tr>
+        </thead>
+        <tbody id="colabTable" class="divide-y divide-[var(--border)]/40"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const DAILY_DATA = [{"dia": "01", "val": 51811}, {"dia": "02", "val": 57668}, {"dia": "03", "val": 56716}, {"dia": "04", "val": 46881}, {"dia": "05", "val": 50737}, {"dia": "06", "val": 54269}, {"dia": "07", "val": 71690}, {"dia": "08", "val": 55064}, {"dia": "09", "val": 53178}, {"dia": "10", "val": 54658}, {"dia": "11", "val": 46226}, {"dia": "12", "val": 54655}, {"dia": "13", "val": 60772}, {"dia": "14", "val": 50784}, {"dia": "15", "val": 47847}, {"dia": "16", "val": 46375}, {"dia": "17", "val": 55801}, {"dia": "18", "val": 46922}, {"dia": "19", "val": 23925}];
+    const COLABS = [{"pos": 1, "nome": "Jose Macedo", "turno": "B", "fat": 62709, "malas": 336, "media": 3300.47}, {"pos": 2, "nome": "Henrique Pedro", "turno": "B", "fat": 55516, "malas": 279, "media": 2921.89}, {"pos": 3, "nome": "Gabriel Goncalves", "turno": "B", "fat": 52270, "malas": 275, "media": 2751.05}, {"pos": 4, "nome": "Kaique Mendes", "turno": "B", "fat": 51140, "malas": 266, "media": 2691.58}, {"pos": 5, "nome": "Eduardo Lima", "turno": "A", "fat": 50547, "malas": 274, "media": 2660.37}, {"pos": 6, "nome": "Wilson", "turno": "A", "fat": 44457, "malas": 251, "media": 2339.84}, {"pos": 7, "nome": "Kaue Amorim", "turno": "B", "fat": 43349, "malas": 226, "media": 2281.53}, {"pos": 8, "nome": "Wesley Matheus", "turno": "B", "fat": 42853, "malas": 226, "media": 2255.42}, {"pos": 9, "nome": "Roni Oliveira", "turno": "B", "fat": 42712, "malas": 223, "media": 2248.0}, {"pos": 10, "nome": "Mihael Henrique", "turno": "B", "fat": 41670, "malas": 218, "media": 2193.16}, {"pos": 11, "nome": "Vitor Viana", "turno": "B", "fat": 40719, "malas": 217, "media": 2143.11}, {"pos": 12, "nome": "Kauan Geraldo", "turno": "A", "fat": 40613, "malas": 218, "media": 2137.53}, {"pos": 13, "nome": "Jose Carlos Guilherme", "turno": "B", "fat": 37126, "malas": 189, "media": 1954.0}, {"pos": 14, "nome": "Jose Ramos", "turno": "A", "fat": 36164, "malas": 201, "media": 1903.37}, {"pos": 15, "nome": "Joao Ferreira", "turno": "A", "fat": 34182, "malas": 180, "media": 1799.05}, {"pos": 16, "nome": "Matheus Senhorinho", "turno": "A", "fat": 33335, "malas": 180, "media": 1754.47}, {"pos": 17, "nome": "Eric Vinicius", "turno": "B", "fat": 31685, "malas": 162, "media": 1667.63}, {"pos": 18, "nome": "Lucas Trindade", "turno": "A", "fat": 28806, "malas": 149, "media": 1516.11}, {"pos": 19, "nome": "Dalton Duarte", "turno": "A", "fat": 23255, "malas": 135, "media": 1223.95}, {"pos": 20, "nome": "Danilo Pereira", "turno": "A", "fat": 22945, "malas": 120, "media": 1207.63}, {"pos": 21, "nome": "Pedro Henrique Da Silva Santos", "turno": "A", "fat": 22384, "malas": 117, "media": 1178.11}, {"pos": 22, "nome": "Kauan Miranda", "turno": "A", "fat": 20850, "malas": 110, "media": 1097.37}, {"pos": 23, "nome": "Victor Costa Domene Dos Santos", "turno": "A", "fat": 20821, "malas": 109, "media": 1095.84}, {"pos": 24, "nome": "Ricardo Lima", "turno": "A", "fat": 14568, "malas": 77, "media": 766.74}, {"pos": 25, "nome": "Willy Silvad2", "turno": "D", "fat": 13496, "malas": 69, "media": 710.32}, {"pos": 26, "nome": "Elton Gimenes", "turno": "D", "fat": 12431, "malas": 65, "media": 654.26}, {"pos": 27, "nome": "Wellington Ferreira", "turno": "B", "fat": 11242, "malas": 69, "media": 591.68}, {"pos": 28, "nome": "Elton Gimenesd2", "turno": "D", "fat": 10650, "malas": 55, "media": 560.53}, {"pos": 29, "nome": "Israel Lucas", "turno": "D", "fat": 10510, "malas": 55, "media": 553.16}, {"pos": 30, "nome": "Willy Silva", "turno": "D", "fat": 10110, "malas": 55, "media": 532.11}, {"pos": 31, "nome": "Davi Araujo", "turno": "B", "fat": 9198, "malas": 52, "media": 484.11}, {"pos": 32, "nome": "Israel Lucasd2", "turno": "D", "fat": 5491, "malas": 29, "media": 289.0}, {"pos": 33, "nome": "Marcus Viniciusd2", "turno": "D", "fat": 3741, "malas": 24, "media": 196.89}, {"pos": 34, "nome": "Marcus Vinicius", "turno": "D", "fat": 2404, "malas": 16, "media": 126.53}, {"pos": 35, "nome": "Dylan Casagrande", "turno": "A", "fat": 1194, "malas": 6, "media": 62.84}, {"pos": 36, "nome": "Rodrigo Silva", "turno": "D", "fat": 596, "malas": 4, "media": 31.37}, {"pos": 37, "nome": "Douglas Amorim", "turno": "B", "fat": 240, "malas": 4, "media": 12.63}, {"pos": 38, "nome": "Lucas Bittencourt", "turno": "B", "fat": 0, "malas": 0, "media": 0.0}];
+
+    function fmtBRL(val) {
+      return 'R$ ' + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    const dailyContainer = document.getElementById('dailyBars');
+    const maxVal = Math.max(...DAILY_DATA.map(d => d.val));
+    dailyContainer.innerHTML = DAILY_DATA.map(d => {
+      const heightPx = Math.max(12, Math.round((d.val / maxVal) * 140));
+      return `
+        <div class="flex-1 flex flex-col items-center justify-end h-44 gap-1 group relative">
+          <div class="text-[9px] font-bold text-emerald-400 whitespace-nowrap mb-1">
+            ${(d.val / 1000).toFixed(0)}k
+          </div>
+          <div class="w-full max-w-[28px] bg-emerald-500 rounded-t shadow-sm group-hover:bg-emerald-400 transition-all cursor-pointer" 
+               style="height: ${heightPx}px;" 
+               title="Dia ${d.dia}: ${fmtBRL(d.val)}"></div>
+          <span class="text-[10px] font-semibold text-[var(--muted-foreground)] mt-1">${d.dia}</span>
+        </div>
+      `;
+    }).join('');
+
+    let currentFilter = 'TODOS';
+    const maxFat = Math.max(...COLABS.map(c => c.fat));
+
+    function renderTable() {
+      const tbody = document.getElementById('colabTable');
+      const filtered = currentFilter === 'TODOS' ? COLABS : COLABS.filter(c => c.turno === currentFilter);
+
+      tbody.innerHTML = filtered.map((c, idx) => {
+        const pct = (c.fat / maxFat) * 100;
+        const medal = idx === 0 ? '🥇 ' : idx === 1 ? '🥈 ' : idx === 2 ? '🥉 ' : '';
+        const turnoBadge = c.turno === 'A' 
+          ? 'bg-purple-500/20 text-purple-300' 
+          : c.turno === 'B' 
+          ? 'bg-cyan-500/20 text-cyan-300' 
+          : 'bg-indigo-500/20 text-indigo-300';
+
+        return `
+          <tr class="hover:bg-[var(--accent)]/30 transition-colors">
+            <td class="py-2.5 px-3 text-center font-bold text-xs text-[var(--muted-foreground)]">${medal || c.pos}</td>
+            <td class="py-2.5 px-3 font-semibold text-[var(--foreground)]">${c.nome}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-xs font-semibold ${turnoBadge}">Turno ${c.turno}</span></td>
+            <td class="py-2.5 px-3 text-right font-medium">${c.malas}</td>
+            <td class="py-2.5 px-3 text-right text-xs text-[var(--muted-foreground)]">${fmtBRL(c.media)}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-emerald-400">${fmtBRL(c.fat)}</td>
+            <td class="py-2.5 px-3">
+              <div class="w-full bg-[var(--border)]/40 rounded-full h-2">
+                <div class="bg-emerald-400 h-2 rounded-full" style="width: ${pct}%;"></div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterTurno(t) {
+      currentFilter = t;
+      document.querySelectorAll('.t-btn').forEach(b => {
+        b.className = 't-btn px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--content)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--accent)] cursor-pointer';
+      });
+      const activeBtn = document.getElementById('btn-' + t);
+      if (activeBtn) {
+        activeBtn.className = 't-btn px-3 py-1 rounded-lg text-xs font-semibold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer';
+      }
+      renderTable();
+    }
+
+    renderTable();
+  </script>
+
+  </main>
+
+  <script>
+    function switchTab(tab) {
+      const contentEscala = document.getElementById('tab-content-escala');
+      const contentVendas = document.getElementById('tab-content-vendas');
+      const btnEscala = document.getElementById('tab-btn-escala');
+      const btnVendas = document.getElementById('tab-btn-vendas');
+
+      if (tab === 'escala') {
+        contentEscala.classList.remove('hidden');
+        contentVendas.classList.add('hidden');
+        btnEscala.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm';
+        btnVendas.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]';
+      } else {
+        contentEscala.classList.add('hidden');
+        contentVendas.classList.remove('hidden');
+        btnVendas.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm';
+        btnEscala.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>
