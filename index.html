@@ -82,6 +82,41 @@
   // getDowOut usa OUT_OFFSET (4=Qui → dia1 é Qui=3 no array 0=Seg)
   function getDowOut(d) { return (OUT_OFFSET - 1 + d - 1) % 7; }
   const resOut = runMonth(TURNO_A_OUT, OUT_DIAS, getDowOut);
+
+  // ─── FRASES INSPIRADORAS — 1 por dia de outubro ──────────
+  const FRASES = [
+    { frase: "O segredo para avançar é começar.", autor: "Mark Twain", fonte: "Citações de Mark Twain" },
+    { frase: "Vendas é o resultado de relacionamentos genuínos, não de técnicas forçadas.", autor: "Jeffrey Gitomer", fonte: "The Sales Bible" },
+    { frase: "Cada cliente que atendo carrega uma história. Ouvi-la é metade da venda.", autor: "Zig Ziglar", fonte: "Secrets of Closing the Sale" },
+    { frase: "Qualidade nunca é um acidente; é sempre o resultado de um esforço inteligente.", autor: "John Ruskin", fonte: "The Crown of Wild Olive" },
+    { frase: "O campeão é aquele que acredita nele mesmo quando mais ninguém acredita.", autor: "Muhammad Ali", fonte: "The Greatest: My Own Story" },
+    { frase: "A única forma de fazer um ótimo trabalho é amar o que você faz.", autor: "Steve Jobs", fonte: "Discurso Stanford, 2005" },
+    { frase: "Não espere por oportunidades extraordinárias. Aproveite as ocasiões comuns e as torne extraordinárias.", autor: "Orison Swett Marden", fonte: "Pushing to the Front" },
+    { frase: "O sucesso não é definitivo, o fracasso não é fatal: o que conta é a coragem de continuar.", autor: "Winston Churchill", fonte: "Discurso na Câmara dos Comuns, 1942" },
+    { frase: "Uma venda não é uma venda até que o cliente compre de novo.", autor: "Patricia Fripp", fonte: "Get What You Want" },
+    { frase: "Você não fecha uma venda; você abre um relacionamento se quiser construir um negócio duradouro.", autor: "Patricia Fripp", fonte: "Customer Service Training" },
+    { frase: "Sua atitude, e não sua aptidão, determinará sua altitude.", autor: "Zig Ziglar", fonte: "See You at the Top" },
+    { frase: "Trate cada cliente como se fosse o único.", autor: "Elizabeth Arden", fonte: "Filosofia Elizabeth Arden" },
+    { frase: "O preço é o que você paga. O valor é o que você recebe.", autor: "Warren Buffett", fonte: "Carta aos acionistas da Berkshire, 2008" },
+    { frase: "Os vencedores encontram meios, os perdedores encontram desculpas.", autor: "F.D. Roosevelt", fonte: "Discursos de liderança, 1930s" },
+    { frase: "Cada vez que você faz uma venda, pensa: quem foi atendido aqui? Não é você, é o cliente.", autor: "Dale Carnegie", fonte: "Como Fazer Amigos e Influenciar Pessoas" },
+    { frase: "Motivação é o que te faz começar. Hábito é o que te faz continuar.", autor: "Jim Ryun", fonte: "Entrevista Runner's World, 1998" },
+    { frase: "A excelência no serviço não custa — ela rende.", autor: "Ron Kaufman", fonte: "Uplifting Service" },
+    { frase: "O entusiasmo é a maior força do mundo.", autor: "Walter Chrysler", fonte: "Life of an American Workman" },
+    { frase: "Nunca confunda atividade com produtividade.", autor: "Rick Warren", fonte: "The Purpose Driven Life" },
+    { frase: "A melhor propaganda é a que fazem seus clientes satisfeitos.", autor: "Philip Kotler", fonte: "Marketing Management" },
+    { frase: "Sem dados, você é apenas mais uma pessoa com uma opinião.", autor: "W. Edwards Deming", fonte: "The New Economics" },
+    { frase: "O cliente mais insatisfeito é sua maior fonte de aprendizado.", autor: "Bill Gates", fonte: "Business @ the Speed of Thought" },
+    { frase: "Resultados extraordinários exigem esforços extraordinários.", autor: "Gary Keller", fonte: "The ONE Thing" },
+    { frase: "Trabalhe até que seus ídolos se tornem seus rivais.", autor: "Drake", fonte: "Entrevista Rolling Stone, 2012" },
+    { frase: "A persistência é o caminho mais curto para o sucesso.", autor: "Charlie Chaplin", fonte: "My Autobiography" },
+    { frase: "O sucesso é a soma de pequenos esforços repetidos dia após dia.", autor: "Robert Collier", fonte: "The Secret of the Ages" },
+    { frase: "Toda venda tem cinco obstáculos básicos: sem necessidade, sem dinheiro, sem pressa, sem desejo, sem confiança.", autor: "Zig Ziglar", fonte: "Secrets of Closing the Sale" },
+    { frase: "Faça o que for necessário agora para ter o que quiser amanhã.", autor: "Jim Rohn", fonte: "The Art of Exceptional Living" },
+    { frase: "Grandes realizações normalmente requerem tempo, dedicação, perseverança e um esforço inabalável.", autor: "Colin Powell", fonte: "It Worked for Me" },
+    { frase: "O segredo da sua produtividade está na forma como você começa cada manhã.", autor: "Robin Sharma", fonte: "The 5 AM Club" },
+    { frase: "Acredite que você pode e você já está no meio do caminho.", autor: "Theodore Roosevelt", fonte: "Discurso em Columbus, Ohio, 1907" },
+  ];
   </script>
 
   <!-- UI OUTUBRO -->
@@ -138,6 +173,24 @@
       <p class="text-xs text-[var(--muted-foreground)] mb-3">Pontuação acumulada no mês: Forte=3 | Rendição=2 | Média=1 | Fraca/Apoio=0</p>
       <div id="fairness-out"></div>
     </div>
+
+    <!-- FRASE DO DIA -->
+    <div id="frase-do-dia" class="relative overflow-hidden bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-500/20 rounded-xl p-6 shadow-sm">
+      <div class="absolute top-0 right-0 text-[8rem] leading-none opacity-5 select-none font-serif">"</div>
+      <div class="flex items-start gap-3">
+        <span class="text-2xl mt-0.5">💡</span>
+        <div class="flex-1">
+          <p class="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Frase do Dia</p>
+          <p id="frase-texto" class="text-lg sm:text-xl font-semibold italic text-white leading-relaxed"></p>
+          <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-1 text-xs text-[var(--muted-foreground)]">
+            <span id="frase-autor" class="font-bold text-blue-300"></span>
+            <span class="hidden sm:inline opacity-40">•</span>
+            <span id="frase-fonte" class="opacity-60"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -169,6 +222,13 @@
     const day = resOut.allDays[selectedDayOut - 1];
     const dow = getDowOut(selectedDayOut);
     renderDayUI(day, dow, selectedDayOut, 'out', 'out', OUT_DIAS, resOut.score, TURNO_A_OUT);
+    // Frase do dia
+    const f = FRASES[selectedDayOut - 1];
+    if (f) {
+      document.getElementById('frase-texto').textContent = '\u201c' + f.frase + '\u201d';
+      document.getElementById('frase-autor').textContent = '— ' + f.autor;
+      document.getElementById('frase-fonte').textContent = f.fonte;
+    }
   }
 
   renderOut();
