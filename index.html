@@ -7,15 +7,9 @@
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     :root {
-      --background: #09090b;
-      --card: #121215;
-      --content: #18181b;
-      --border: #27272a;
-      --foreground: #f4f4f5;
-      --muted-foreground: #a1a1aa;
-      --primary: #2563eb;
-      --primary-foreground: #ffffff;
-      --accent: #27272a;
+      --background: #09090b; --card: #121215; --content: #18181b;
+      --border: #27272a; --foreground: #f4f4f5; --muted-foreground: #a1a1aa;
+      --primary: #2563eb; --primary-foreground: #ffffff; --accent: #27272a;
     }
     body { background-color: #09090b !important; color: #f4f4f5 !important; }
     .card-hover { transition: all 0.15s ease; }
@@ -24,18 +18,17 @@
     .gru-row { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0.75rem; border-radius:0.5rem; }
     .metric-card { transition: all 0.2s ease; }
     .metric-card:hover { transform: translateY(-2px); }
-    .progress-bar-glow { box-shadow: 0 0 14px rgba(234, 179, 8, 0.45); }
+    .progress-bar-glow { box-shadow: 0 0 14px rgba(234,179,8,0.45); }
   </style>
 </head>
 <body class="bg-[#09090b] text-[#f4f4f5] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
 
-  <!-- BARRA DE NAVEGAÇÃO -->
-  <nav class="bg-[#121215] border border-[#27272a] rounded-2xl p-2.5 shadow-lg flex items-center justify-between gap-3 sticky top-2 z-50 backdrop-blur-md bg-opacity-95">
+  <!-- NAV -->
+  <nav class="bg-[#121215] border border-[#27272a] rounded-2xl p-2.5 shadow-lg flex items-center justify-between gap-3 sticky top-2 z-50">
     <div class="flex items-center gap-2 pl-2">
       <span class="text-2xl">✈️</span>
       <span class="font-black text-base sm:text-lg tracking-tight hidden sm:inline text-white">GRU PORTAL</span>
     </div>
-
     <div class="flex items-center gap-2 bg-[#18181b] border border-[#27272a] p-1 rounded-xl">
       <button id="tab-btn-outubro" onclick="switchTab('outubro')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm">
         <span>📅</span> <span>Out/2026</span>
@@ -44,83 +37,127 @@
         <span>💰</span> <span class="hidden sm:inline">Vendas</span>
       </button>
     </div>
-
-    <div class="pr-2 text-xs text-[#a1a1aa] hidden md:block font-medium" id="nav-mes-label">
-      Outubro 2026
-    </div>
+    <div class="pr-2 text-xs text-[#a1a1aa] hidden md:block font-medium">Outubro 2026</div>
   </nav>
 
-<!-- ABA OUTUBRO -->
-  <!-- ═══════════════════════════════════════════ -->
+  <!-- ABA OUTUBRO -->
   <main id="tab-content-outubro" class="space-y-4">
 
+  <!-- TODA A LÓGICA JS PRIMEIRO -->
   <script>
-  // ─── DADOS OUTUBRO ────────────────────────────
-  // Outubro 2026: dia 1 = Quinta (índice 3 no array 0=Seg)
-  const OUT_OFFSET = 4; // 1=Seg,2=Ter,3=Qua,4=Qui,5=Sex,6=Sab,7=Dom → 0-index: Qui=3
-  const OUT_DIAS = 31;
+  const WEEKDAY_NAMES = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
+  const GRU02_FORTE = new Set([0,2,4,5]);
+  const GRUS_ATIVAS = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-13"];
 
-  // LUCAS TRINDADE e MATHEUS SENHORINHO: FÉRIAS o mês todo
-  // KAUE AMORIM: entra no Turno A em outubro
+  // Outubro 2026: dia 1 = Quinta-feira → índice 3 (0=Seg)
+  const OUT_OFFSET = 3;
+  const OUT_DIAS   = 31;
+
   const TURNO_A_OUT = [
-    {nome:"LUCAS TRINDADE",       dias:Array(31).fill("FERIAS")},
-    {nome:"MATHEUS SENHORINHO",   dias:Array(31).fill("FERIAS")},
-    {nome:"WILSON RAMOS",         dias:["1","F","1","1","F","1","1","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","F","F","F","1","1","1","1","1","F"]},
-    {nome:"RICARDO LIMA",         dias:["1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","1","F","F","1","1","F","1","1","1","1","F","1","1","1","1"]},
-    {nome:"DANILO PEREIRA DO SANTOS", dias:["F","1","1","1","1","F","1","1","1","F","F","1","F","1","1","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1"]},
-    {nome:"KAUAN SANTOS",         dias:["1","1","F","F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F"]},
-    {nome:"DALTON",               dias:["1","1","F","F","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","1","F","F","1","1","1","1","1","F"]},
-    {nome:"PEDRO",                dias:["1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","F","1","1","1","1","F","1"]},
-    {nome:"EDUARDO LIMA",         dias:["1","F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","F","1"]},
-    {nome:"JOÃO PAULO",           dias:["F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","1","F","1","1","1","1","F","F","1","1","1"]},
-    {nome:"KAUAN GERALDO SANTOS", dias:["1","1","F","F","1","1","1","1","1","F","F","1","1","1","F","1","1","1","1","1","F","1","F","1","1","1","1","1","F","1","1"]},
-    {nome:"JOSE RAMOS",           dias:["1","1","1","1","F","1","F","1","1","1","1","1","F","F","1","1","1","F","1","F","1","1","1","1","F","F","1","1","1","1","1"]},
-    {nome:"KAUE AMORIM",          dias:["1","1","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","1","F","1","1","F","F","1","1","F","1","1","1"]},
-    {nome:"VICTOR COSTA",         dias:["1","F","1","1","1","F","1","1","1","1","1","F","1","1","1","1","F","F","1","F","1","1","1","1","1","F","F","1","1","1","1"]},
+    {nome:"LUCAS TRINDADE",            dias:Array(31).fill("FERIAS")},
+    {nome:"MATHEUS SENHORINHO",        dias:Array(31).fill("FERIAS")},
+    {nome:"WILSON RAMOS",              dias:["1","F","1","1","F","1","1","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","F","F","F","1","1","1","1","1","F"]},
+    {nome:"RICARDO LIMA",              dias:["1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","1","F","F","1","1","F","1","1","1","1","F","1","1","1","1"]},
+    {nome:"DANILO PEREIRA DO SANTOS",  dias:["F","1","1","1","1","F","1","1","1","F","F","1","F","1","1","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1"]},
+    {nome:"KAUAN SANTOS",              dias:["1","1","F","F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F"]},
+    {nome:"DALTON",                    dias:["1","1","F","F","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","1","F","F","1","1","1","1","1","F"]},
+    {nome:"PEDRO",                     dias:["1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","F","1","1","1","1","F","1"]},
+    {nome:"EDUARDO LIMA",              dias:["1","F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","F","1"]},
+    {nome:"JOÃO PAULO",                dias:["F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","1","F","1","1","1","1","F","F","1","1","1"]},
+    {nome:"KAUAN GERALDO SANTOS",      dias:["1","1","F","F","1","1","1","1","1","F","F","1","1","1","F","1","1","1","1","1","F","1","F","1","1","1","1","1","F","1","1"]},
+    {nome:"JOSE RAMOS",                dias:["1","1","1","1","F","1","F","1","1","1","1","1","F","F","1","1","1","F","1","F","1","1","1","1","F","F","1","1","1","1","1"]},
+    {nome:"KAUE AMORIM",               dias:["1","1","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","1","F","1","1","F","F","1","1","F","1","1","1"]},
+    {nome:"VICTOR COSTA",              dias:["1","F","1","1","1","F","1","1","1","1","1","F","1","1","1","1","F","F","1","F","1","1","1","1","1","F","F","1","1","1","1"]},
   ];
 
-  // getDowOut usa OUT_OFFSET (4=Qui → dia1 é Qui=3 no array 0=Seg)
-  function getDowOut(d) { return (OUT_OFFSET - 1 + d - 1) % 7; }
-  const resOut = runMonth(TURNO_A_OUT, OUT_DIAS, getDowOut);
-
-  // ─── FRASES INSPIRADORAS — 1 por dia de outubro ──────────
   const FRASES = [
-    { frase: "O segredo para avançar é começar.", autor: "Mark Twain", fonte: "Citações de Mark Twain" },
-    { frase: "Vendas é o resultado de relacionamentos genuínos, não de técnicas forçadas.", autor: "Jeffrey Gitomer", fonte: "The Sales Bible" },
-    { frase: "Cada cliente que atendo carrega uma história. Ouvi-la é metade da venda.", autor: "Zig Ziglar", fonte: "Secrets of Closing the Sale" },
-    { frase: "Qualidade nunca é um acidente; é sempre o resultado de um esforço inteligente.", autor: "John Ruskin", fonte: "The Crown of Wild Olive" },
-    { frase: "O campeão é aquele que acredita nele mesmo quando mais ninguém acredita.", autor: "Muhammad Ali", fonte: "The Greatest: My Own Story" },
-    { frase: "A única forma de fazer um ótimo trabalho é amar o que você faz.", autor: "Steve Jobs", fonte: "Discurso Stanford, 2005" },
-    { frase: "Não espere por oportunidades extraordinárias. Aproveite as ocasiões comuns e as torne extraordinárias.", autor: "Orison Swett Marden", fonte: "Pushing to the Front" },
-    { frase: "O sucesso não é definitivo, o fracasso não é fatal: o que conta é a coragem de continuar.", autor: "Winston Churchill", fonte: "Discurso na Câmara dos Comuns, 1942" },
-    { frase: "Uma venda não é uma venda até que o cliente compre de novo.", autor: "Patricia Fripp", fonte: "Get What You Want" },
-    { frase: "Você não fecha uma venda; você abre um relacionamento se quiser construir um negócio duradouro.", autor: "Patricia Fripp", fonte: "Customer Service Training" },
-    { frase: "Sua atitude, e não sua aptidão, determinará sua altitude.", autor: "Zig Ziglar", fonte: "See You at the Top" },
-    { frase: "Trate cada cliente como se fosse o único.", autor: "Elizabeth Arden", fonte: "Filosofia Elizabeth Arden" },
-    { frase: "O preço é o que você paga. O valor é o que você recebe.", autor: "Warren Buffett", fonte: "Carta aos acionistas da Berkshire, 2008" },
-    { frase: "Os vencedores encontram meios, os perdedores encontram desculpas.", autor: "F.D. Roosevelt", fonte: "Discursos de liderança, 1930s" },
-    { frase: "Cada vez que você faz uma venda, pensa: quem foi atendido aqui? Não é você, é o cliente.", autor: "Dale Carnegie", fonte: "Como Fazer Amigos e Influenciar Pessoas" },
-    { frase: "Motivação é o que te faz começar. Hábito é o que te faz continuar.", autor: "Jim Ryun", fonte: "Entrevista Runner's World, 1998" },
-    { frase: "A excelência no serviço não custa — ela rende.", autor: "Ron Kaufman", fonte: "Uplifting Service" },
-    { frase: "O entusiasmo é a maior força do mundo.", autor: "Walter Chrysler", fonte: "Life of an American Workman" },
-    { frase: "Nunca confunda atividade com produtividade.", autor: "Rick Warren", fonte: "The Purpose Driven Life" },
-    { frase: "A melhor propaganda é a que fazem seus clientes satisfeitos.", autor: "Philip Kotler", fonte: "Marketing Management" },
-    { frase: "Sem dados, você é apenas mais uma pessoa com uma opinião.", autor: "W. Edwards Deming", fonte: "The New Economics" },
-    { frase: "O cliente mais insatisfeito é sua maior fonte de aprendizado.", autor: "Bill Gates", fonte: "Business @ the Speed of Thought" },
-    { frase: "Resultados extraordinários exigem esforços extraordinários.", autor: "Gary Keller", fonte: "The ONE Thing" },
-    { frase: "Trabalhe até que seus ídolos se tornem seus rivais.", autor: "Drake", fonte: "Entrevista Rolling Stone, 2012" },
-    { frase: "A persistência é o caminho mais curto para o sucesso.", autor: "Charlie Chaplin", fonte: "My Autobiography" },
-    { frase: "O sucesso é a soma de pequenos esforços repetidos dia após dia.", autor: "Robert Collier", fonte: "The Secret of the Ages" },
-    { frase: "Toda venda tem cinco obstáculos básicos: sem necessidade, sem dinheiro, sem pressa, sem desejo, sem confiança.", autor: "Zig Ziglar", fonte: "Secrets of Closing the Sale" },
-    { frase: "Faça o que for necessário agora para ter o que quiser amanhã.", autor: "Jim Rohn", fonte: "The Art of Exceptional Living" },
-    { frase: "Grandes realizações normalmente requerem tempo, dedicação, perseverança e um esforço inabalável.", autor: "Colin Powell", fonte: "It Worked for Me" },
-    { frase: "O segredo da sua produtividade está na forma como você começa cada manhã.", autor: "Robin Sharma", fonte: "The 5 AM Club" },
-    { frase: "Acredite que você pode e você já está no meio do caminho.", autor: "Theodore Roosevelt", fonte: "Discurso em Columbus, Ohio, 1907" },
+    { frase:"O segredo para avançar é começar.", autor:"Mark Twain", fonte:"Citações de Mark Twain" },
+    { frase:"Vendas é o resultado de relacionamentos genuínos, não de técnicas forçadas.", autor:"Jeffrey Gitomer", fonte:"The Sales Bible" },
+    { frase:"Cada cliente que atendo carrega uma história. Ouvi-la é metade da venda.", autor:"Zig Ziglar", fonte:"Secrets of Closing the Sale" },
+    { frase:"Qualidade nunca é um acidente; é sempre o resultado de um esforço inteligente.", autor:"John Ruskin", fonte:"The Crown of Wild Olive" },
+    { frase:"O campeão é aquele que acredita nele mesmo quando mais ninguém acredita.", autor:"Muhammad Ali", fonte:"The Greatest: My Own Story" },
+    { frase:"A única forma de fazer um ótimo trabalho é amar o que você faz.", autor:"Steve Jobs", fonte:"Discurso Stanford, 2005" },
+    { frase:"Não espere por oportunidades extraordinárias. Aproveite as ocasiões comuns e as torne extraordinárias.", autor:"Orison Swett Marden", fonte:"Pushing to the Front" },
+    { frase:"O sucesso não é definitivo, o fracasso não é fatal: o que conta é a coragem de continuar.", autor:"Winston Churchill", fonte:"Discurso na Câmara dos Comuns, 1942" },
+    { frase:"Uma venda não é uma venda até que o cliente compre de novo.", autor:"Patricia Fripp", fonte:"Get What You Want" },
+    { frase:"Você não fecha uma venda; você abre um relacionamento se quiser construir um negócio duradouro.", autor:"Patricia Fripp", fonte:"Customer Service Training" },
+    { frase:"Sua atitude, e não sua aptidão, determinará sua altitude.", autor:"Zig Ziglar", fonte:"See You at the Top" },
+    { frase:"Trate cada cliente como se fosse o único.", autor:"Elizabeth Arden", fonte:"Filosofia Elizabeth Arden" },
+    { frase:"O preço é o que você paga. O valor é o que você recebe.", autor:"Warren Buffett", fonte:"Carta aos acionistas da Berkshire, 2008" },
+    { frase:"Os vencedores encontram meios, os perdedores encontram desculpas.", autor:"F.D. Roosevelt", fonte:"Discursos de liderança, 1930s" },
+    { frase:"Cada vez que você faz uma venda, pensa: quem foi atendido aqui? Não é você, é o cliente.", autor:"Dale Carnegie", fonte:"Como Fazer Amigos e Influenciar Pessoas" },
+    { frase:"Motivação é o que te faz começar. Hábito é o que te faz continuar.", autor:"Jim Ryun", fonte:"Entrevista Runner's World, 1998" },
+    { frase:"A excelência no serviço não custa — ela rende.", autor:"Ron Kaufman", fonte:"Uplifting Service" },
+    { frase:"O entusiasmo é a maior força do mundo.", autor:"Walter Chrysler", fonte:"Life of an American Workman" },
+    { frase:"Nunca confunda atividade com produtividade.", autor:"Rick Warren", fonte:"The Purpose Driven Life" },
+    { frase:"A melhor propaganda é a que fazem seus clientes satisfeitos.", autor:"Philip Kotler", fonte:"Marketing Management" },
+    { frase:"Sem dados, você é apenas mais uma pessoa com uma opinião.", autor:"W. Edwards Deming", fonte:"The New Economics" },
+    { frase:"O cliente mais insatisfeito é sua maior fonte de aprendizado.", autor:"Bill Gates", fonte:"Business @ the Speed of Thought" },
+    { frase:"Resultados extraordinários exigem esforços extraordinários.", autor:"Gary Keller", fonte:"The ONE Thing" },
+    { frase:"Trabalhe até que seus ídolos se tornem seus rivais.", autor:"Drake", fonte:"Entrevista Rolling Stone, 2012" },
+    { frase:"A persistência é o caminho mais curto para o sucesso.", autor:"Charlie Chaplin", fonte:"My Autobiography" },
+    { frase:"O sucesso é a soma de pequenos esforços repetidos dia após dia.", autor:"Robert Collier", fonte:"The Secret of the Ages" },
+    { frase:"Toda venda tem cinco obstáculos básicos: sem necessidade, sem dinheiro, sem pressa, sem desejo, sem confiança.", autor:"Zig Ziglar", fonte:"Secrets of Closing the Sale" },
+    { frase:"Faça o que for necessário agora para ter o que quiser amanhã.", autor:"Jim Rohn", fonte:"The Art of Exceptional Living" },
+    { frase:"Grandes realizações normalmente requerem tempo, dedicação, perseverança e um esforço inabalável.", autor:"Colin Powell", fonte:"It Worked for Me" },
+    { frase:"O segredo da sua produtividade está na forma como você começa cada manhã.", autor:"Robin Sharma", fonte:"The 5 AM Club" },
+    { frase:"Acredite que você pode e você já está no meio do caminho.", autor:"Theodore Roosevelt", fonte:"Discurso em Columbus, Ohio, 1907" },
   ];
+
+  function getDowOut(d) { return (OUT_OFFSET + d - 1) % 7; }
+
+  function getGruCat(gru, dow) {
+    if (gru==="GRU-06"||gru==="GRU-08") return "forte";
+    if (gru==="GRU-02") return GRU02_FORTE.has(dow)?"forte":"media";
+    if (gru==="GRU-05"||gru==="GRU-10") return "media";
+    if (gru==="GRU-01"||gru==="GRU-04"||gru==="GRU-13") return "fraca";
+    return "desativada";
+  }
+  function posScore(pos,dow){
+    if(pos==="R1"||pos==="R2") return 2;
+    const cat=getGruCat(pos,dow);
+    if(cat==="forte") return 3; if(cat==="media") return 1; return 0;
+  }
+  function runMonth(turnoData,totalDias,getDow){
+    const score={};
+    turnoData.forEach(e=>score[e.nome]=0);
+    const allDays=[];
+    for(let day=1;day<=totalDias;day++){
+      const dow=getDow(day);
+      const isGru02Forte=GRU02_FORTE.has(dow);
+      const avail=turnoData.filter(e=>e.dias[day-1]==="1");
+      avail.sort((a,b)=>{
+        const diff=score[a.nome]-score[b.nome];
+        if(diff!==0)return diff;
+        return((a.nome.charCodeAt(0)+day)%13)-((b.nome.charCodeAt(0)+day)%13);
+      });
+      const strongGrus=isGru02Forte?["GRU-06","GRU-08","GRU-02"]:["GRU-06","GRU-08"];
+      const mediumGrus=isGru02Forte?["GRU-05","GRU-10"]:["GRU-02","GRU-05","GRU-10"];
+      const weakGrus=["GRU-01","GRU-04","GRU-13"];
+      const positionOrder=[...strongGrus,"R1","R2",...mediumGrus,...weakGrus];
+      const dayResult={postos:{},r1:null,r2:null,apoio:[],availCount:avail.length};
+      GRUS_ATIVAS.forEach(g=>dayResult.postos[g]=null);
+      avail.forEach((person,i)=>{
+        if(i<positionOrder.length){
+          const pos=positionOrder[i];
+          if(pos==="R1") dayResult.r1=person.nome;
+          else if(pos==="R2") dayResult.r2=person.nome;
+          else dayResult.postos[pos]=person.nome;
+          score[person.nome]+=posScore(pos,dow);
+        } else { dayResult.apoio.push(person.nome); }
+      });
+      allDays.push(dayResult);
+    }
+    return{allDays,score};
+  }
+
+  const resOut=runMonth(TURNO_A_OUT,OUT_DIAS,getDowOut);
   </script>
 
-  <!-- UI OUTUBRO -->
+  <!-- UI -->
   <div class="max-w-5xl mx-auto space-y-4">
+
+    <!-- HEADER -->
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
@@ -136,25 +173,31 @@
         </div>
       </div>
     </div>
+
+    <!-- SELETOR DE DIA -->
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
       <p class="text-sm font-semibold mb-3 text-[var(--muted-foreground)]">📅 Selecione o dia</p>
-      <div id="dayGrid-out" class="grid grid-cols-11 gap-1"></div>
+      <div id="dayGrid" class="grid grid-cols-11 gap-1"></div>
     </div>
-    <div id="stats-out" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+
+    <!-- STATS -->
+    <div id="stats" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+
+    <!-- POSTOS + RENDIÇÕES/APOIO -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
         <h2 class="font-bold text-lg mb-3">📍 Postos GRU</h2>
-        <div id="postos-out" class="space-y-1.5"></div>
-        <div id="ausentes-out" class="mt-4 pt-3 border-t border-[var(--border)]/30"></div>
+        <div id="postos" class="space-y-1.5"></div>
+        <div id="ausentes" class="mt-4 pt-3 border-t border-[var(--border)]/30"></div>
       </div>
       <div class="space-y-4">
         <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
           <h2 class="font-bold text-lg mb-3">🔄 Rendições <span class="text-sm font-normal text-[var(--muted-foreground)]">(início 07:00)</span></h2>
-          <div id="rendicoes-out" class="space-y-2"></div>
+          <div id="rendicoes" class="space-y-2"></div>
         </div>
         <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
           <h2 class="font-bold text-lg mb-3">🛠️ Apoio <span class="text-sm font-normal text-[var(--muted-foreground)]">(reposição de filmes e produtos)</span></h2>
-          <div id="apoio-out"></div>
+          <div id="apoio"></div>
         </div>
         <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-sm opacity-40">
           <h2 class="font-semibold text-sm mb-2">⛔ Desativadas</h2>
@@ -168,14 +211,16 @@
         </div>
       </div>
     </div>
+
+    <!-- EQUIDADE -->
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
       <h2 class="font-bold text-lg mb-1">⚖️ Painel de Equidade</h2>
-      <p class="text-xs text-[var(--muted-foreground)] mb-3">Pontuação acumulada no mês: Forte=3 | Rendição=2 | Média=1 | Fraca/Apoio=0</p>
-      <div id="fairness-out"></div>
+      <p class="text-xs text-[var(--muted-foreground)] mb-3">Forte=3 | Rendição=2 | Média=1 | Fraca/Apoio=0 — quanto mais equilibrado, melhor!</p>
+      <div id="fairness"></div>
     </div>
 
     <!-- FRASE DO DIA -->
-    <div id="frase-do-dia" class="relative overflow-hidden bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-500/20 rounded-xl p-6 shadow-sm">
+    <div class="relative overflow-hidden bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-500/20 rounded-xl p-6 shadow-sm">
       <div class="absolute top-0 right-0 text-[8rem] leading-none opacity-5 select-none font-serif">"</div>
       <div class="flex items-start gap-3">
         <span class="text-2xl mt-0.5">💡</span>
@@ -194,80 +239,147 @@
   </div>
 
   <script>
-  let selectedDayOut = 1;
+  let selectedDay = 1;
 
-  function renderGridOut() {
-    const grid = document.getElementById('dayGrid-out');
-    if (!grid) return;
+  const CAT_STYLE = {
+    forte: {bg:"bg-red-500/15",   border:"border-red-500/40",    text:"text-red-400",    label:"🔥 FORTE"},
+    media: {bg:"bg-yellow-500/15",border:"border-yellow-500/40", text:"text-yellow-400", label:"⚡ MÉDIA"},
+    fraca: {bg:"bg-blue-500/15",  border:"border-blue-500/40",   text:"text-blue-400",   label:"🧊 FRACA"},
+  };
+
+  function renderGrid() {
+    const grid = document.getElementById('dayGrid');
     grid.innerHTML = '';
     for (let d = 1; d <= OUT_DIAS; d++) {
       const dow = getDowOut(d);
-      const wn = WEEKDAY_NAMES[dow];
       const isWknd = dow === 5 || dow === 6;
-      const sel = d === selectedDayOut;
+      const sel = d === selectedDay;
       const btn = document.createElement('button');
       btn.className = `rounded-lg p-1.5 text-center text-xs font-medium border cursor-pointer transition-all ${
         sel ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] scale-105'
             : isWknd ? 'bg-orange-500/10 border-[var(--border)] hover:bg-orange-500/20'
-                     : 'bg-[var(--content)] border-[var(--border)] hover:bg-[var(--accent)]'
-      }`;
-      btn.innerHTML = `<div class="font-bold text-sm">${d}</div><div class="opacity-70">${wn}</div>`;
-      btn.onclick = () => { selectedDayOut = d; renderOut(); };
+                     : 'bg-[var(--content)] border-[var(--border)] hover:bg-[var(--accent)]'}`;
+      btn.innerHTML = `<div class="font-bold text-sm">${d}</div><div class="opacity-70">${WEEKDAY_NAMES[dow]}</div>`;
+      btn.onclick = () => { selectedDay = d; render(); };
       grid.appendChild(btn);
     }
   }
 
-  function renderOut() {
-    renderGridOut();
-    const day = resOut.allDays[selectedDayOut - 1];
-    const dow = getDowOut(selectedDayOut);
-    renderDayUI(day, dow, selectedDayOut, 'out', 'out', OUT_DIAS, resOut.score, TURNO_A_OUT);
+  function render() {
+    renderGrid();
+    const day = resOut.allDays[selectedDay - 1];
+    const dow = getDowOut(selectedDay);
+    const gruCount = Object.values(day.postos).filter(v=>v).length;
+    const rendCount = (day.r1?1:0)+(day.r2?1:0);
+
+    document.getElementById('stats').innerHTML = `
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center card-hover">
+        <div class="text-2xl font-bold">${day.availCount}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Disponíveis</div></div>
+      <div class="bg-[var(--card)] border border-red-500/30 rounded-xl p-3 text-center card-hover">
+        <div class="text-2xl font-bold text-red-400">${gruCount}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Nos Postos</div></div>
+      <div class="bg-[var(--card)] border border-orange-500/30 rounded-xl p-3 text-center card-hover">
+        <div class="text-2xl font-bold text-orange-400">${rendCount}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Rendições</div></div>
+      <div class="bg-[var(--card)] border border-green-500/30 rounded-xl p-3 text-center card-hover">
+        <div class="text-2xl font-bold text-green-400">${day.apoio.length}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Apoio</div></div>
+      <div class="bg-[var(--card)] border border-purple-500/30 rounded-xl p-3 text-center card-hover">
+        <div class="text-2xl font-bold text-purple-400">${WEEKDAY_NAMES[dow]}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Dia ${selectedDay}/10</div></div>`;
+
+    const gruOrder = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-13"];
+    document.getElementById('postos').innerHTML = gruOrder.map(gru => {
+      const cat = getGruCat(gru,dow);
+      const s = CAT_STYLE[cat];
+      const person = day.postos[gru];
+      return `<div class="gru-row ${s.bg} border ${s.border}">
+        <span class="font-bold text-lg min-w-[3rem]">G${parseInt(gru.replace("GRU-",""))}</span>
+        <span class="flex-1 font-medium">${person||'<span class="text-[var(--muted-foreground)] italic">—</span>'}</span>
+        <span class="badge ${s.bg} ${s.text} text-xs">${s.label}</span></div>`;
+    }).join('');
+
+    const folga  = TURNO_A_OUT.filter(e=>e.dias[selectedDay-1]==="F");
+    const ferias = TURNO_A_OUT.filter(e=>e.dias[selectedDay-1]==="FERIAS");
+    document.getElementById('ausentes').innerHTML = `<div class="space-y-2">
+      ${folga.length  ? `<div class="flex items-start gap-2 text-xs text-[var(--muted-foreground)]"><span>😴</span><div><span class="font-semibold opacity-70">Folga (${folga.length}):</span> <span class="opacity-60">${folga.map(e=>e.nome).join(', ')}</span></div></div>` : ''}
+      ${ferias.length ? `<div class="flex items-start gap-2 text-xs text-[var(--muted-foreground)]"><span>🏖️</span><div><span class="font-semibold opacity-70">Férias (${ferias.length}):</span> <span class="opacity-60">${ferias.map(e=>e.nome).join(', ')}</span></div></div>` : ''}
+    </div>`;
+
+    const gru02cat = GRU02_FORTE.has(dow) ? "Forte" : "Média";
+    document.getElementById('rendicoes').innerHTML = `
+      <div class="gru-row bg-orange-500/10 border border-orange-500/30 rounded-lg">
+        <span class="font-bold text-lg text-orange-400 min-w-[3rem]">R1</span>
+        <div class="flex-1"><div class="font-semibold">${day.r1||'<span class="italic text-[var(--muted-foreground)]">—</span>'}</div>
+        <div class="text-xs text-[var(--muted-foreground)] mt-0.5">Rende: <span class="font-medium text-red-400">GRU-06</span> → <span class="font-medium ${gru02cat==='Forte'?'text-red-400':'text-yellow-400'}">GRU-02</span> → <span class="font-medium text-blue-400">GRU-01</span> <span class="ml-2 opacity-70">⏰ 07:00</span></div></div></div>
+      <div class="gru-row bg-orange-500/10 border border-orange-500/30 rounded-lg">
+        <span class="font-bold text-lg text-orange-400 min-w-[3rem]">R2</span>
+        <div class="flex-1"><div class="font-semibold">${day.r2||'<span class="italic text-[var(--muted-foreground)]">—</span>'}</div>
+        <div class="text-xs text-[var(--muted-foreground)] mt-0.5">Rende: <span class="font-medium text-red-400">GRU-08</span> → <span class="font-medium text-yellow-400">GRU-10</span> → finaliza na <span class="font-medium text-yellow-400">GRU-05</span> <span class="ml-2 opacity-70">⏰ 07:00</span></div></div></div>`;
+
+    const apoioEl = document.getElementById('apoio');
+    apoioEl.innerHTML = day.apoio.length
+      ? day.apoio.map(p=>`<span class="badge bg-green-500/15 text-green-400 py-1.5 px-3 mr-1.5 mb-1.5">${p}</span>`).join('')
+      : '<p class="text-sm text-[var(--muted-foreground)] italic">Todos alocados — nenhum apoio hoje</p>';
+
+    const entries = Object.entries(resOut.score).sort((a,b)=>b[1]-a[1]);
+    const max = Math.max(...entries.map(e=>e[1]),1);
+    const min = Math.min(...entries.map(e=>e[1]));
+    const avg = entries.reduce((s,e)=>s+e[1],0)/entries.length;
+    const diff = max - min;
+    document.getElementById('fairness').innerHTML = `
+      <div class="flex gap-4 mb-4 text-sm flex-wrap">
+        <div>📊 Maior: <span class="font-bold text-red-400">${max}</span></div>
+        <div>📉 Menor: <span class="font-bold text-blue-400">${min}</span></div>
+        <div>📐 Média: <span class="font-bold text-yellow-400">${avg.toFixed(1)}</span></div>
+        <div>↕️ Diferença: <span class="font-bold ${diff<=3?'text-green-400':diff<=6?'text-yellow-400':'text-red-400'}">${diff} ${diff<=3?'✅ Excelente':diff<=6?'⚠️ Aceitável':'❌ Rever'}</span></div>
+      </div>
+      <div class="space-y-1">${entries.map(([name,pts])=>{
+        const pct=(pts/max)*100;
+        const bar=pts>=avg+2?'bg-red-500/60':pts<=avg-2?'bg-blue-500/60':'bg-green-500/60';
+        return `<div class="flex items-center gap-3 text-sm py-1">
+          <span class="min-w-[13rem] font-medium truncate">${name}</span>
+          <div class="flex-1 bg-[var(--border)]/20 rounded-full h-4 overflow-hidden">
+            <div class="${bar} h-4 rounded-full flex items-center justify-end pr-1.5" style="width:${pct}%">
+              <span class="text-[10px] font-bold text-white drop-shadow">${pts}</span></div></div></div>`;
+      }).join('')}</div>`;
+
     // Frase do dia
-    const f = FRASES[selectedDayOut - 1];
+    const f = FRASES[selectedDay - 1];
     if (f) {
       document.getElementById('frase-texto').textContent = '\u201c' + f.frase + '\u201d';
       document.getElementById('frase-autor').textContent = '— ' + f.autor;
-      document.getElementById('frase-fonte').textContent = f.fonte;
+      document.getElementById('frase-fonte').textContent  = f.fonte;
     }
   }
 
-  renderOut();
+  function switchTab(tab) {
+    ['outubro','vendas'].forEach(t => {
+      const c = document.getElementById(`tab-content-${t}`);
+      const b = document.getElementById(`tab-btn-${t}`);
+      if(c) c.classList.add('hidden');
+      if(b) b.className='px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]';
+    });
+    const ac = document.getElementById(`tab-content-${tab}`);
+    const ab = document.getElementById(`tab-btn-${tab}`);
+    if(ac) ac.classList.remove('hidden');
+    if(ab) ab.className='px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm';
+  }
+
+  render();
   </script>
 
   </main>
 
-  <!-- ═══════════════════════════════════════════ -->
   <!-- ABA VENDAS (inativa) -->
-  <!-- ═══════════════════════════════════════════ -->
   <main id="tab-content-vendas" class="space-y-6 hidden">
     <div class="max-w-2xl mx-auto text-center py-20">
       <div class="text-6xl mb-4">💰</div>
-      <h2 class="text-2xl font-bold mb-2">Vendas & Metas OneBoss</h2>
+      <h2 class="text-2xl font-bold mb-2">Vendas &amp; Metas OneBoss</h2>
       <p class="text-[var(--muted-foreground)]">Esta aba está temporariamente inativa.<br>Em breve estará disponível novamente.</p>
     </div>
   </main>
-
-  <!-- SCRIPT DE NAVEGAÇÃO -->
-  <script>
-  function switchTab(tab) {
-    ['setembro','outubro','vendas'].forEach(t => {
-      const content = document.getElementById(`tab-content-${t}`);
-      const btn = document.getElementById(`tab-btn-${t}`);
-      if (content) content.classList.add('hidden');
-      if (btn) {
-        btn.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]';
-      }
-    });
-    const activeContent = document.getElementById(`tab-content-${tab}`);
-    const activeBtn = document.getElementById(`tab-btn-${tab}`);
-    if (activeContent) activeContent.classList.remove('hidden');
-    if (activeBtn) activeBtn.className = 'px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm';
-    const labels = { setembro: 'Setembro 2026', outubro: 'Outubro 2026', vendas: 'Vendas' };
-    document.getElementById('nav-mes-label').textContent = labels[tab] || '';
-    if (tab === 'setembro') { selectedDaySet = 1; renderSet(); }
-    if (tab === 'outubro')  { selectedDayOut = 1; renderOut(); }
-  }
-  </script>
 
 </body>
 </html>
