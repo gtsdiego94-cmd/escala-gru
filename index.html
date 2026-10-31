@@ -19,11 +19,19 @@
     .metric-card { transition: all 0.2s ease; }
     .metric-card:hover { transform: translateY(-2px); }
     .progress-bar-glow { box-shadow: 0 0 14px rgba(234,179,8,0.45); }
+    
+    /* Scrollbar personalizada para tabelas */
+    ::-webkit-scrollbar { height: 8px; width: 8px; }
+    ::-webkit-scrollbar-track { background: #121215; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    
+    .sticky-col { position: sticky; left: 0; background: #121215; z-index: 10; }
   </style>
 </head>
 <body class="bg-[#09090b] text-[#f4f4f5] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
 
-  <!-- NAV -->
+  <!-- NAV SUPERIOR -->
   <nav class="bg-[#121215] border border-[#27272a] rounded-2xl p-2.5 shadow-lg flex items-center justify-between gap-3 sticky top-2 z-50">
     <div class="flex items-center gap-2 pl-2">
       <span class="text-2xl">✈️</span>
@@ -102,7 +110,6 @@
     { frase:"Faça o que for necessário agora para ter o que quiser amanhã.", autor:"Jim Rohn", fonte:"The Art of Exceptional Living" },
     { frase:"Grandes realizações normalmente requerem tempo, dedicação, perseverança e um esforço inabalável.", autor:"Colin Powell", fonte:"It Worked for Me" },
     { frase:"O segredo da sua produtividade está na forma como você começa cada manhã.", autor:"Robin Sharma", fonte:"The 5 AM Club" },
-    { frase:"Acredite que você pode e você já está no meio do caminho.", autor:"Theodore Roosevelt", fonte:"Discurso em Columbus, Ohio, 1907" },
   ];
 
   function getDowNov(d) { return (NOV_OFFSET + d - 1) % 7; }
@@ -114,11 +121,13 @@
     if (gru==="GRU-01"||gru==="GRU-04"||gru==="GRU-13") return "fraca";
     return "desativada";
   }
+
   function posScore(pos,dow){
     if(pos==="R1"||pos==="R2") return 2;
     const cat=getGruCat(pos,dow);
     if(cat==="forte") return 3; if(cat==="media") return 1; return 0;
   }
+
   function nameHash(name) {
     let h = 0;
     for (let i = 0; i < name.length; i++) {
@@ -126,6 +135,7 @@
     }
     return Math.abs(h);
   }
+
   function runMonth(turnoData,totalDias,getDow){
     const score={};
     turnoData.forEach(e=>score[e.nome]=0);
@@ -162,84 +172,206 @@
   const resNov=runMonth(TURNO_A_NOV,NOV_DIAS,getDowNov);
   </script>
 
-  <!-- UI -->
+  <!-- UI PRINCIPAL -->
   <div class="max-w-5xl mx-auto space-y-4">
 
     <!-- HEADER -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 class="text-2xl font-bold">🏭 Alocação GRU — Turno A</h1>
-          <p class="text-[var(--muted-foreground)] text-sm mt-1">Novembro 2026 • Rodízio equilibrado por pontos • 15 colaboradores</p>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-black tracking-tight text-white">🏭 Escala Operacional GRU</h1>
+            <span class="badge bg-blue-500/20 text-blue-400">Turno A</span>
+          </div>
+          <p class="text-[var(--muted-foreground)] text-sm mt-1">Novembro 2026 • 15 Colaboradores • Rodízio Equilibrado</p>
         </div>
         <div class="flex items-center gap-2 flex-wrap text-xs">
-          <span class="badge bg-red-500/20 text-red-400">🔥 Forte +3pts</span>
-          <span class="badge bg-orange-500/20 text-orange-400">🔄 Rendição +2pts</span>
-          <span class="badge bg-yellow-500/20 text-yellow-400">⚡ Média +1pt</span>
-          <span class="badge bg-blue-500/20 text-blue-400">🧊 Fraca +0pt</span>
+          <span class="badge bg-red-500/20 text-red-400">🔥 Forte (+3)</span>
+          <span class="badge bg-orange-500/20 text-orange-400">🔄 Rendição (+2)</span>
+          <span class="badge bg-yellow-500/20 text-yellow-400">⚡ Média (+1)</span>
+          <span class="badge bg-blue-500/20 text-blue-400">🧊 Fraca (0)</span>
+          <span class="badge bg-green-500/20 text-green-400">🛠️ Apoio</span>
+        </div>
+      </div>
+
+      <!-- SELETOR DE MODO DE VISUALIZAÇÃO -->
+      <div class="mt-5 pt-4 border-t border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-1.5 bg-[#18181b] p-1 rounded-xl border border-[var(--border)]">
+          <button id="view-btn-dia" onclick="switchView('dia')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-blue-600 text-white shadow-sm cursor-pointer">
+            <span>📅</span> <span>Visão Diária</span>
+          </button>
+          <button id="view-btn-colab" onclick="switchView('colab')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#a1a1aa] hover:text-white hover:bg-[#27272a] cursor-pointer">
+            <span>👤</span> <span>Por Colaborador</span>
+          </button>
+          <button id="view-btn-matriz" onclick="switchView('matriz')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#a1a1aa] hover:text-white hover:bg-[#27272a] cursor-pointer">
+            <span>📊</span> <span>Tabela Geral do Mês</span>
+          </button>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)] hidden sm:block">
+          Toque para alternar o modo de exibição
         </div>
       </div>
     </div>
 
-    <!-- SELETOR DE DIA -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-      <p class="text-sm font-semibold mb-3 text-[var(--muted-foreground)]">📅 Selecione o dia</p>
-      <div id="dayGrid" class="grid grid-cols-11 gap-1"></div>
-    </div>
+    <!-- ========================================== -->
+    <!-- 1. MODO VISÃO DIÁRIA (Original melhorada) -->
+    <!-- ========================================== -->
+    <div id="view-content-dia" class="space-y-4">
 
-    <!-- STATS -->
-    <div id="stats" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
-
-    <!-- POSTOS + RENDIÇÕES/APOIO -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <!-- SELETOR DE DIA -->
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-        <h2 class="font-bold text-lg mb-3">📍 Postos GRU</h2>
-        <div id="postos" class="space-y-1.5"></div>
-        <div id="ausentes" class="mt-4 pt-3 border-t border-[var(--border)]/30"></div>
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm font-semibold text-[var(--muted-foreground)]">📅 Selecione o dia de Novembro</p>
+          <span id="dia-selecionado-badge" class="badge bg-blue-500/20 text-blue-400 text-xs"></span>
+        </div>
+        <div id="dayGrid" class="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-15 gap-1.5"></div>
       </div>
-      <div class="space-y-4">
+
+      <!-- STATS DO DIA -->
+      <div id="stats" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+
+      <!-- POSTOS + RENDIÇÕES/APOIO -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h2 class="font-bold text-lg mb-3">🔄 Rendições <span class="text-sm font-normal text-[var(--muted-foreground)]">(início 07:00)</span></h2>
-          <div id="rendicoes" class="space-y-2"></div>
+          <h2 class="font-bold text-lg mb-3">📍 Postos GRU</h2>
+          <div id="postos" class="space-y-1.5"></div>
+          <div id="ausentes" class="mt-4 pt-3 border-t border-[var(--border)]/30"></div>
         </div>
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h2 class="font-bold text-lg mb-3">🛠️ Apoio <span class="text-sm font-normal text-[var(--muted-foreground)]">(reposição de filmes e produtos)</span></h2>
-          <div id="apoio"></div>
-        </div>
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-sm opacity-40">
-          <h2 class="font-semibold text-sm mb-2">⛔ Desativadas</h2>
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <span class="badge bg-gray-500/20 text-gray-400">GRU-03</span>
-            <span class="badge bg-gray-500/20 text-gray-400">GRU-07</span>
-            <span class="badge bg-gray-500/20 text-gray-400">GRU-09</span>
-            <span class="badge bg-gray-500/20 text-gray-400">GRU-11</span>
-            <span class="badge bg-gray-500/20 text-gray-400">GRU-12</span>
+        <div class="space-y-4">
+          <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+            <h2 class="font-bold text-lg mb-3">🔄 Rendições <span class="text-sm font-normal text-[var(--muted-foreground)]">(início 07:00)</span></h2>
+            <div id="rendicoes" class="space-y-2"></div>
+          </div>
+          <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+            <h2 class="font-bold text-lg mb-3">🛠️ Apoio <span class="text-sm font-normal text-[var(--muted-foreground)]">(reposição de filmes e produtos)</span></h2>
+            <div id="apoio"></div>
+          </div>
+          <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-sm opacity-40">
+            <h2 class="font-semibold text-sm mb-2">⛔ Desativadas</h2>
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <span class="badge bg-gray-500/20 text-gray-400">GRU-03</span>
+              <span class="badge bg-gray-500/20 text-gray-400">GRU-07</span>
+              <span class="badge bg-gray-500/20 text-gray-400">GRU-09</span>
+              <span class="badge bg-gray-500/20 text-gray-400">GRU-11</span>
+              <span class="badge bg-gray-500/20 text-gray-400">GRU-12</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- EQUIDADE -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-      <h2 class="font-bold text-lg mb-1">⚖️ Painel de Equidade</h2>
-      <p class="text-xs text-[var(--muted-foreground)] mb-3">Forte=3 | Rendição=2 | Média=1 | Fraca/Apoio=0 — quanto mais equilibrado, melhor!</p>
-      <div id="fairness"></div>
-    </div>
+      <!-- EQUIDADE -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+        <h2 class="font-bold text-lg mb-1">⚖️ Painel de Equidade</h2>
+        <p class="text-xs text-[var(--muted-foreground)] mb-3">Forte=3 | Rendição=2 | Média=1 | Fraca/Apoio=0 — quanto mais equilibrado, melhor!</p>
+        <div id="fairness"></div>
+      </div>
 
-    <!-- FRASE DO DIA -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-500/20 rounded-xl p-6 shadow-sm">
-      <div class="absolute top-0 right-0 text-[8rem] leading-none opacity-5 select-none font-serif">"</div>
-      <div class="flex items-start gap-3">
-        <span class="text-2xl mt-0.5">💡</span>
-        <div class="flex-1">
-          <p class="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Frase do Dia</p>
-          <p id="frase-texto" class="text-lg sm:text-xl font-semibold italic text-white leading-relaxed"></p>
-          <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-1 text-xs text-[var(--muted-foreground)]">
-            <span id="frase-autor" class="font-bold text-blue-300"></span>
-            <span class="hidden sm:inline opacity-40">•</span>
-            <span id="frase-fonte" class="opacity-60"></span>
+      <!-- FRASE DO DIA -->
+      <div class="relative overflow-hidden bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-500/20 rounded-xl p-6 shadow-sm">
+        <div class="absolute top-0 right-0 text-[8rem] leading-none opacity-5 select-none font-serif">"</div>
+        <div class="flex items-start gap-3">
+          <span class="text-2xl mt-0.5">💡</span>
+          <div class="flex-1">
+            <p class="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Frase do Dia</p>
+            <p id="frase-texto" class="text-lg sm:text-xl font-semibold italic text-white leading-relaxed"></p>
+            <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-1 text-xs text-[var(--muted-foreground)]">
+              <span id="frase-autor" class="font-bold text-blue-300"></span>
+              <span class="hidden sm:inline opacity-40">•</span>
+              <span id="frase-fonte" class="opacity-60"></span>
+            </div>
           </div>
         </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. MODO POR COLABORADOR (Exclusivo) -->
+    <!-- ========================================== -->
+    <div id="view-content-colab" class="space-y-4 hidden">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>👤</span> <span>Escala Individual do Mês</span>
+            </h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Selecione seu nome para ver todos os seus postos e folgas de Novembro</p>
+          </div>
+          <div class="w-full sm:w-72">
+            <select id="colabSelect" onchange="renderColabDetail(this.value)" class="w-full bg-[#18181b] border border-[#27272a] rounded-xl px-3.5 py-2 text-sm font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer">
+              <!-- Preenchido via JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- RESUMO INDIVIDUAL -->
+        <div id="colab-metricas" class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2"></div>
+
+        <!-- GRADE DO MÊS DO COLABORADOR -->
+        <div class="pt-3 border-t border-[var(--border)]">
+          <h3 class="text-sm font-semibold text-[var(--muted-foreground)] mb-3">🗓️ Calendário Completo de Novembro</h3>
+          <div id="colab-month-grid" class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-2"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. MODO TABELA GERAL DO MÊS (Matriz) -->
+    <!-- ========================================== -->
+    <div id="view-content-matriz" class="space-y-4 hidden">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>📊</span> <span>Tabela Geral do Mês — Todos os Colaboradores</span>
+            </h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Visualize de uma só vez a alocação completa de toda a equipe para os 30 dias</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="matriz-search" placeholder="🔍 Filtrar por nome..." oninput="filterMatriz(this.value)" class="bg-[#18181b] border border-[#27272a] rounded-xl px-3 py-1.5 text-xs text-white placeholder-[var(--muted-foreground)] focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <!-- TABELA RESPONSIVA COM ROLAGEM HORIZONTAL -->
+        <div class="overflow-x-auto rounded-xl border border-[var(--border)] bg-[#18181b]">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-[#121215] text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <th class="p-2.5 font-bold sticky-col min-w-[170px] border-r border-[var(--border)]">Colaborador</th>
+                <th class="p-2 text-center font-bold min-w-[50px] border-r border-[var(--border)]">Pts</th>
+                <!-- Dias 1 a 30 preenchidos via JS -->
+                <script>
+                  for(let d=1; d<=30; d++){
+                    const dow = getDowNov(d);
+                    const isWknd = dow === 5 || dow === 6;
+                    document.write(`
+                      <th class="p-1.5 text-center min-w-[42px] border-r border-[var(--border)]/50 ${isWknd ? 'bg-orange-500/10 text-orange-400 font-bold' : ''}">
+                        <div>${d}</div>
+                        <div class="text-[9px] font-normal opacity-70">${WEEKDAY_NAMES[dow]}</div>
+                      </th>
+                    `);
+                  }
+                </script>
+              </tr>
+            </thead>
+            <tbody id="matriz-tbody" class="divide-y divide-[var(--border)]/40">
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs text-[var(--muted-foreground)] flex-wrap pt-2">
+          <span>Legenda:</span>
+          <span class="badge bg-red-500/20 text-red-400">G06/G08/G02 Forte</span>
+          <span class="badge bg-orange-500/20 text-orange-400">R1/R2 Rendição</span>
+          <span class="badge bg-yellow-500/20 text-yellow-400">G05/G10 Média</span>
+          <span class="badge bg-blue-500/20 text-blue-400">G01/G04/G13 Fraca</span>
+          <span class="badge bg-green-500/20 text-green-400">AP Apoio</span>
+          <span class="badge bg-zinc-800 text-zinc-400">FOLGA</span>
+        </div>
+
       </div>
     </div>
 
@@ -247,6 +379,8 @@
 
   <script>
   let selectedDay = 1;
+  let currentView = 'dia';
+  let selectedColab = TURNO_A_NOV[0].nome;
 
   const CAT_STYLE = {
     forte: {bg:"bg-red-500/15",   border:"border-red-500/40",    text:"text-red-400",    label:"🔥 FORTE"},
@@ -254,6 +388,27 @@
     fraca: {bg:"bg-blue-500/15",  border:"border-blue-500/40",   text:"text-blue-400",   label:"🧊 FRACA"},
   };
 
+  // Alternador de Visualização
+  function switchView(view) {
+    currentView = view;
+    ['dia','colab','matriz'].forEach(v => {
+      const el = document.getElementById(`view-content-${v}`);
+      const btn = document.getElementById(`view-btn-${v}`);
+      if(el) el.classList.toggle('hidden', v !== view);
+      if(btn) {
+        if(v === view) {
+          btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-blue-600 text-white shadow-sm cursor-pointer';
+        } else {
+          btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#a1a1aa] hover:text-white hover:bg-[#27272a] cursor-pointer';
+        }
+      }
+    });
+
+    if(view === 'colab') renderColabView();
+    if(view === 'matriz') renderMatrizView();
+  }
+
+  // 1. RENDER DA VISÃO DIÁRIA
   function renderGrid() {
     const grid = document.getElementById('dayGrid');
     grid.innerHTML = '';
@@ -262,11 +417,11 @@
       const isWknd = dow === 5 || dow === 6;
       const sel = d === selectedDay;
       const btn = document.createElement('button');
-      btn.className = `rounded-lg p-1.5 text-center text-xs font-medium border cursor-pointer transition-all ${
-        sel ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] scale-105'
-            : isWknd ? 'bg-orange-500/10 border-[var(--border)] hover:bg-orange-500/20'
-                     : 'bg-[var(--content)] border-[var(--border)] hover:bg-[var(--accent)]'}`;
-      btn.innerHTML = `<div class="font-bold text-sm">${d}</div><div class="opacity-70">${WEEKDAY_NAMES[dow]}</div>`;
+      btn.className = `rounded-xl p-2 text-center text-xs font-medium border cursor-pointer transition-all ${
+        sel ? 'bg-blue-600 text-white border-blue-500 shadow-md scale-105 z-10'
+            : isWknd ? 'bg-orange-500/10 border-orange-500/20 hover:bg-orange-500/20 text-orange-200'
+                     : 'bg-[#18181b] border-[#27272a] hover:bg-[#27272a]'}`;
+      btn.innerHTML = `<div class="font-bold text-sm sm:text-base">${d}</div><div class="text-[10px] opacity-75">${WEEKDAY_NAMES[dow]}</div>`;
       btn.onclick = () => { selectedDay = d; render(); };
       grid.appendChild(btn);
     }
@@ -278,6 +433,9 @@
     const dow = getDowNov(selectedDay);
     const gruCount = Object.values(day.postos).filter(v=>v).length;
     const rendCount = (day.r1?1:0)+(day.r2?1:0);
+
+    const badgeEl = document.getElementById('dia-selecionado-badge');
+    if(badgeEl) badgeEl.textContent = `Dia ${selectedDay}/11 • ${WEEKDAY_NAMES[dow]}`;
 
     document.getElementById('stats').innerHTML = `
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center card-hover">
@@ -361,6 +519,191 @@
     }
   }
 
+  // 2. RENDER DA VISÃO POR COLABORADOR
+  function initColabSelect() {
+    const sel = document.getElementById('colabSelect');
+    if(!sel) return;
+    sel.innerHTML = TURNO_A_NOV.map(c => 
+      `<option value="${c.nome}" ${c.nome === selectedColab ? 'selected' : ''}>👤 ${c.nome}</option>`
+    ).join('');
+  }
+
+  function renderColabView() {
+    initColabSelect();
+    renderColabDetail(selectedColab);
+  }
+
+  function renderColabDetail(nome) {
+    selectedColab = nome;
+    const colab = TURNO_A_NOV.find(c => c.nome === nome);
+    if(!colab) return;
+
+    let trabCount = 0;
+    let folgaCount = 0;
+    let forteCount = 0;
+    let rendCount = 0;
+    let medCount = 0;
+    let fracCount = 0;
+    let apoioCount = 0;
+
+    const daysInfo = [];
+
+    for(let d=1; d<=NOV_DIAS; d++) {
+      const dow = getDowNov(d);
+      const isWork = colab.dias[d-1] === "1";
+      const dayRes = resNov.allDays[d-1];
+
+      if(!isWork) {
+        folgaCount++;
+        daysInfo.push({ dia: d, dow, status: "FOLGA", label: "😴 Folga", badgeClass: "bg-zinc-800 text-zinc-400 border-zinc-700" });
+      } else {
+        trabCount++;
+        let assigned = "APOIO";
+        let label = "🛠️ Apoio";
+        let badgeClass = "bg-green-500/20 text-green-400 border-green-500/40";
+
+        if(dayRes.r1 === nome) {
+          assigned = "R1"; label = "🔄 R1 (07:00)"; rendCount++;
+          badgeClass = "bg-orange-500/20 text-orange-400 border-orange-500/40";
+        } else if(dayRes.r2 === nome) {
+          assigned = "R2"; label = "🔄 R2 (07:00)"; rendCount++;
+          badgeClass = "bg-orange-500/20 text-orange-400 border-orange-500/40";
+        } else {
+          for(const [gru, p] of Object.entries(dayRes.postos)) {
+            if(p === nome) {
+              assigned = gru;
+              const cat = getGruCat(gru, dow);
+              if(cat === "forte") {
+                label = `🔥 G${parseInt(gru.replace("GRU-",""))}`;
+                badgeClass = "bg-red-500/20 text-red-400 border-red-500/40 font-bold";
+                forteCount++;
+              } else if(cat === "media") {
+                label = `⚡ G${parseInt(gru.replace("GRU-",""))}`;
+                badgeClass = "bg-yellow-500/20 text-yellow-400 border-yellow-500/40";
+                medCount++;
+              } else {
+                label = `🧊 G${parseInt(gru.replace("GRU-",""))}`;
+                badgeClass = "bg-blue-500/20 text-blue-400 border-blue-500/40";
+                fracCount++;
+              }
+              break;
+            }
+          }
+          if(assigned === "APOIO") apoioCount++;
+        }
+        daysInfo.push({ dia: d, dow, status: assigned, label, badgeClass });
+      }
+    }
+
+    const totalPts = resNov.score[nome] || 0;
+
+    // Métricas do Colaborador
+    document.getElementById('colab-metricas').innerHTML = `
+      <div class="bg-[#18181b] border border-[var(--border)] rounded-xl p-3 text-center">
+        <div class="text-xl sm:text-2xl font-black text-white">${trabCount}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Dias Trabalhados</div>
+      </div>
+      <div class="bg-[#18181b] border border-[var(--border)] rounded-xl p-3 text-center">
+        <div class="text-xl sm:text-2xl font-black text-purple-400">${folgaCount}</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Dias de Folga</div>
+      </div>
+      <div class="bg-[#18181b] border border-blue-500/30 rounded-xl p-3 text-center">
+        <div class="text-xl sm:text-2xl font-black text-blue-400">${totalPts} pts</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Pontos Acumulados</div>
+      </div>
+      <div class="bg-[#18181b] border border-[var(--border)] rounded-xl p-3 text-center">
+        <div class="text-sm font-semibold flex items-center justify-center gap-1.5 flex-wrap">
+          <span class="text-red-400">🔥 ${forteCount}</span>
+          <span class="text-orange-400">🔄 ${rendCount}</span>
+          <span class="text-yellow-400">⚡ ${medCount}</span>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)] mt-1">Fortes / Rend / Médias</div>
+      </div>
+    `;
+
+    // Grade do mês individual
+    const gridEl = document.getElementById('colab-month-grid');
+    gridEl.innerHTML = daysInfo.map(item => {
+      const isWknd = item.dow === 5 || item.dow === 6;
+      return `
+        <div class="bg-[#18181b] border border-[var(--border)] rounded-xl p-2.5 flex flex-col justify-between gap-2 card-hover">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-black text-sm ${isWknd ? 'text-orange-400' : 'text-white'}">Dia ${item.dia}</span>
+            <span class="text-[10px] text-[var(--muted-foreground)]">${WEEKDAY_NAMES[item.dow]}</span>
+          </div>
+          <div class="badge border ${item.badgeClass} justify-center py-1 text-[11px] truncate w-full text-center">
+            ${item.label}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // 3. RENDER DA MATRIZ COMPLETA
+  function renderMatrizView() {
+    const tbody = document.getElementById('matriz-tbody');
+    if(!tbody) return;
+
+    tbody.innerHTML = TURNO_A_NOV.map(colab => {
+      const nome = colab.nome;
+      const pts = resNov.score[nome] || 0;
+
+      const cells = [];
+      for(let d=1; d<=NOV_DIAS; d++) {
+        const dow = getDowNov(d);
+        const isWork = colab.dias[d-1] === "1";
+        const dayRes = resNov.allDays[d-1];
+
+        if(!isWork) {
+          cells.push(`<td class="p-1 text-center border-r border-[var(--border)]/30"><span class="badge bg-zinc-800/80 text-zinc-500 font-normal text-[9px] px-1">F</span></td>`);
+        } else if(dayRes.r1 === nome) {
+          cells.push(`<td class="p-1 text-center border-r border-[var(--border)]/30"><span class="badge bg-orange-500/20 text-orange-400 text-[10px] px-1 font-bold">R1</span></td>`);
+        } else if(dayRes.r2 === nome) {
+          cells.push(`<td class="p-1 text-center border-r border-[var(--border)]/30"><span class="badge bg-orange-500/20 text-orange-400 text-[10px] px-1 font-bold">R2</span></td>`);
+        } else {
+          let assigned = "AP";
+          let badge = `<span class="badge bg-green-500/20 text-green-400 text-[9px] px-1">AP</span>`;
+          for(const [gru, p] of Object.entries(dayRes.postos)) {
+            if(p === nome) {
+              const num = parseInt(gru.replace("GRU-",""));
+              const cat = getGruCat(gru, dow);
+              if(cat === "forte") {
+                badge = `<span class="badge bg-red-500/25 text-red-400 text-[10px] px-1 font-bold">G${num}</span>`;
+              } else if(cat === "media") {
+                badge = `<span class="badge bg-yellow-500/20 text-yellow-400 text-[9px] px-1 font-semibold">G${num}</span>`;
+              } else {
+                badge = `<span class="badge bg-blue-500/20 text-blue-400 text-[9px] px-1 font-medium">G${num}</span>`;
+              }
+              assigned = gru;
+              break;
+            }
+          }
+          cells.push(`<td class="p-1 text-center border-r border-[var(--border)]/30">${badge}</td>`);
+        }
+      }
+
+      return `
+        <tr class="hover:bg-[#27272a]/40 transition-colors colab-row" data-name="${nome.toLowerCase()}">
+          <td class="p-2 font-bold text-white sticky-col border-r border-[var(--border)] text-xs truncate max-w-[170px]" title="${nome}">
+            ${nome}
+          </td>
+          <td class="p-2 text-center font-bold text-blue-400 border-r border-[var(--border)] text-xs">
+            ${pts}
+          </td>
+          ${cells.join('')}
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filterMatriz(query) {
+    const q = query.toLowerCase().trim();
+    document.querySelectorAll('.colab-row').forEach(row => {
+      const name = row.getAttribute('data-name') || '';
+      row.style.display = name.includes(q) ? '' : 'none';
+    });
+  }
+
   function switchTab(tab) {
     ['novembro','vendas'].forEach(t => {
       const c = document.getElementById(`tab-content-${t}`);
@@ -374,6 +717,7 @@
     if(ab) ab.className='px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm';
   }
 
+  // Inicialização padrão
   render();
   </script>
 
