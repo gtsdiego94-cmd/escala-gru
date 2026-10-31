@@ -68,7 +68,7 @@
     {nome:"JOSE RAMOS",                dias:["F","1","1","1","1","F","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","1","1","1","F","F","F","F"]},
     {nome:"KAUE AMORIM",               dias:["1","1","F","1","1","1","1","1","F","1","1","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1","F","F","1"]},
     {nome:"RODRIGO SILVA",             dias:["F","1","1","1","F","1","1","1","1","F","F","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F"]},
-    {nome:"VICTOR COSTA",              dias:["1","1","F","F","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","F","1","1","F","F","1"]},
+    {nome:"VICTOR COSTA",              dias:["F","1","F","F","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","F","1","1","F","F","1"]},
   ];
 
   const FRASES = [
@@ -119,6 +119,13 @@
     const cat=getGruCat(pos,dow);
     if(cat==="forte") return 3; if(cat==="media") return 1; return 0;
   }
+  function nameHash(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) {
+      h = (h * 31 + name.charCodeAt(i)) | 0;
+    }
+    return Math.abs(h);
+  }
   function runMonth(turnoData,totalDias,getDow){
     const score={};
     turnoData.forEach(e=>score[e.nome]=0);
@@ -130,7 +137,7 @@
       avail.sort((a,b)=>{
         const diff=score[a.nome]-score[b.nome];
         if(diff!==0)return diff;
-        return((a.nome.charCodeAt(0)+day)%13)-((b.nome.charCodeAt(0)+day)%13);
+        return ((nameHash(a.nome) + day * 7) % 23) - ((nameHash(b.nome) + day * 7) % 23);
       });
       const strongGrus=isGru02Forte?["GRU-06","GRU-08","GRU-02"]:["GRU-06","GRU-08"];
       const mediumGrus=isGru02Forte?["GRU-05","GRU-10"]:["GRU-02","GRU-05","GRU-10"];
