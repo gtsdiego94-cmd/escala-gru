@@ -1,16 +1,17 @@
 ✈️ *RESUMO DE VENDAS - ONEBOSS GRU*
-📅 *Atualizado:* 2026-11-13
+📅 *Atualizado:* 46338.2990701736
 
-💰 *FATURAMENTO TOTAL:* R$ 5.362,00 (30 malas)
+💰 *FATURAMENTO TOTAL:* R$ 420.426,00 (2386 malas)
 
 ⏱️ *DESEMPENHO POR TURNO:*
-🌅 *TURNO A (Manhã):* R$ 2.914,00 (16 malas) • 54.3%
-☀️ *TURNO B (Tarde):* R$ 0,00 (0 malas) • 0.0%
-🌙 *TURNO D (Madrugada):* R$ 2.448,00 (14 malas) • 45.7%
+🌅 *TURNO A (Manhã):* R$ 157.217,00 (893 malas) • 37.4%
+☀️ *TURNO B (Tarde):* R$ 228.662,00 (1295 malas) • 54.4%
+🌙 *TURNO D (Madrugada):* R$ 34.547,00 (198 malas) • 8.2%
 
 🏆 *DESTAQUES POR TURNO:*
-*Turno A:* 🥇 Dalton Duarte (R$ 1.044,00)
-*Turno D:* 🥇 israel lucasd2 (R$ 1.005,00)
+*Turno A:* 🥇 Dalton Duarte (R$ 18.417,00)
+*Turno B:* 🥇 gabriel goncalves (R$ 24.828,00)
+*Turno D:* 🥇 elton gimenesd2 (R$ 5.129,00)
 
 🔗 *Acompanhe ao vivo:* https://gtsdiego94-cmd.github.io/escala-gru/
 🚀 *Equipe Protecbag GRU*
