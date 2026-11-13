@@ -6,11 +6,11 @@ const XLSX = require('xlsx');
 const REPO_DIR = 'C:\\Users\\User\\Desktop\\escala-gru';
 const DIRS_TO_LOOK = ['C:\\Relatorios', 'C:\\Export', REPO_DIR];
 
+const META_BRONZE = 1500000;
+const META_PRATA  = 1600000;
+const META_OURO   = 1650000;
+
 // Mapeamento de Turno ID do OneBoss para Turno A, B, D
-// Turno 1 (001) = Turno A (Manhã)
-// Turno 2 (002) = Turno B (Tarde)
-// Turno 3 (003) = Turno D (Madrugada - antes da meia noite)
-// Turno 4 (004) = Turno D (Madrugada - depois da meia noite)
 function inferirTurno(nome, turnoIdStr, turnoNumStr) {
   const tId = String(turnoIdStr || '').trim();
   const tNum = String(turnoNumStr || '').trim();
@@ -31,7 +31,6 @@ function inferirTurno(nome, turnoIdStr, turnoNumStr) {
   if (tNum === '2') return 'B';
   if (tNum === '3' || tNum === '4') return 'D';
 
-  // 4. Fallback: B
   return 'B';
 }
 
@@ -42,6 +41,10 @@ function toJsDate(val) {
   return new Date(val);
 }
 
+function fmtBRL(v) {
+  return 'R$ ' + (v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 // 1. Localizar arquivo de entrada mais recente
 let targetFile = process.argv[2];
 if (!targetFile || !fs.existsSync(targetFile)) {
@@ -49,6 +52,7 @@ if (!targetFile || !fs.existsSync(targetFile)) {
   DIRS_TO_LOOK.forEach(dir => {
     if (fs.existsSync(dir)) {
       fs.readdirSync(dir).forEach(f => {
+        if (f.startsWith('~$') || f.includes('vendas_atual')) return;
         const full = path.join(dir, f);
         try {
           const st = fs.statSync(full);
@@ -107,12 +111,12 @@ const turnosTotais = {
 
 const colabsMap = {};
 let dataUltima = 'Novembro/2026';
+const diasUnicos = new Set();
 
 rows.forEach(r => {
   const nome = (r['Funcionário'] || r['Funcionario'] || r['Nome'] || r['COLABORADOR'] || '').trim();
   if (!nome || nome.toLowerCase() === 'total') return;
 
-  // Usa coluna Valor real do produto/serviço
   let valRaw = r['Valor'] !== undefined && r['Valor'] !== '' ? r['Valor'] : (r['Total Venda'] || 0);
   if (typeof valRaw === 'string') {
     valRaw = valRaw.replace(/[^0-9,\.-]/g, '');
@@ -140,13 +144,18 @@ rows.forEach(r => {
   colabsMap[k].fat += val;
   if (isMala) colabsMap[k].malas++;
 
-  if (r['Data']) {
-    const dObj = toJsDate(r['Data']);
+  const rawDt = r['Data do Turno'] || r['Data'] || r['DATA'];
+  if (rawDt) {
+    const dObj = toJsDate(rawDt);
     if (!isNaN(dObj.getTime())) {
+      const dtKey = dObj.toISOString().slice(0, 10);
+      diasUnicos.add(dtKey);
       dataUltima = dObj.toLocaleDateString('pt-BR');
     }
   }
 });
+
+const diasOperacao = diasUnicos.size > 0 ? diasUnicos.size : new Date().getDate();
 
 const colabsList = Object.values(colabsMap)
   .sort((a, b) => b.fat - a.fat)
@@ -159,18 +168,22 @@ const colabsList = Object.values(colabsMap)
     media: c.malas > 0 ? parseFloat((c.fat / c.malas).toFixed(2)) : 0
   }));
 
-function fmtBRL(v) {
-  return 'R$ ' + (v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
+const totalDiasMes = 30;
+const diasRestantes = Math.max(1, totalDiasMes - diasOperacao);
+const mediaDiaria = diasOperacao > 0 ? (fatTotal / diasOperacao) : 0;
+const projecaoMes = mediaDiaria * totalDiasMes;
+const faltaBronze = Math.max(0, META_BRONZE - fatTotal);
+const mediaNecBronze = diasRestantes > 0 ? (faltaBronze / diasRestantes) : 0;
 
 console.log(`✅ ${rows.length} lançamentos processados sem perdas!`);
-console.log('\n📊 DESEMPENHO OFICIAL POR TURNO:');
+console.log(`📊 DESEMPENHO OFICIAL POR TURNO (${diasOperacao} DIAS DE OPERAÇÃO):`);
 console.log(`🌅 Turno A (Manhã):     ${fmtBRL(turnosTotais.A.fat)} (${turnosTotais.A.malas} malas)`);
 console.log(`☀️ Turno B (Tarde):     ${fmtBRL(turnosTotais.B.fat)} (${turnosTotais.B.malas} malas)`);
 console.log(`🌙 Turno D (Madrugada): ${fmtBRL(turnosTotais.D.fat)} (${turnosTotais.D.malas} malas)`);
 console.log(`💰 Faturamento Geral:   ${fmtBRL(fatTotal)} (${malasTotal} malas)`);
+console.log(`🔮 Projeção (30 dias):  ${fmtBRL(projecaoMes)}`);
 
-// Atualizar index.html com dados por turno de forma segura
+// Atualizar index.html com dados consolidados
 const indexPath = path.join(REPO_DIR, 'index.html');
 let indexHtml = fs.readFileSync(indexPath, 'utf8');
 
@@ -178,9 +191,10 @@ const startIdx = indexHtml.indexOf('let DADOS_ATUAIS = {');
 if (startIdx !== -1) {
   const endIdx = indexHtml.indexOf('};', startIdx) + 2;
   const novoBloco = 'let DADOS_ATUAIS = ' + JSON.stringify({
-    faturamentoTotal: fatTotal,
+    faturamentoTotal: Math.round(fatTotal),
     totalMalas: malasTotal,
     totalLinhas: rows.length,
+    diasOperacao: diasOperacao,
     turnos: turnosTotais,
     colabs: colabsList,
     dataTurno: dataUltima,
@@ -192,9 +206,9 @@ if (startIdx !== -1) {
   console.log('⚠️ Aviso: bloco DADOS_ATUAIS não encontrado no index.html');
 }
 
-// Gerar resumo formatado do WhatsApp
+// 1. Resumo Operacional WhatsApp
 let msgWpp = `📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*\n`;
-msgWpp += `📅 *Data:* ${dataUltima}\n`;
+msgWpp += `📅 *Data:* ${dataUltima} (${diasOperacao} dias)\n`;
 msgWpp += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
 const nomesTurnos = {
@@ -230,16 +244,36 @@ msgWpp += `🚀 *Equipe Protecbag GRU*`;
 const resumoPath = path.join(REPO_DIR, 'resumo_whatsapp.txt');
 fs.writeFileSync(resumoPath, msgWpp, 'utf8');
 
+// 2. Resumo Diretoria
+const pctA = fatTotal > 0 ? ((turnosTotais.A.fat / fatTotal) * 100).toFixed(2) : '0.00';
+const pctB = fatTotal > 0 ? ((turnosTotais.B.fat / fatTotal) * 100).toFixed(2) : '0.00';
+const pctD = fatTotal > 0 ? ((turnosTotais.D.fat / fatTotal) * 100).toFixed(2) : '0.00';
+
+let msgDir = `Resumo de Desempenho Parcial (${diasOperacao} Dias de Operação)\n\n`;
+msgDir += `Resultado Atual: Faturamento de ${fmtBRL(fatTotal)} com um volume de ${malasTotal.toLocaleString('pt-BR')} malas movimentadas (Média atual de ${fmtBRL(mediaDiaria)}/dia).\n\n`;
+msgDir += `Projeção Final do Mês: ${fmtBRL(projecaoMes)}. Mantendo o ritmo atual, o fechamento ficará ${projecaoMes < META_BRONZE ? 'abaixo da Meta Bronze' : 'dentro das metas'}.\n\n`;
+if (faltaBronze > 0) {
+  msgDir += `Ação Necessária (Meta Bronze): Para atingir a meta base, é preciso faturar os ${fmtBRL(faltaBronze)} restantes, exigindo uma elevação da média diária para ${fmtBRL(mediaNecBronze)} nos próximos ${diasRestantes} dias.\n\n`;
+}
+msgDir += `Participação por Turno:\n\n`;
+msgDir += `Turno B (Destaque): ${pctB}% do faturamento (${fmtBRL(turnosTotais.B.fat)} / ${turnosTotais.B.malas.toLocaleString('pt-BR')} malas).\n\n`;
+msgDir += `Turno A: ${pctA}% do faturamento (${fmtBRL(turnosTotais.A.fat)} / ${turnosTotais.A.malas.toLocaleString('pt-BR')} malas).\n\n`;
+msgDir += `Turno C: ${pctD}% do faturamento (${fmtBRL(turnosTotais.D.fat)} / ${turnosTotais.D.malas.toLocaleString('pt-BR')} malas).\n\n`;
+msgDir += `Total de Malas (Geral): ${malasTotal.toLocaleString('pt-BR')} malas (${diasOperacao} Dias de operação)`;
+
+const resumoDir = path.join(REPO_DIR, 'resumo_diretoria.txt');
+fs.writeFileSync(resumoDir, msgDir, 'utf8');
+
 try {
-  execSync(`powershell -command "Set-Clipboard -Value (Get-Content -Path '${resumoPath}' -Raw)"`);
-  console.log('\n📲 Resumo com divisão por Turnos copiado para a Área de Transferência!');
+  execSync(`powershell -command "Set-Clipboard -Value (Get-Content -Path '${resumoDir}' -Raw)"`);
+  console.log('\n📲 Resumo Executivo da Diretoria copiado para a Área de Transferência!');
 } catch (e) {}
 
 // Sincronizar com GitHub
 console.log('\n🚀 Atualizando GitHub...');
 try {
-  execSync(`git -C "${REPO_DIR}" add index.html atualizar_vendas.js resumo_whatsapp.txt`, { stdio: 'inherit' });
-  execSync(`git -C "${REPO_DIR}" commit -m "fix: calculo oficial com coluna Valor e sem perdas de lancamentos"`, { stdio: 'inherit' });
+  execSync(`git -C "${REPO_DIR}" add index.html atualizar_vendas.js resumo_whatsapp.txt resumo_diretoria.txt`, { stdio: 'inherit' });
+  execSync(`git -C "${REPO_DIR}" commit -m "feat: suporte a painel executivo e metas diretoria"`, { stdio: 'inherit' });
   execSync(`git -C "${REPO_DIR}" push origin main`, { stdio: 'inherit' });
   console.log('🌐 GitHub Pages sincronizado com sucesso!\n');
 } catch (e) {
