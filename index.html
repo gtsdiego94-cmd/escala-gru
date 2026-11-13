@@ -29,6 +29,7 @@
     .sticky-col { position: sticky; left: 0; background: #121215; z-index: 10; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body class="bg-[#09090b] text-[#f4f4f5] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
 
@@ -759,11 +760,16 @@
           <span>👔</span>
           <span>Relatório Diretoria</span>
         </button>
+
+        <button id="btnBaixarImg" onclick="baixarImagemRelatorio()" class="px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all cursor-pointer active:scale-95" title="Baixar card executivo em imagem PNG para o WhatsApp">
+          <span>📸</span>
+          <span>Gerar Imagem</span>
+        </button>
       </div>
     </div>
 
     <!-- PAINEL EXECUTIVO: METAS & PROJEÇÃO DIRETORIA -->
-    <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-6">
+    <div id="painelExecutivoMetas" class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-6">
       
       <!-- CABEÇALHO DO PAINEL -->
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-[#27272a]">
@@ -2169,6 +2175,68 @@
       }).catch(err => {
         alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
       });
+    }
+
+    function baixarImagemRelatorio() {
+      const btn = document.getElementById('btnBaixarImg');
+      const orig = btn ? btn.innerHTML : '';
+      if (btn) btn.innerHTML = '<span>⏳</span> <span>Gerando Imagem...</span>';
+
+      const painel = document.getElementById('painelExecutivoMetas');
+      if (!painel) {
+        alert('Painel executivo não localizado.');
+        if (btn) btn.innerHTML = orig;
+        return;
+      }
+
+      const details = painel.querySelector('details');
+      if (details) details.open = true;
+
+      setTimeout(() => {
+        if (typeof html2canvas === 'undefined') {
+          alert('Biblioteca gráfica inicializando. Aguarde 2 segundos e tente novamente.');
+          if (btn) btn.innerHTML = orig;
+          return;
+        }
+
+        html2canvas(painel, {
+          backgroundColor: '#121215',
+          scale: 2,
+          useCORS: true,
+          logging: false
+        }).then(canvas => {
+          const dt = (DADOS_ATUAIS.dataTurno || '').replace(/[^0-9]/g, '_') || 'GRU';
+          const link = document.createElement('a');
+          link.download = `Relatorio_Diretoria_GRU_${dt}.png`;
+          link.href = canvas.toDataURL('image/png');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          if (canvas.toBlob && navigator.clipboard && navigator.clipboard.write) {
+            canvas.toBlob(blob => {
+              if (blob) {
+                navigator.clipboard.write([
+                  new ClipboardItem({ 'image/png': blob })
+                ]).then(() => {
+                  if (btn) btn.innerHTML = '<span>✅</span> <span>Baixada & Copiada!</span>';
+                }).catch(() => {
+                  if (btn) btn.innerHTML = '<span>✅</span> <span>Imagem Baixada!</span>';
+                });
+              } else {
+                if (btn) btn.innerHTML = '<span>✅</span> <span>Imagem Baixada!</span>';
+              }
+              setTimeout(() => { if (btn) btn.innerHTML = orig; }, 2500);
+            });
+          } else {
+            if (btn) btn.innerHTML = '<span>✅</span> <span>Imagem Baixada!</span>';
+            setTimeout(() => { if (btn) btn.innerHTML = orig; }, 2500);
+          }
+        }).catch(err => {
+          alert('Erro ao gerar imagem: ' + err.message);
+          if (btn) btn.innerHTML = orig;
+        });
+      }, 100);
     }
     </script>
   </main>

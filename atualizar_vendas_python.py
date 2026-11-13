@@ -5,6 +5,7 @@ import json
 import subprocess
 import pandas as pd
 from datetime import datetime
+from gerar_card_imagem import gerar_card_imagem
 
 # Diretórios onde o OneBoss pode ter salvado o relatório
 PASTAS_BUSCA = [
@@ -294,18 +295,57 @@ def processar_relatorio():
     with open(RESUMO_DIRETORIA_PATH, "w", encoding="utf-8") as f:
         f.write(msg_dir)
 
-    # Copia o resumo da diretoria para a área de transferência
+    # 3. GERAÇÃO AUTOMÁTICA DO CARD EXECUTIVO EM IMAGEM PNG
     try:
-        subprocess.run(["powershell", "-command", f"Set-Clipboard -Value (Get-Content -Path '{RESUMO_DIRETORIA_PATH}' -Raw)"], check=False)
-        print("📲 Resumo Executivo da Diretoria copiado para a Área de Transferência!")
-    except:
-        pass
+        pct_b_total = (turnos['B']['fat'] / META_BRONZE) * 100 if META_BRONZE else 0
+        pct_p_total = (turnos['B']['fat'] / META_PRATA) * 100 if META_PRATA else 0
+        pct_o_total = (turnos['B']['fat'] / META_OURO) * 100 if META_OURO else 0
+
+        dados_card = {
+            'periodo': f"Novembro / {datetime.now().year}",
+            'dias_op': dias_operacao,
+            'dias_rest': dias_restantes,
+            'fat_total': fmt_brl(fat_total),
+            'total_malas': fmt_num(malas_total),
+            'media_diaria': fmt_brl(media_diaria),
+            'projecao': fmt_brl(projecao_mes),
+            'status_proj': status_proj,
+            'falta_bronze': fmt_brl(falta_bronze),
+            'media_nec_bronze': fmt_brl(media_nec_bronze),
+            'pct_bronze': fmt_pct((fat_total / META_BRONZE) * 100) + '%',
+            'falta_prata': fmt_brl(falta_prata),
+            'media_nec_prata': fmt_brl(media_nec_prata),
+            'pct_prata': fmt_pct((fat_total / META_PRATA) * 100) + '%',
+            'falta_ouro': fmt_brl(falta_ouro),
+            'media_nec_ouro': fmt_brl(media_nec_ouro),
+            'pct_ouro': fmt_pct((fat_total / META_OURO) * 100) + '%',
+            'fat_b': fmt_brl(turnos['B']['fat']),
+            'malas_b': fmt_num(turnos['B']['malas']),
+            'pct_b': fmt_pct(pct_b),
+            'media_b': fmt_brl(media_b),
+            'fat_a': fmt_brl(turnos['A']['fat']),
+            'malas_a': fmt_num(turnos['A']['malas']),
+            'pct_a': fmt_pct(pct_a),
+            'media_a': fmt_brl(media_a),
+            'fat_d': fmt_brl(turnos['D']['fat']),
+            'malas_d': fmt_num(turnos['D']['malas']),
+            'pct_d': fmt_pct(pct_d),
+            'media_d': fmt_brl(media_d),
+            'data_hora': datetime.now().strftime("%d/%m/%Y %H:%M")
+        }
+
+        desktop_img = os.path.join(r"C:\Users\User\Desktop", "Relatorio_Diretoria_GRU.png")
+        repo_img = os.path.join(REPO_DIR, "relatorio_diretoria.png")
+        gerar_card_imagem(dados_card, desktop_img)
+        gerar_card_imagem(dados_card, repo_img)
+    except Exception as err_img:
+        print(f"⚠️ Erro ao gerar card em imagem: {err_img}")
 
     # Sincroniza com GitHub
     print("\n🌐 Enviando para o GitHub Pages...")
     try:
-        subprocess.run(["git", "-C", REPO_DIR, "add", "index.html", "resumo_whatsapp.txt", "resumo_diretoria.txt", "atualizar_vendas_python.py"], check=False)
-        subprocess.run(["git", "-C", REPO_DIR, "commit", "-m", f"update: painel executivo e projecao ({data_ultima})"], check=False)
+        subprocess.run(["git", "-C", REPO_DIR, "add", "index.html", "resumo_whatsapp.txt", "resumo_diretoria.txt", "relatorio_diretoria.png", "gerar_card_imagem.py", "atualizar_vendas_python.py"], check=False)
+        subprocess.run(["git", "-C", REPO_DIR, "commit", "-m", f"feat: geracao automatica de imagem executiva para diretoria ({data_ultima})"], check=False)
         subprocess.run(["git", "-C", REPO_DIR, "push", "origin", "main"], check=False)
         print("🎉 Página online atualizada no GitHub!")
     except Exception as e:
