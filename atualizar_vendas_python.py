@@ -266,8 +266,14 @@ def processar_relatorio():
         gap = META_BRONZE - projecao_mes
         status_proj = f"Mantendo o ritmo atual, o fechamento ficará abaixo da Meta Bronze (R$ 1,5M) por {fmt_brl(gap)}."
 
+    def fmt_num(n):
+        return f"{n:,}".replace(",", ".")
+
+    def fmt_pct(p):
+        return f"{p:.2f}".replace(".", ",")
+
     msg_dir = f"Resumo de Desempenho Parcial ({dias_operacao} Dias de Operação)\n\n"
-    msg_dir += f"Resultado Atual: Faturamento de {fmt_brl(fat_total)} com um volume de {malas_total:,} malas movimentadas (Média atual de {fmt_brl(media_diaria)}/dia).\n\n".replace(",", ".")
+    msg_dir += f"Resultado Atual: Faturamento de {fmt_brl(fat_total)} com um volume de {fmt_num(malas_total)} malas movimentadas (Média atual de {fmt_brl(media_diaria)}/dia).\n\n"
     msg_dir += f"Projeção Final do Mês: {fmt_brl(projecao_mes)}. {status_proj}\n\n"
     
     if falta_bronze > 0:
@@ -280,10 +286,10 @@ def processar_relatorio():
     media_a = turnos['A']['fat'] / dias_operacao if dias_operacao > 0 else 0.0
     media_d = turnos['D']['fat'] / dias_operacao if dias_operacao > 0 else 0.0
 
-    msg_dir += f"Turno B (Destaque): {pct_b:.2f}% do faturamento ({fmt_brl(turnos['B']['fat'])} / {turnos['B']['malas']:,} malas) • Média: {fmt_brl(media_b)}/dia.\n\n".replace(",", ".")
-    msg_dir += f"Turno A: {pct_a:.2f}% do faturamento ({fmt_brl(turnos['A']['fat'])} / {turnos['A']['malas']:,} malas) • Média: {fmt_brl(media_a)}/dia.\n\n".replace(",", ".")
-    msg_dir += f"Turno C: {pct_d:.2f}% do faturamento ({fmt_brl(turnos['D']['fat'])} / {turnos['D']['malas']:,} malas) • Média: {fmt_brl(media_d)}/dia.\n\n".replace(",", ".")
-    msg_dir += f"Total de Malas (Geral): {malas_total:,} malas ({dias_operacao} Dias de operação)".replace(",", ".")
+    msg_dir += f"Turno B (Destaque): {fmt_pct(pct_b)}% do faturamento ({fmt_brl(turnos['B']['fat'])} / {fmt_num(turnos['B']['malas'])} malas) • Média: {fmt_brl(media_b)}/dia.\n\n"
+    msg_dir += f"Turno A: {fmt_pct(pct_a)}% do faturamento ({fmt_brl(turnos['A']['fat'])} / {fmt_num(turnos['A']['malas'])} malas) • Média: {fmt_brl(media_a)}/dia.\n\n"
+    msg_dir += f"Turno C: {fmt_pct(pct_d)}% do faturamento ({fmt_brl(turnos['D']['fat'])} / {fmt_num(turnos['D']['malas'])} malas) • Média: {fmt_brl(media_d)}/dia.\n\n"
+    msg_dir += f"Total de Malas (Geral): {fmt_num(malas_total)} malas ({dias_operacao} Dias de operação)"
 
     with open(RESUMO_DIRETORIA_PATH, "w", encoding="utf-8") as f:
         f.write(msg_dir)
