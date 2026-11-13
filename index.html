@@ -741,7 +741,7 @@
         </p>
       </div>
 
-      <!-- BOTÕES DE AÇÃO: CARREGAR CSV E COPIAR WHATSAPP -->
+      <!-- BOTÕES DE AÇÃO: CARREGAR CSV, COPIAR WHATSAPP OPERACIONAL E RELATÓRIO DIRETORIA -->
       <div class="flex items-center gap-2 flex-wrap">
         <input type="file" id="csvFileInput" accept=".csv,.txt,.tsv,text/plain,text/csv,*" class="hidden" onchange="handleCSVUpload(event)">
         
@@ -754,67 +754,203 @@
           <span>📲</span>
           <span>Copiar WhatsApp</span>
         </button>
+
+        <button id="btnDiretoria" onclick="copiarRelatorioDiretoria()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-zinc-950 font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all cursor-pointer active:scale-95">
+          <span>👔</span>
+          <span>Relatório Diretoria</span>
+        </button>
       </div>
     </div>
 
-    <!-- TERMÔMETRO DE METAS -->
-    <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-5">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+    <!-- PAINEL EXECUTIVO: METAS & PROJEÇÃO DIRETORIA -->
+    <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-6">
+      
+      <!-- CABEÇALHO DO PAINEL -->
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-[#27272a]">
         <div>
-          <h2 class="text-lg font-bold flex items-center gap-2 text-white">
-            🎯 Termômetro de Faturamento vs. Metas
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-wider">Painel Executivo</span>
+            <span class="text-xs text-[#a1a1aa]" id="periodoVendasLabel">Aguardando importação do relatório OneBoss...</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black text-white mt-1 flex items-center gap-2">
+            🎯 Termômetro de Metas & Projeção Mensal
           </h2>
-          <p class="text-xs text-[#a1a1aa]" id="periodoVendasLabel">Aguardando importação do relatório OneBoss...</p>
-        </div>
-        <div class="text-right">
-          <span class="text-xs text-[#a1a1aa]">Faturamento Realizado</span>
-          <p class="text-3xl font-extrabold text-amber-400" id="vendasTotalFat">R$ 0,00</p>
-        </div>
-      </div>
-
-      <div class="relative pt-4 pb-2">
-        <div class="w-full bg-[#27272a]/50 rounded-full h-5 overflow-hidden flex">
-          <div id="vendasProgressBar" class="bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-300 h-5 rounded-full transition-all duration-1000 progress-bar-glow" style="width: 0%;"></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 pt-2 border-t border-[#27272a]/40 text-xs sm:text-sm">
-          <div class="p-3.5 rounded-xl bg-orange-950/20 border border-orange-700/30">
-            <div class="flex justify-between items-center font-bold text-amber-500">
-              <span>🥉 1ª Bronze</span>
-              <span>R$ 1.500.000,00</span>
+        <!-- SIMULADOR / DIAS DE OPERAÇÃO -->
+        <div class="flex items-center gap-3 bg-[#18181b] border border-[#27272a] px-3.5 py-2 rounded-xl">
+          <div class="text-xs">
+            <span class="text-zinc-400 block font-medium">Dias de Operação:</span>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <input type="number" id="inputDiasOperacao" min="1" max="30" value="12" 
+                onchange="atualizarSimulacaoDias(this.value)" oninput="atualizarSimulacaoDias(this.value)"
+                class="w-14 bg-[#27272a] text-center font-bold text-white text-sm rounded-lg px-1 py-0.5 border border-zinc-700 focus:outline-none focus:border-amber-500">
+              <span class="text-[11px] text-zinc-400">/ 30 dias</span>
             </div>
-            <div class="text-xs text-[#a1a1aa] mt-1.5 flex justify-between">
-              <span>Falta para Meta:</span>
-              <span class="font-semibold text-white" id="faltaBronze">R$ 1.500.000,00</span>
-            </div>
-            <div class="text-[11px] font-bold text-amber-400 mt-1" id="pctBronze">0% alcançado</div>
           </div>
-
-          <div class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-500/30">
-            <div class="flex justify-between items-center font-bold text-slate-300">
-              <span>🥈 2ª Prata</span>
-              <span>R$ 1.550.000,00</span>
-            </div>
-            <div class="text-xs text-[#a1a1aa] mt-1.5 flex justify-between">
-              <span>Falta para Meta:</span>
-              <span class="font-semibold text-white" id="faltaPrata">R$ 1.550.000,00</span>
-            </div>
-            <div class="text-[11px] font-bold text-slate-400 mt-1" id="pctPrata">0% alcançado</div>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-yellow-950/20 border border-yellow-600/30">
-            <div class="flex justify-between items-center font-bold text-yellow-400">
-              <span>🥇 3ª Ouro</span>
-              <span>R$ 1.650.000,00</span>
-            </div>
-            <div class="text-xs text-[#a1a1aa] mt-1.5 flex justify-between">
-              <span>Falta para Meta:</span>
-              <span class="font-semibold text-white" id="faltaOuro">R$ 1.650.000,00</span>
-            </div>
-            <div class="text-[11px] font-bold text-yellow-500 mt-1" id="pctOuro">0% alcançado</div>
+          <div class="h-8 w-px bg-[#27272a]"></div>
+          <div class="text-xs">
+            <span class="text-zinc-400 block font-medium">Restam no Mês:</span>
+            <span class="font-bold text-amber-400 text-sm" id="badgeDiasRestantes">18 dias</span>
           </div>
         </div>
       </div>
+
+      <!-- CARDS DE DESTAQUE EXECUTIVO (4 COLUNAS) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        
+        <!-- 1. Realizado Atual -->
+        <div class="p-4 rounded-xl bg-blue-950/20 border border-blue-800/30">
+          <div class="text-xs text-blue-300 font-semibold flex items-center justify-between">
+            <span>Faturamento Realizado</span>
+            <span class="text-[10px] bg-blue-500/20 px-2 py-0.5 rounded text-blue-300 font-bold" id="badgeDiasOp">12 dias</span>
+          </div>
+          <p class="text-2xl font-black text-white mt-1" id="vendasTotalFat">R$ 0,00</p>
+          <div class="text-xs text-blue-400/80 mt-1 flex items-center gap-1">
+            <span>🧳</span> <span id="labelTotalMalasDestaque">0 malas</span>
+          </div>
+        </div>
+
+        <!-- 2. Média Diária Realizada -->
+        <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/30">
+          <div class="text-xs text-emerald-300 font-semibold flex items-center justify-between">
+            <span>Média Diária Atual</span>
+            <span class="text-[10px] text-emerald-400 font-bold">Ritmo Atual</span>
+          </div>
+          <p class="text-2xl font-black text-emerald-400 mt-1" id="execMediaDiaria">R$ 0,00</p>
+          <div class="text-[11px] text-zinc-400 mt-1">Realizado ÷ Dias Decorridos</div>
+        </div>
+
+        <!-- 3. Projeção Final do Mês -->
+        <div class="p-4 rounded-xl bg-purple-950/20 border border-purple-800/30">
+          <div class="text-xs text-purple-300 font-semibold flex items-center justify-between">
+            <span>Projeção (30 dias)</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold" id="badgeStatusProjecao">Calculando</span>
+          </div>
+          <p class="text-2xl font-black text-purple-300 mt-1" id="execProjecaoMes">R$ 0,00</p>
+          <div class="text-[11px] text-zinc-400 mt-1" id="labelDiffBronze">Base: Média diária × 30</div>
+        </div>
+
+        <!-- 4. Ritmo Necessário p/ Meta Bronze -->
+        <div class="p-4 rounded-xl bg-amber-950/20 border border-amber-800/30">
+          <div class="text-xs text-amber-300 font-semibold flex items-center justify-between">
+            <span>Ritmo p/ Meta Bronze</span>
+            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Ação</span>
+          </div>
+          <p class="text-2xl font-black text-amber-400 mt-1" id="execRitmoBronze">R$ 0,00</p>
+          <div class="text-[11px] text-zinc-400 mt-1" id="labelFaltaBronzeDestaque">Falta p/ atingir base</div>
+        </div>
+      </div>
+
+      <!-- BARRA DE PROGRESSO MULTI-META -->
+      <div class="space-y-2 pt-1">
+        <div class="flex justify-between text-xs font-semibold">
+          <span class="text-zinc-400">Progresso Geral (Rumo ao Ouro R$ 1,65M)</span>
+          <span class="text-amber-400 font-bold" id="labelPctGeralOuro">0%</span>
+        </div>
+        <div class="w-full bg-[#27272a]/60 rounded-full h-4 overflow-hidden flex relative">
+          <div id="vendasProgressBar" class="bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-300 h-4 rounded-full transition-all duration-700 progress-bar-glow" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- CARDS DE METAS: BRONZE, PRATA, OURO -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+        
+        <!-- Bronze -->
+        <div class="p-4 rounded-xl bg-orange-950/20 border border-orange-700/40 relative overflow-hidden">
+          <div class="flex justify-between items-center font-bold text-amber-500">
+            <span class="flex items-center gap-1.5 text-sm">🥉 1ª Meta (Bronze)</span>
+            <span class="text-sm">R$ 1.500.000,00</span>
+          </div>
+          <div class="mt-3 space-y-1.5 text-xs">
+            <div class="flex justify-between text-[#a1a1aa]">
+              <span>Falta p/ Meta:</span>
+              <span class="font-bold text-white" id="faltaBronze">R$ 1.500.000,00</span>
+            </div>
+            <div class="flex justify-between text-[#a1a1aa]">
+              <span>Média Diária Necessária:</span>
+              <span class="font-bold text-amber-400" id="mediaNecBronze">R$ 0,00/dia</span>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-orange-800/30 flex justify-between items-center text-[11px]">
+            <span class="font-bold text-amber-400" id="pctBronze">0% alcançado</span>
+            <span class="text-zinc-400">Meta Base</span>
+          </div>
+        </div>
+
+        <!-- Prata -->
+        <div class="p-4 rounded-xl bg-slate-900/40 border border-slate-600/40 relative overflow-hidden">
+          <div class="flex justify-between items-center font-bold text-slate-300">
+            <span class="flex items-center gap-1.5 text-sm">🥈 2ª Meta (Prata)</span>
+            <span class="text-sm">R$ 1.600.000,00</span>
+          </div>
+          <div class="mt-3 space-y-1.5 text-xs">
+            <div class="flex justify-between text-[#a1a1aa]">
+              <span>Falta p/ Meta:</span>
+              <span class="font-bold text-white" id="faltaPrata">R$ 1.600.000,00</span>
+            </div>
+            <div class="flex justify-between text-[#a1a1aa]">
+              <span>Média Diária Necessária:</span>
+              <span class="font-bold text-slate-300" id="mediaNecPrata">R$ 0,00/dia</span>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-slate-700/40 flex justify-between items-center text-[11px]">
+            <span class="font-bold text-slate-300" id="pctPrata">0% alcançado</span>
+            <span class="text-zinc-400">Intermediária</span>
+          </div>
+        </div>
+
+        <!-- Ouro -->
+        <div class="p-4 rounded-xl bg-yellow-950/20 border border-yellow-600/40 relative overflow-hidden">
+          <div class="flex justify-between items-center font-bold text-yellow-400">
+            <span class="flex items-center gap-1.5 text-sm">🥇 3ª Meta (Ouro)</span>
+            <span class="text-sm">R$ 1.650.000,00</span>
+          </div>
+          <div class="mt-3 space-y-1.5 text-xs">
+            <div class="flex justify-between text-[#a1a1aa]">
+              <span>Falta p/ Meta:</span>
+              <span class="font-bold text-white" id="faltaOuro">R$ 1.650.000,00</span>
+            </div>
+            <div class="flex justify-between text-[#a1a1aa]">
+              <span>Média Diária Necessária:</span>
+              <span class="font-bold text-yellow-400" id="mediaNecOuro">R$ 0,00/dia</span>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-yellow-700/30 flex justify-between items-center text-[11px]">
+            <span class="font-bold text-yellow-400" id="pctOuro">0% alcançado</span>
+            <span class="text-zinc-400">Meta Máxima</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELA GERENCIAL EXECUTIVA (IDÊNTICA À PLANILHA DA DIRETORIA) -->
+      <div class="pt-2">
+        <details class="group rounded-xl border border-[#27272a] bg-[#18181b]/70 overflow-hidden" open>
+          <summary class="flex items-center justify-between px-4 py-3 cursor-pointer select-none font-bold text-xs sm:text-sm text-zinc-300 hover:text-white bg-[#18181b] transition-colors">
+            <div class="flex items-center gap-2">
+              <span class="text-base">📋</span>
+              <span>Tabela Gerencial de Acompanhamento (Padrão Diretoria)</span>
+            </div>
+            <span class="text-xs text-amber-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          
+          <div class="p-4 overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr class="bg-[#27272a]/60 text-[#a1a1aa] uppercase font-bold text-[10px] tracking-wider border-b border-[#27272a]">
+                  <th class="py-2.5 px-3 rounded-l-lg w-28">Categoria</th>
+                  <th class="py-2.5 px-3">Descrição / Indicador</th>
+                  <th class="py-2.5 px-3 rounded-r-lg text-right">Valor / Detalhes & %</th>
+                </tr>
+              </thead>
+              <tbody id="corpoTabelaDiretoria" class="divide-y divide-[#27272a]/40 text-xs">
+                <!-- Preenchido dinamicamente via JS com as cores idênticas ao screenshot -->
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+
     </div>
 
     <!-- CARDS DE RESUMO -->
@@ -845,7 +981,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="turnoCardsArea">
       <!-- Turno A -->
       <div class="bg-[#121215] border border-blue-800/40 rounded-2xl p-5 shadow-sm metric-card cursor-pointer hover:border-blue-500/70 transition-all" onclick="selecionarTurno('A')" id="cardTurnoA">
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <span class="text-2xl">🌅</span>
             <span class="font-bold text-white text-base">Turno A</span>
@@ -853,7 +989,11 @@
           <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Manhã</span>
         </div>
         <p class="text-2xl font-extrabold text-blue-400" id="turnoAFat">R$ 0,00</p>
-        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2">
+        <div class="flex items-center justify-between text-xs font-semibold mt-1">
+          <span class="text-blue-300" id="turnoAPart">0,00% part.</span>
+          <span class="text-zinc-400" id="turnoAMedia">Média: R$ 0,00/dia</span>
+        </div>
+        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2 pt-2 border-t border-blue-900/30">
           <span id="turnoAMalas">0 malas</span>
           <span id="turnoAColabs">0 colaboradores</span>
         </div>
@@ -861,7 +1001,7 @@
 
       <!-- Turno B -->
       <div class="bg-[#121215] border border-amber-800/40 rounded-2xl p-5 shadow-sm metric-card cursor-pointer hover:border-amber-500/70 transition-all" onclick="selecionarTurno('B')" id="cardTurnoB">
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <span class="text-2xl">☀️</span>
             <span class="font-bold text-white text-base">Turno B</span>
@@ -869,7 +1009,11 @@
           <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Tarde</span>
         </div>
         <p class="text-2xl font-extrabold text-amber-400" id="turnoBFat">R$ 0,00</p>
-        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2">
+        <div class="flex items-center justify-between text-xs font-semibold mt-1">
+          <span class="text-amber-300" id="turnoBPart">0,00% part.</span>
+          <span class="text-zinc-400" id="turnoBMedia">Média: R$ 0,00/dia</span>
+        </div>
+        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2 pt-2 border-t border-amber-900/30">
           <span id="turnoBMalas">0 malas</span>
           <span id="turnoBColabs">0 colaboradores</span>
         </div>
@@ -877,7 +1021,7 @@
 
       <!-- Turno D -->
       <div class="bg-[#121215] border border-purple-800/40 rounded-2xl p-5 shadow-sm metric-card cursor-pointer hover:border-purple-500/70 transition-all" onclick="selecionarTurno('D')" id="cardTurnoD">
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <span class="text-2xl">🌙</span>
             <span class="font-bold text-white text-base">Turno D</span>
@@ -885,7 +1029,11 @@
           <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">Madrugada</span>
         </div>
         <p class="text-2xl font-extrabold text-purple-400" id="turnoDFat">R$ 0,00</p>
-        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2">
+        <div class="flex items-center justify-between text-xs font-semibold mt-1">
+          <span class="text-purple-300" id="turnoDPart">0,00% part.</span>
+          <span class="text-zinc-400" id="turnoDMedia">Média: R$ 0,00/dia</span>
+        </div>
+        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2 pt-2 border-t border-purple-900/30">
           <span id="turnoDMalas">0 malas</span>
           <span id="turnoDColabs">0 colaboradores</span>
         </div>
@@ -965,234 +1113,67 @@
     
     
     let DADOS_ATUAIS = {
-  "faturamentoTotal": 106882,
-  "totalMalas": 619,
-  "totalLinhas": 667,
+  "faturamentoTotal": 20596,
+  "totalMalas": 118,
+  "totalLinhas": 128,
+  "diasOperacao": 1,
   "turnos": {
     "A": {
-      "fat": 45236.0,
-      "malas": 268
+      "fat": 17770.0,
+      "malas": 100
     },
     "B": {
-      "fat": 49456.0,
-      "malas": 282
+      "fat": 0.0,
+      "malas": 1
     },
     "D": {
-      "fat": 12190.0,
-      "malas": 69
+      "fat": 2826.0,
+      "malas": 17
     }
   },
   "colabs": [
     {
       "pos": 1,
-      "nome": "Dalton Duarte",
+      "nome": "matheus senhorinho",
       "turno": "A",
-      "fat": 8696,
-      "malas": 53,
-      "media": 164.08
+      "fat": 4345,
+      "malas": 25,
+      "media": 173.8
     },
     {
       "pos": 2,
-      "nome": "gabriel goncalves",
-      "turno": "B",
-      "fat": 8348,
-      "malas": 44,
-      "media": 189.73
+      "nome": "Dalton Duarte",
+      "turno": "A",
+      "fat": 3580,
+      "malas": 20,
+      "media": 179.0
     },
     {
       "pos": 3,
-      "nome": "rafael messias",
-      "turno": "B",
-      "fat": 7561,
-      "malas": 41,
-      "media": 184.41
+      "nome": "danilo pereira",
+      "turno": "A",
+      "fat": 3430,
+      "malas": 20,
+      "media": 171.5
     },
     {
       "pos": 4,
-      "nome": "joao ferreira",
+      "nome": "lucas trindade",
       "turno": "A",
-      "fat": 6481,
-      "malas": 39,
-      "media": 166.18
+      "fat": 2267,
+      "malas": 13,
+      "media": 174.38
     },
     {
       "pos": 5,
-      "nome": "Diego Pereira",
-      "turno": "B",
-      "fat": 6198,
-      "malas": 34,
-      "media": 182.29
+      "nome": "rodrigo silva",
+      "turno": "A",
+      "fat": 1521,
+      "malas": 9,
+      "media": 169.0
     },
     {
       "pos": 6,
-      "nome": "kauan geraldo",
-      "turno": "A",
-      "fat": 5995,
-      "malas": 38,
-      "media": 157.76
-    },
-    {
-      "pos": 7,
-      "nome": "vitor viana",
-      "turno": "B",
-      "fat": 5969,
-      "malas": 31,
-      "media": 192.55
-    },
-    {
-      "pos": 8,
-      "nome": "Wesley Matheus",
-      "turno": "B",
-      "fat": 4836,
-      "malas": 35,
-      "media": 138.17
-    },
-    {
-      "pos": 9,
-      "nome": "rodrigo silva",
-      "turno": "A",
-      "fat": 4157,
-      "malas": 26,
-      "media": 159.88
-    },
-    {
-      "pos": 10,
-      "nome": "roni oliveira",
-      "turno": "B",
-      "fat": 3963,
-      "malas": 22,
-      "media": 180.14
-    },
-    {
-      "pos": 11,
-      "nome": "eduardo lima",
-      "turno": "A",
-      "fat": 3582,
-      "malas": 18,
-      "media": 199.0
-    },
-    {
-      "pos": 12,
-      "nome": "Davi Araujo",
-      "turno": "B",
-      "fat": 3381,
-      "malas": 19,
-      "media": 177.95
-    },
-    {
-      "pos": 13,
-      "nome": "mihael henrique",
-      "turno": "B",
-      "fat": 3223,
-      "malas": 17,
-      "media": 189.59
-    },
-    {
-      "pos": 14,
-      "nome": "Victor Costa Domene dos Santos",
-      "turno": "A",
-      "fat": 2907,
-      "malas": 18,
-      "media": 161.5
-    },
-    {
-      "pos": 15,
-      "nome": "matheus senhorinho",
-      "turno": "A",
-      "fat": 2835,
-      "malas": 15,
-      "media": 189.0
-    },
-    {
-      "pos": 16,
-      "nome": "israel lucas",
-      "turno": "D",
-      "fat": 2804,
-      "malas": 16,
-      "media": 175.25
-    },
-    {
-      "pos": 17,
-      "nome": "ricardo lima",
-      "turno": "A",
-      "fat": 2756,
-      "malas": 17,
-      "media": 162.12
-    },
-    {
-      "pos": 18,
-      "nome": "Pedro Henrique da Silva Santos",
-      "turno": "A",
-      "fat": 2388,
-      "malas": 13,
-      "media": 183.69
-    },
-    {
-      "pos": 19,
-      "nome": "elton gimenesd2",
-      "turno": "D",
-      "fat": 2089,
-      "malas": 12,
-      "media": 174.08
-    },
-    {
-      "pos": 20,
-      "nome": "Jose Carlos Guilherme",
-      "turno": "B",
-      "fat": 2050,
-      "malas": 14,
-      "media": 146.43
-    },
-    {
-      "pos": 21,
-      "nome": "danilo pereira",
-      "turno": "A",
-      "fat": 1978,
-      "malas": 12,
-      "media": 164.83
-    },
-    {
-      "pos": 22,
-      "nome": "kauan miranda",
-      "turno": "A",
-      "fat": 1940,
-      "malas": 10,
-      "media": 194.0
-    },
-    {
-      "pos": 23,
-      "nome": "gabriel donadellod2",
-      "turno": "D",
-      "fat": 1871,
-      "malas": 9,
-      "media": 207.89
-    },
-    {
-      "pos": 24,
-      "nome": "gabriel donadello",
-      "turno": "D",
-      "fat": 1771,
-      "malas": 9,
-      "media": 196.78
-    },
-    {
-      "pos": 25,
-      "nome": "kaique mendes",
-      "turno": "B",
-      "fat": 1770,
-      "malas": 11,
-      "media": 160.91
-    },
-    {
-      "pos": 26,
-      "nome": "jose macedo",
-      "turno": "B",
-      "fat": 1540,
-      "malas": 10,
-      "media": 154.0
-    },
-    {
-      "pos": 27,
       "nome": "israel lucasd2",
       "turno": "D",
       "fat": 1154,
@@ -1200,15 +1181,7 @@
       "media": 192.33
     },
     {
-      "pos": 28,
-      "nome": "wellington ferreira",
-      "turno": "D",
-      "fat": 1108,
-      "malas": 7,
-      "media": 158.29
-    },
-    {
-      "pos": 29,
+      "pos": 7,
       "nome": "wellington ferreirad2",
       "turno": "D",
       "fat": 995,
@@ -1216,60 +1189,52 @@
       "media": 124.38
     },
     {
-      "pos": 30,
+      "pos": 8,
       "nome": "wilson",
       "turno": "A",
-      "fat": 845,
-      "malas": 5,
-      "media": 169.0
+      "fat": 994,
+      "malas": 6,
+      "media": 165.67
     },
     {
-      "pos": 31,
-      "nome": "lucas trindade",
+      "pos": 9,
+      "nome": "eduardo lima",
       "turno": "A",
-      "fat": 527,
+      "fat": 837,
       "malas": 3,
-      "media": 175.67
+      "media": 279.0
     },
     {
-      "pos": 32,
-      "nome": "elton gimenes",
-      "turno": "D",
-      "fat": 398,
-      "malas": 2,
+      "pos": 10,
+      "nome": "Pedro Henrique da Silva Santos",
+      "turno": "A",
+      "fat": 796,
+      "malas": 4,
       "media": 199.0
     },
     {
-      "pos": 33,
-      "nome": "Henrique Pedro",
-      "turno": "B",
-      "fat": 358,
-      "malas": 2,
-      "media": 179.0
+      "pos": 11,
+      "nome": "gabriel donadellod2",
+      "turno": "D",
+      "fat": 677,
+      "malas": 3,
+      "media": 225.67
     },
     {
-      "pos": 34,
-      "nome": "eric vinicius",
+      "pos": 12,
+      "nome": "roni oliveira",
       "turno": "B",
-      "fat": 259,
-      "malas": 2,
-      "media": 129.5
-    },
-    {
-      "pos": 35,
-      "nome": "kaue amorim",
-      "turno": "A",
-      "fat": 149,
+      "fat": 0,
       "malas": 1,
-      "media": 149.0
+      "media": 0.0
     }
   ],
   "dataTurno": "13/11/2026",
-  "arquivoNome": "RelatorioMovimentoCaixa 2026-11-13 11-20-04.xlsx"
+  "arquivoNome": "RelatorioMovimentoCaixa 2026-11-13 13-48-58.xlsx"
 };
 
     const META_BRONZE = 1500000;
-    const META_PRATA  = 1550000;
+    const META_PRATA  = 1600000;
     const META_OURO   = 1650000;
 
     function fmtBRL(val) {
@@ -1578,62 +1543,277 @@
       renderDashboardVendas();
     }
 
-    function renderDashboardVendas() {
-      // 1. Cards principais
-      document.getElementById('vendasTotalFat').innerText = fmtBRL(DADOS_ATUAIS.faturamentoTotal);
-      document.getElementById('cardTotalMalas').innerText = DADOS_ATUAIS.totalMalas.toLocaleString('pt-BR');
-      
-      const tktMedio = DADOS_ATUAIS.totalMalas > 0 ? (DADOS_ATUAIS.faturamentoTotal / DADOS_ATUAIS.totalMalas) : 0;
-      document.getElementById('cardTicketMedio').innerText = fmtBRL(tktMedio);
-      document.getElementById('cardTotalTransacoes').innerText = DADOS_ATUAIS.totalLinhas.toLocaleString('pt-BR');
-      document.getElementById('cardTotalColabs').innerText = DADOS_ATUAIS.colabs.length;
+    function atualizarSimulacaoDias(val) {
+      let d = parseInt(val, 10);
+      if (isNaN(d) || d < 1) d = 1;
+      if (d > 30) d = 30;
+      DADOS_ATUAIS.diasOperacao = d;
+      renderDashboardVendas();
+    }
 
-      document.getElementById('periodoVendasLabel').innerText = 'Data: ' + DADOS_ATUAIS.dataTurno + ' • Arquivo: ' + (DADOS_ATUAIS.arquivoNome || 'OneBoss');
+    function renderTabelaDiretoria(dados) {
+      const tbody = document.getElementById('corpoTabelaDiretoria');
+      if (!tbody) return;
+
+      const badgeBronze = 'bg-orange-950/40 text-amber-400 border border-orange-700/50';
+      const badgePrata  = 'bg-slate-800 text-slate-200 border border-slate-600';
+      const badgeOuro   = 'bg-yellow-950/40 text-yellow-300 border border-yellow-600/50';
+      const badgeReal   = 'bg-blue-900/40 text-blue-300 border border-blue-600/50';
+      const badgeProj   = 'bg-amber-950/40 text-amber-300 border border-amber-700/50';
+      const badgeMedia  = 'bg-zinc-800 text-zinc-300 border border-zinc-700';
+      const badgeA      = 'bg-blue-950/40 text-blue-300 border border-blue-700/50';
+      const badgeB      = 'bg-emerald-950/40 text-emerald-300 border border-emerald-700/50';
+      const badgeC      = 'bg-purple-950/40 text-purple-300 border border-purple-700/50';
+      const badgeUni    = 'bg-red-950/50 text-red-300 border border-red-700/50';
+
+      const linhas = [
+        { cat: 'METAS', tag: badgeBronze, desc: '1ª Meta (Bronze)', val: `${fmtBRL(META_BRONZE)} (Meta Base)` },
+        { cat: 'METAS', tag: badgePrata,  desc: '2ª Meta (Prata)',  val: fmtBRL(META_PRATA) },
+        { cat: 'METAS', tag: badgeOuro,   desc: '3ª Meta (Ouro)',   val: fmtBRL(META_OURO) },
+        { cat: 'REALIZADO', tag: badgeReal, desc: `Faturamento Total (${dados.diasOp} dias)`, val: `<span class="font-bold text-white">${fmtBRL(dados.fatTotal)}</span> (${dados.totalMalas.toLocaleString('pt-BR')} malas)` },
+        { cat: 'PROJEÇÃO', tag: badgeProj, desc: 'Final do Mês (30 dias)', val: `<span class="font-bold text-amber-300">${fmtBRL(dados.projecaoMes)}</span> (${fmtBRL(dados.mediaDiaria)}/dia - Média Diária Realizada)` },
+        { cat: 'MÉDIA', tag: badgeMedia, desc: 'Média Diária Necessária (Bronze)', val: `<span class="font-bold text-amber-400">${fmtBRL(dados.mediaNecB)}</span> (Para os ${dados.diasRestantes} dias restantes)` },
+        { cat: 'MÉDIA', tag: badgeMedia, desc: 'Média Diária Necessária (Prata)', val: `<span class="font-bold text-slate-300">${fmtBRL(dados.mediaNecP)}</span> (Para os ${dados.diasRestantes} dias restantes)` },
+        { cat: 'MÉDIA', tag: badgeMedia, desc: 'Média Diária Necessária (Ouro)', val: `<span class="font-bold text-yellow-400">${fmtBRL(dados.mediaNecO)}</span> (Para os ${dados.diasRestantes} dias restantes)` },
+        { cat: 'BRONZE', tag: badgeBronze, desc: 'Falta para Meta Bronze', val: `<span class="font-bold text-amber-400">${fmtBRL(dados.faltaB)}</span>` },
+        { cat: 'PRATA', tag: badgePrata, desc: 'Falta para Meta Prata', val: `<span class="font-bold text-slate-300">${fmtBRL(dados.faltaP)}</span>` },
+        { cat: 'OURO', tag: badgeOuro, desc: 'Falta para Meta Ouro', val: `<span class="font-bold text-yellow-400">${fmtBRL(dados.faltaO)}</span>` },
+        { cat: 'TURNO A', tag: badgeA, desc: 'Faturamento Acumulado', val: `<span class="font-bold text-blue-300">${fmtBRL(dados.fatA)}</span> (${dados.malasA.toLocaleString('pt-BR')} malas)` },
+        { cat: 'TURNO A', tag: badgeA, desc: 'Média Diária / Participação', val: `${fmtBRL(dados.mediaA)} (<span class="font-bold text-blue-300">${dados.pctA.toFixed(2)}%</span> de participação)` },
+        { cat: 'TURNO B', tag: badgeB, desc: 'Faturamento Acumulado', val: `<span class="font-bold text-emerald-300">${fmtBRL(dados.fatB)}</span> (${dados.malasB.toLocaleString('pt-BR')} malas)` },
+        { cat: 'TURNO B', tag: badgeB, desc: 'Média Diária / Participação', val: `${fmtBRL(dados.mediaB)} (<span class="font-bold text-emerald-300">${dados.pctB.toFixed(2)}%</span> de participação)` },
+        { cat: 'TURNO C', tag: badgeC, desc: 'Faturamento Acumulado (Madrugada)', val: `<span class="font-bold text-purple-300">${fmtBRL(dados.fatD)}</span> (${dados.malasD.toLocaleString('pt-BR')} malas)` },
+        { cat: 'TURNO C', tag: badgeC, desc: 'Média Diária / Participação', val: `${fmtBRL(dados.mediaD)} (<span class="font-bold text-purple-300">${dados.pctD.toFixed(2)}%</span> de participação)` },
+        { cat: 'UNIDADES', tag: badgeUni, desc: 'Total de Malas (Geral)', val: `<span class="font-bold text-red-300">${dados.totalMalas.toLocaleString('pt-BR')} malas</span> (${dados.diasOp} Dias de operação)` }
+      ];
+
+      tbody.innerHTML = linhas.map(l => `
+        <tr class="hover:bg-[#27272a]/30 transition-colors">
+          <td class="py-2 px-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${l.tag}">${l.cat}</span>
+          </td>
+          <td class="py-2 px-3 font-medium text-zinc-300">${l.desc}</td>
+          <td class="py-2 px-3 text-right text-zinc-200">${l.val}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderDashboardVendas() {
+      // 0. Dias de Operação (com suporte a simulação em tempo real)
+      const inputDias = document.getElementById('inputDiasOperacao');
+      let diasOp = 12;
+      if (DADOS_ATUAIS.diasOperacao) {
+        diasOp = DADOS_ATUAIS.diasOperacao;
+      }
+      if (inputDias && inputDias.value) {
+        diasOp = parseInt(inputDias.value, 10) || diasOp;
+      }
+      diasOp = Math.max(1, Math.min(30, diasOp));
+      if (inputDias && inputDias.value != diasOp) {
+        inputDias.value = diasOp;
+      }
+
+      const totalDiasMes = 30;
+      const diasRestantes = Math.max(1, totalDiasMes - diasOp);
+      const fatTotal = DADOS_ATUAIS.faturamentoTotal || 0;
+      const totalMalas = DADOS_ATUAIS.totalMalas || 0;
+
+      // Cálculos Executivos
+      const mediaDiaria = diasOp > 0 ? (fatTotal / diasOp) : 0;
+      const projecaoMes = mediaDiaria * totalDiasMes;
+
+      const faltaB = Math.max(0, META_BRONZE - fatTotal);
+      const mediaNecB = diasRestantes > 0 ? (faltaB / diasRestantes) : 0;
+
+      const faltaP = Math.max(0, META_PRATA - fatTotal);
+      const mediaNecP = diasRestantes > 0 ? (faltaP / diasRestantes) : 0;
+
+      const faltaO = Math.max(0, META_OURO - fatTotal);
+      const mediaNecO = diasRestantes > 0 ? (faltaO / diasRestantes) : 0;
+
+      // 1. Atualizar Destaques e Badges
+      if (document.getElementById('vendasTotalFat')) document.getElementById('vendasTotalFat').innerText = fmtBRL(fatTotal);
+      if (document.getElementById('cardTotalMalas')) document.getElementById('cardTotalMalas').innerText = totalMalas.toLocaleString('pt-BR');
+      if (document.getElementById('labelTotalMalasDestaque')) document.getElementById('labelTotalMalasDestaque').innerText = totalMalas.toLocaleString('pt-BR') + ' malas';
+      if (document.getElementById('badgeDiasOp')) document.getElementById('badgeDiasOp').innerText = diasOp + ' dias';
+      if (document.getElementById('badgeDiasRestantes')) document.getElementById('badgeDiasRestantes').innerText = diasRestantes + ' dias';
+
+      const tktMedio = totalMalas > 0 ? (fatTotal / totalMalas) : 0;
+      if (document.getElementById('cardTicketMedio')) document.getElementById('cardTicketMedio').innerText = fmtBRL(tktMedio);
+      if (document.getElementById('cardTotalTransacoes')) document.getElementById('cardTotalTransacoes').innerText = (DADOS_ATUAIS.totalLinhas || 0).toLocaleString('pt-BR');
+      if (document.getElementById('cardTotalColabs')) document.getElementById('cardTotalColabs').innerText = (DADOS_ATUAIS.colabs || []).length;
+
+      if (document.getElementById('periodoVendasLabel')) {
+        document.getElementById('periodoVendasLabel').innerText = 'Data: ' + DADOS_ATUAIS.dataTurno + ' • ' + (DADOS_ATUAIS.arquivoNome || 'OneBoss');
+      }
+
+      if (document.getElementById('execMediaDiaria')) document.getElementById('execMediaDiaria').innerText = fmtBRL(mediaDiaria);
+      if (document.getElementById('execProjecaoMes')) document.getElementById('execProjecaoMes').innerText = fmtBRL(projecaoMes);
+
+      // Status da Projeção
+      const badgeProj = document.getElementById('badgeStatusProjecao');
+      const labelDiffB = document.getElementById('labelDiffBronze');
+      if (projecaoMes >= META_OURO) {
+        if (badgeProj) { badgeProj.innerText = 'Meta Ouro! 🏆'; badgeProj.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-yellow-500/20 text-yellow-400'; }
+        if (labelDiffB) labelDiffB.innerText = 'Superando meta máxima!';
+      } else if (projecaoMes >= META_PRATA) {
+        if (badgeProj) { badgeProj.innerText = 'Meta Prata! 🥈'; badgeProj.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-slate-500/20 text-slate-300'; }
+        if (labelDiffB) labelDiffB.innerText = 'Superando meta intermediária';
+      } else if (projecaoMes >= META_BRONZE) {
+        if (badgeProj) { badgeProj.innerText = 'Meta Bronze! 🥉'; badgeProj.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-400'; }
+        if (labelDiffB) labelDiffB.innerText = 'Dentro da meta base';
+      } else {
+        const diff = META_BRONZE - projecaoMes;
+        if (badgeProj) { badgeProj.innerText = 'Abaixo da Base ⚠️'; badgeProj.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-red-500/20 text-red-400'; }
+        if (labelDiffB) labelDiffB.innerText = '-' + fmtBRL(diff) + ' p/ Bronze';
+      }
+
+      if (document.getElementById('execRitmoBronze')) document.getElementById('execRitmoBronze').innerText = fmtBRL(mediaNecB) + '/dia';
+      if (document.getElementById('labelFaltaBronzeDestaque')) document.getElementById('labelFaltaBronzeDestaque').innerText = 'Falta ' + fmtBRL(faltaB);
 
       // 2. Termômetro e Metas
-      const pctBronzeVal = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_BRONZE) * 100);
-      const pctPrataVal  = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_PRATA) * 100);
-      const pctOuroVal   = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_OURO) * 100);
+      const pctBronzeVal = Math.min(100, (fatTotal / META_BRONZE) * 100);
+      const pctPrataVal  = Math.min(100, (fatTotal / META_PRATA) * 100);
+      const pctOuroVal   = Math.min(100, (fatTotal / META_OURO) * 100);
 
-      document.getElementById('vendasProgressBar').style.width = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_OURO) * 100).toFixed(2) + '%';
+      if (document.getElementById('vendasProgressBar')) {
+        document.getElementById('vendasProgressBar').style.width = pctOuroVal.toFixed(2) + '%';
+      }
+      if (document.getElementById('labelPctGeralOuro')) {
+        document.getElementById('labelPctGeralOuro').innerText = pctOuroVal.toFixed(1) + '% da Meta Ouro';
+      }
 
-      const faltaB = Math.max(0, META_BRONZE - DADOS_ATUAIS.faturamentoTotal);
-      const faltaP = Math.max(0, META_PRATA - DADOS_ATUAIS.faturamentoTotal);
-      const faltaO = Math.max(0, META_OURO - DADOS_ATUAIS.faturamentoTotal);
+      if (document.getElementById('faltaBronze')) document.getElementById('faltaBronze').innerText = faltaB === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaB);
+      if (document.getElementById('pctBronze')) document.getElementById('pctBronze').innerText = pctBronzeVal.toFixed(1) + '% alcançado';
+      if (document.getElementById('mediaNecBronze')) document.getElementById('mediaNecBronze').innerText = faltaB === 0 ? 'Meta Atingida!' : fmtBRL(mediaNecB) + '/dia';
 
-      document.getElementById('faltaBronze').innerText = faltaB === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaB);
-      document.getElementById('pctBronze').innerText = pctBronzeVal.toFixed(1) + '% alcançado';
+      if (document.getElementById('faltaPrata')) document.getElementById('faltaPrata').innerText = faltaP === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaP);
+      if (document.getElementById('pctPrata')) document.getElementById('pctPrata').innerText = pctPrataVal.toFixed(1) + '% alcançado';
+      if (document.getElementById('mediaNecPrata')) document.getElementById('mediaNecPrata').innerText = faltaP === 0 ? 'Meta Atingida!' : fmtBRL(mediaNecP) + '/dia';
 
-      document.getElementById('faltaPrata').innerText = faltaP === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaP);
-      document.getElementById('pctPrata').innerText = pctPrataVal.toFixed(1) + '% alcançado';
+      if (document.getElementById('faltaOuro')) document.getElementById('faltaOuro').innerText = faltaO === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaO);
+      if (document.getElementById('pctOuro')) document.getElementById('pctOuro').innerText = pctOuroVal.toFixed(1) + '% alcançado';
+      if (document.getElementById('mediaNecOuro')) document.getElementById('mediaNecOuro').innerText = faltaO === 0 ? 'Meta Atingida!' : fmtBRL(mediaNecO) + '/dia';
 
-      document.getElementById('faltaOuro').innerText = faltaO === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaO);
-      document.getElementById('pctOuro').innerText = pctOuroVal.toFixed(1) + '% alcançado';
-
-      // 3. Cards de turno
+      // 3. Cards de turno e participação
       const colabs = DADOS_ATUAIS.colabs || [];
-      const turnos = { A: { fat: 0, malas: 0, n: 0 }, B: { fat: 0, malas: 0, n: 0 }, D: { fat: 0, malas: 0, n: 0 } };
+      const turnos = (DADOS_ATUAIS.turnos) || { A: { fat: 0, malas: 0, n: 0 }, B: { fat: 0, malas: 0, n: 0 }, D: { fat: 0, malas: 0, n: 0 } };
+      
+      const turnosCount = { A: 0, B: 0, D: 0 };
       colabs.forEach(c => {
         const t = (c.turno === 'A' || c.turno === 'B' || c.turno === 'D') ? c.turno : 'B';
-        turnos[t].fat  += c.fat;
-        turnos[t].malas += c.malas;
-        turnos[t].n++;
+        turnosCount[t]++;
       });
 
-      document.getElementById('turnoAFat').innerText = fmtBRL(turnos.A.fat);
-      document.getElementById('turnoAMalas').innerText = turnos.A.malas + ' malas';
-      document.getElementById('turnoAColabs').innerText = turnos.A.n + ' colaboradores';
+      const fatA = turnos.A?.fat || 0, malasA = turnos.A?.malas || 0;
+      const fatB = turnos.B?.fat || 0, malasB = turnos.B?.malas || 0;
+      const fatD = turnos.D?.fat || 0, malasD = turnos.D?.malas || 0;
 
-      document.getElementById('turnoBFat').innerText = fmtBRL(turnos.B.fat);
-      document.getElementById('turnoBMalas').innerText = turnos.B.malas + ' malas';
-      document.getElementById('turnoBColabs').innerText = turnos.B.n + ' colaboradores';
+      const pctA = fatTotal > 0 ? ((fatA / fatTotal) * 100) : 0;
+      const pctB = fatTotal > 0 ? ((fatB / fatTotal) * 100) : 0;
+      const pctD = fatTotal > 0 ? ((fatD / fatTotal) * 100) : 0;
 
-      document.getElementById('turnoDFat').innerText = fmtBRL(turnos.D.fat);
-      document.getElementById('turnoDMalas').innerText = turnos.D.malas + ' malas';
-      document.getElementById('turnoDColabs').innerText = turnos.D.n + ' colaboradores';
+      const mediaA = diasOp > 0 ? (fatA / diasOp) : 0;
+      const mediaB = diasOp > 0 ? (fatB / diasOp) : 0;
+      const mediaD = diasOp > 0 ? (fatD / diasOp) : 0;
 
-      // 4. Tabela — começa mostrando todos
+      if (document.getElementById('turnoAFat')) document.getElementById('turnoAFat').innerText = fmtBRL(fatA);
+      if (document.getElementById('turnoAMalas')) document.getElementById('turnoAMalas').innerText = malasA.toLocaleString('pt-BR') + ' malas';
+      if (document.getElementById('turnoAColabs')) document.getElementById('turnoAColabs').innerText = (turnosCount.A || turnos.A?.n || 0) + ' colaboradores';
+      if (document.getElementById('turnoAPart')) document.getElementById('turnoAPart').innerText = pctA.toFixed(2) + '% do faturamento';
+      if (document.getElementById('turnoAMedia')) document.getElementById('turnoAMedia').innerText = 'Média: ' + fmtBRL(mediaA) + '/dia';
+
+      if (document.getElementById('turnoBFat')) document.getElementById('turnoBFat').innerText = fmtBRL(fatB);
+      if (document.getElementById('turnoBMalas')) document.getElementById('turnoBMalas').innerText = malasB.toLocaleString('pt-BR') + ' malas';
+      if (document.getElementById('turnoBColabs')) document.getElementById('turnoBColabs').innerText = (turnosCount.B || turnos.B?.n || 0) + ' colaboradores';
+      if (document.getElementById('turnoBPart')) document.getElementById('turnoBPart').innerHTML = pctB.toFixed(2) + '% do faturamento <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Destaque 🔥</span>';
+      if (document.getElementById('turnoBMedia')) document.getElementById('turnoBMedia').innerText = 'Média: ' + fmtBRL(mediaB) + '/dia';
+
+      if (document.getElementById('turnoDFat')) document.getElementById('turnoDFat').innerText = fmtBRL(fatD);
+      if (document.getElementById('turnoDMalas')) document.getElementById('turnoDMalas').innerText = malasD.toLocaleString('pt-BR') + ' malas';
+      if (document.getElementById('turnoDColabs')) document.getElementById('turnoDColabs').innerText = (turnosCount.D || turnos.D?.n || 0) + ' colaboradores';
+      if (document.getElementById('turnoDPart')) document.getElementById('turnoDPart').innerText = pctD.toFixed(2) + '% do faturamento';
+      if (document.getElementById('turnoDMedia')) document.getElementById('turnoDMedia').innerText = 'Média: ' + fmtBRL(mediaD) + '/dia';
+
+      // 4. Renderizar Tabela Gerencial da Diretoria
+      renderTabelaDiretoria({
+        diasOp, totalDiasMes, diasRestantes,
+        fatTotal, totalMalas, mediaDiaria, projecaoMes,
+        faltaB, mediaNecB, faltaP, mediaNecP, faltaO, mediaNecO,
+        fatA, malasA, pctA, mediaA,
+        fatB, malasB, pctB, mediaB,
+        fatD, malasD, pctD, mediaD
+      });
+
+      // 5. Tabela de ranking
       selecionarTurno('TODOS');
+    }
+
+    function copiarRelatorioDiretoria() {
+      const inputDias = document.getElementById('inputDiasOperacao');
+      const diasOp = (inputDias && parseInt(inputDias.value, 10)) || DADOS_ATUAIS.diasOperacao || 12;
+      const totalDiasMes = 30;
+      const diasRestantes = Math.max(1, totalDiasMes - diasOp);
+
+      const fatTotal = DADOS_ATUAIS.faturamentoTotal || 0;
+      const totalMalas = DADOS_ATUAIS.totalMalas || 0;
+      const mediaDiaria = diasOp > 0 ? (fatTotal / diasOp) : 0;
+      const projecao = mediaDiaria * totalDiasMes;
+
+      const faltaB = Math.max(0, META_BRONZE - fatTotal);
+      const mediaNecB = diasRestantes > 0 ? (faltaB / diasRestantes) : 0;
+      const faltaP = Math.max(0, META_PRATA - fatTotal);
+      const mediaNecP = diasRestantes > 0 ? (faltaP / diasRestantes) : 0;
+      const faltaO = Math.max(0, META_OURO - fatTotal);
+      const mediaNecO = diasRestantes > 0 ? (faltaO / diasRestantes) : 0;
+
+      const turnos = (DADOS_ATUAIS.turnos) || { A: { fat: 0, malas: 0 }, B: { fat: 0, malas: 0 }, D: { fat: 0, malas: 0 } };
+      const fatA = turnos.A?.fat || 0, malasA = turnos.A?.malas || 0;
+      const fatB = turnos.B?.fat || 0, malasB = turnos.B?.malas || 0;
+      const fatD = turnos.D?.fat || 0, malasD = turnos.D?.malas || 0;
+
+      const pctA = fatTotal > 0 ? ((fatA / fatTotal) * 100).toFixed(2) : '0,00';
+      const pctB = fatTotal > 0 ? ((fatB / fatTotal) * 100).toFixed(2) : '0,00';
+      const pctD = fatTotal > 0 ? ((fatD / fatTotal) * 100).toFixed(2) : '0,00';
+
+      let statusProj = '';
+      if (projecao >= META_OURO) statusProj = '🏆 Mantendo o ritmo, baterá a Meta Ouro!';
+      else if (projecao >= META_PRATA) statusProj = '🥈 Mantendo o ritmo, baterá a Meta Prata!';
+      else if (projecao >= META_BRONZE) statusProj = '🥉 Mantendo o ritmo, atingirá a Meta Bronze (Base).';
+      else {
+        const gap = META_BRONZE - projecao;
+        statusProj = `Mantendo o ritmo atual, o fechamento ficará abaixo da Meta Bronze (R$ 1,5M) por ${fmtBRL(gap)}.`;
+      }
+
+      let msg = `Resumo de Desempenho Parcial (${diasOp} Dias de Operação)\n\n`;
+      msg += `Resultado Atual: Faturamento de ${fmtBRL(fatTotal)} com um volume de ${totalMalas.toLocaleString('pt-BR')} malas movimentadas (Média atual de ${fmtBRL(mediaDiaria)}/dia).\n\n`;
+      msg += `Projeção Final do Mês: ${fmtBRL(projecao)}. ${statusProj}\n\n`;
+      
+      if (faltaB > 0) {
+        msg += `Ação Necessária (Meta Bronze): Para atingir a meta base, é preciso faturar os ${fmtBRL(faltaB)} restantes, exigindo uma elevação da média diária para ${fmtBRL(mediaNecB)} nos próximos ${diasRestantes} dias.\n\n`;
+      } else {
+        msg += `Meta Bronze atingida com sucesso! Rumo à Meta Prata (${fmtBRL(META_PRATA)}).\n\n`;
+      }
+
+      msg += `Participação por Turno:\n\n`;
+      msg += `Turno B (Destaque): ${pctB}% do faturamento (${fmtBRL(fatB)} / ${malasB.toLocaleString('pt-BR')} malas) • Média: ${fmtBRL(diasOp > 0 ? fatB / diasOp : 0)}/dia.\n\n`;
+      msg += `Turno A: ${pctA}% do faturamento (${fmtBRL(fatA)} / ${malasA.toLocaleString('pt-BR')} malas) • Média: ${fmtBRL(diasOp > 0 ? fatA / diasOp : 0)}/dia.\n\n`;
+      msg += `Turno C: ${pctD}% do faturamento (${fmtBRL(fatD)} / ${malasD.toLocaleString('pt-BR')} malas) • Média: ${fmtBRL(diasOp > 0 ? fatD / diasOp : 0)}/dia.\n\n`;
+      msg += `Total de Malas (Geral): ${totalMalas.toLocaleString('pt-BR')} malas (${diasOp} Dias de operação)`;
+
+      navigator.clipboard.writeText(msg).then(() => {
+        const btn = document.getElementById('btnDiretoria');
+        if (!btn) return;
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span>✅</span> <span>Relatório Copiado!</span>';
+        btn.classList.add('ring-2', 'ring-amber-400');
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.classList.remove('ring-2', 'ring-amber-400');
+        }, 2500);
+      }).catch(() => {
+        alert('Erro ao copiar automaticamente. Selecione e copie o texto gerado.');
+      });
     }
 
     let turnoAtivo = 'TODOS';

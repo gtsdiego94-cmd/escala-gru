@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import json
 import subprocess
@@ -17,18 +18,23 @@ PASTAS_BUSCA = [
 REPO_DIR = r"C:\Users\User\Desktop\escala-gru"
 INDEX_PATH = os.path.join(REPO_DIR, "index.html")
 RESUMO_PATH = os.path.join(REPO_DIR, "resumo_whatsapp.txt")
+RESUMO_DIRETORIA_PATH = os.path.join(REPO_DIR, "resumo_diretoria.txt")
+
+META_BRONZE = 1500000.0
+META_PRATA  = 1600000.0
+META_OURO   = 1650000.0
 
 def inferir_turno(nome, turno_id, turno_num):
     tid = str(turno_id).strip() if pd.notna(turno_id) else ""
     tnum = str(turno_num).strip() if pd.notna(turno_num) else ""
     n = str(nome).strip().upper() if pd.notna(nome) else ""
 
-    # 1. Pelo Turno ID do OneBoss
+    # 1. Pelo Turno ID do OneBoss (001=A, 002=B, 003=D, 004=D)
     if tid in ['001', '1']: return 'A'
     if tid in ['002', '2']: return 'B'
     if tid in ['003', '3', '004', '4']: return 'D'
 
-    # 2. Pelo nome do colaborador
+    # 2. Pelo nome do colaborador (sufixo D2 = Turno D / Madrugada)
     if n.endswith('D2') or ' D2' in n or '(D2)' in n: return 'D'
 
     # 3. Pelo número simples de Turno
@@ -39,12 +45,18 @@ def inferir_turno(nome, turno_id, turno_num):
     return 'B'
 
 def achar_ultimo_relatorio():
+    if len(sys.argv) > 1 and os.path.exists(sys.argv[1]):
+        return sys.argv[1]
+
     candidatos = []
     for pasta in PASTAS_BUSCA:
         if os.path.exists(pasta):
             for padrao in ["*RelatorioMovimentoCaixa*.xlsx", "*RelatorioMovimentoCaixa*.csv", "*.xlsx", "*.csv"]:
                 for arquivo in glob.glob(os.path.join(pasta, padrao)):
                     try:
+                        base = os.path.basename(arquivo)
+                        if base.startswith("~$") or "vendas_atual" in base:
+                            continue
                         mtime = os.path.getmtime(arquivo)
                         candidatos.append((arquivo, mtime))
                     except:
@@ -60,9 +72,9 @@ def fmt_brl(v):
     return f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 def processar_relatorio():
-    print("=" * 60)
-    print("  🚀 ATUALIZADOR ONEBOSS EM PYTHON (GRU)")
-    print("=" * 60)
+    print("=" * 65)
+    print("  🚀 ATUALIZADOR ONEBOSS EM PYTHON (GRU) - DIRETORIA & METAS")
+    print("=" * 65)
 
     arquivo = achar_ultimo_relatorio()
     if not arquivo:
@@ -87,7 +99,6 @@ def processar_relatorio():
     col_item = "Item" if "Item" in df.columns else ""
     col_tid = "Turno ID" if "Turno ID" in df.columns else "TurnoID"
     col_tnum = "Turno" if "Turno" in df.columns else ""
-    col_data = "Data" if "Data" in df.columns else ""
 
     fat_total = 0.0
     malas_total = 0
@@ -98,6 +109,20 @@ def processar_relatorio():
     }
     colabs_map = {}
     data_ultima = datetime.now().strftime("%d/%m/%Y")
+
+    # Contagem dinâmica de dias de operação
+    dias_unicos = set()
+    for col_dt in ["Data do Turno", "Data", "DATA"]:
+        if col_dt in df.columns:
+            try:
+                s = pd.to_datetime(df[col_dt], errors='coerce').dt.date.dropna()
+                if len(s) > 0:
+                    dias_unicos = set(s)
+                    break
+            except:
+                pass
+
+    dias_operacao = len(dias_unicos) if len(dias_unicos) > 0 else datetime.now().day
 
     for _, row in df.iterrows():
         func_nome = str(row[col_func]).strip() if pd.notna(row[col_func]) else ""
@@ -144,15 +169,37 @@ def processar_relatorio():
             'media': media
         })
 
-    print("\n" + "─" * 40)
-    print("📈 RESULTADO CALCULADO EM PYTHON:")
-    print(f"🌅 Turno A (Manhã):     {fmt_brl(turnos['A']['fat'])} ({turnos['A']['malas']} malas)")
-    print(f"☀️ Turno B (Tarde):     {fmt_brl(turnos['B']['fat'])} ({turnos['B']['malas']} malas)")
-    print(f"🌙 Turno D (Madrugada): {fmt_brl(turnos['D']['fat'])} ({turnos['D']['malas']} malas)")
-    print(f"💰 Faturamento Geral:   {fmt_brl(fat_total)} ({malas_total} malas)")
-    print("─" * 40)
+    # Métricas Gerenciais & Diretoria
+    total_dias_mes = 30
+    dias_restantes = max(1, total_dias_mes - dias_operacao)
+    media_diaria = fat_total / dias_operacao if dias_operacao > 0 else 0.0
+    projecao_mes = media_diaria * total_dias_mes
 
-    # Injeção no index.html
+    falta_bronze = max(0.0, META_BRONZE - fat_total)
+    media_nec_bronze = falta_bronze / dias_restantes if dias_restantes > 0 else 0.0
+
+    falta_prata = max(0.0, META_PRATA - fat_total)
+    media_nec_prata = falta_prata / dias_restantes if dias_restantes > 0 else 0.0
+
+    falta_ouro = max(0.0, META_OURO - fat_total)
+    media_nec_ouro = falta_ouro / dias_restantes if dias_restantes > 0 else 0.0
+
+    pct_a = (turnos['A']['fat'] / fat_total) * 100 if fat_total > 0 else 0.0
+    pct_b = (turnos['B']['fat'] / fat_total) * 100 if fat_total > 0 else 0.0
+    pct_d = (turnos['D']['fat'] / fat_total) * 100 if fat_total > 0 else 0.0
+
+    print("\n" + "─" * 45)
+    print(f"📈 RESULTADO CONSOLIDADO ({dias_operacao} DIAS DE OPERAÇÃO):")
+    print(f"🌅 Turno A (Manhã):     {fmt_brl(turnos['A']['fat'])} ({turnos['A']['malas']} malas) - {pct_a:.2f}%")
+    print(f"☀️ Turno B (Tarde):     {fmt_brl(turnos['B']['fat'])} ({turnos['B']['malas']} malas) - {pct_b:.2f}%")
+    print(f"🌙 Turno D/C (Madrug.): {fmt_brl(turnos['D']['fat'])} ({turnos['D']['malas']} malas) - {pct_d:.2f}%")
+    print(f"💰 Faturamento Geral:   {fmt_brl(fat_total)} ({malas_total} malas)")
+    print(f"📊 Média Diária:        {fmt_brl(media_diaria)}/dia")
+    print(f"🔮 Projeção (30 dias):  {fmt_brl(projecao_mes)}")
+    print(f"🎯 Falta Meta Bronze:   {fmt_brl(falta_bronze)} (Ritmo: {fmt_brl(media_nec_bronze)}/dia)")
+    print("─" * 45)
+
+    # Injeção cirúrgica no index.html
     if os.path.exists(INDEX_PATH):
         with open(INDEX_PATH, "r", encoding="utf-8") as f:
             html = f.read()
@@ -164,6 +211,7 @@ def processar_relatorio():
                 "faturamentoTotal": round(fat_total),
                 "totalMalas": malas_total,
                 "totalLinhas": total_linhas,
+                "diasOperacao": dias_operacao,
                 "turnos": turnos,
                 "colabs": colabs_list,
                 "dataTurno": data_ultima,
@@ -177,9 +225,9 @@ def processar_relatorio():
         else:
             print("⚠️ Aviso: bloco DADOS_ATUAIS não localizado no index.html")
 
-    # Resumo para WhatsApp
+    # 1. Resumo Operacional para WhatsApp (Turnos & Top Colaboradores)
     msg_wpp = "📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*\n"
-    msg_wpp += f"📅 *Data:* {data_ultima}\n"
+    msg_wpp += f"📅 *Data:* {data_ultima} ({dias_operacao} dias de operação)\n"
     msg_wpp += "━━━━━━━━━━━━━━━━━━━━━\n\n"
 
     nomes_t = {'A': '🌅 TURNO A (Manhã)', 'B': '☀️ TURNO B (Tarde)', 'D': '🌙 TURNO D (Madrugada)'}
@@ -197,7 +245,7 @@ def processar_relatorio():
         msg_wpp += "\n"
 
     msg_wpp += "━━━━━━━━━━━━━━━━━━━━━\n"
-    msg_wpp += "🎯 *TOTAL GERAL DO DIA*\n"
+    msg_wpp += "🎯 *TOTAL GERAL ACUMULADO*\n"
     msg_wpp += f"💵 *Faturamento Total:* {fmt_brl(fat_total)}\n"
     msg_wpp += f"🧳 *Total de Malas:* {malas_total}\n"
     msg_wpp += f"💳 *Lançamentos:* {total_linhas}\n\n"
@@ -206,18 +254,52 @@ def processar_relatorio():
     with open(RESUMO_PATH, "w", encoding="utf-8") as f:
         f.write(msg_wpp)
 
-    # Copia para área de transferência via powershell
+    # 2. Resumo Executivo para a Diretoria (Metas & Projeção)
+    status_proj = ""
+    if projecao_mes >= META_OURO:
+        status_proj = "🏆 Superando a Meta Ouro!"
+    elif projecao_mes >= META_PRATA:
+        status_proj = "🥈 Superando a Meta Prata!"
+    elif projecao_mes >= META_BRONZE:
+        status_proj = "🥉 Dentro da Meta Bronze (Base)."
+    else:
+        gap = META_BRONZE - projecao_mes
+        status_proj = f"Mantendo o ritmo atual, o fechamento ficará abaixo da Meta Bronze (R$ 1,5M) por {fmt_brl(gap)}."
+
+    msg_dir = f"Resumo de Desempenho Parcial ({dias_operacao} Dias de Operação)\n\n"
+    msg_dir += f"Resultado Atual: Faturamento de {fmt_brl(fat_total)} com um volume de {malas_total:,} malas movimentadas (Média atual de {fmt_brl(media_diaria)}/dia).\n\n".replace(",", ".")
+    msg_dir += f"Projeção Final do Mês: {fmt_brl(projecao_mes)}. {status_proj}\n\n"
+    
+    if falta_bronze > 0:
+        msg_dir += f"Ação Necessária (Meta Bronze): Para atingir a meta base, é preciso faturar os {fmt_brl(falta_bronze)} restantes, exigindo uma elevação da média diária para {fmt_brl(media_nec_bronze)} nos próximos {dias_restantes} dias.\n\n"
+    else:
+        msg_dir += f"Meta Bronze atingida com sucesso! Rumo à Meta Prata ({fmt_brl(META_PRATA)}).\n\n"
+
+    msg_dir += "Participação por Turno:\n\n"
+    media_b = turnos['B']['fat'] / dias_operacao if dias_operacao > 0 else 0.0
+    media_a = turnos['A']['fat'] / dias_operacao if dias_operacao > 0 else 0.0
+    media_d = turnos['D']['fat'] / dias_operacao if dias_operacao > 0 else 0.0
+
+    msg_dir += f"Turno B (Destaque): {pct_b:.2f}% do faturamento ({fmt_brl(turnos['B']['fat'])} / {turnos['B']['malas']:,} malas) • Média: {fmt_brl(media_b)}/dia.\n\n".replace(",", ".")
+    msg_dir += f"Turno A: {pct_a:.2f}% do faturamento ({fmt_brl(turnos['A']['fat'])} / {turnos['A']['malas']:,} malas) • Média: {fmt_brl(media_a)}/dia.\n\n".replace(",", ".")
+    msg_dir += f"Turno C: {pct_d:.2f}% do faturamento ({fmt_brl(turnos['D']['fat'])} / {turnos['D']['malas']:,} malas) • Média: {fmt_brl(media_d)}/dia.\n\n".replace(",", ".")
+    msg_dir += f"Total de Malas (Geral): {malas_total:,} malas ({dias_operacao} Dias de operação)".replace(",", ".")
+
+    with open(RESUMO_DIRETORIA_PATH, "w", encoding="utf-8") as f:
+        f.write(msg_dir)
+
+    # Copia o resumo da diretoria para a área de transferência
     try:
-        subprocess.run(["powershell", "-command", f"Set-Clipboard -Value (Get-Content -Path '{RESUMO_PATH}' -Raw)"], check=False)
-        print("📲 Resumo WhatsApp copiado para a Área de Transferência!")
+        subprocess.run(["powershell", "-command", f"Set-Clipboard -Value (Get-Content -Path '{RESUMO_DIRETORIA_PATH}' -Raw)"], check=False)
+        print("📲 Resumo Executivo da Diretoria copiado para a Área de Transferência!")
     except:
         pass
 
     # Sincroniza com GitHub
     print("\n🌐 Enviando para o GitHub Pages...")
     try:
-        subprocess.run(["git", "-C", REPO_DIR, "add", "index.html", "resumo_whatsapp.txt"], check=False)
-        subprocess.run(["git", "-C", REPO_DIR, "commit", "-m", f"update: atualizacao via leitor python ({data_ultima})"], check=False)
+        subprocess.run(["git", "-C", REPO_DIR, "add", "index.html", "resumo_whatsapp.txt", "resumo_diretoria.txt", "atualizar_vendas_python.py"], check=False)
+        subprocess.run(["git", "-C", REPO_DIR, "commit", "-m", f"update: painel executivo e projecao ({data_ultima})"], check=False)
         subprocess.run(["git", "-C", REPO_DIR, "push", "origin", "main"], check=False)
         print("🎉 Página online atualizada no GitHub!")
     except Exception as e:
