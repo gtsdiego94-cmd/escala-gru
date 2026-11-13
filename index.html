@@ -1429,19 +1429,39 @@
         return;
       }
 
-      let msg = '✈️ *RESUMO DE VENDAS - ONEBOSS GRU*\n';
-      msg += '📅 *Data:* ' + DADOS_ATUAIS.dataTurno + '\n\n';
-      msg += '💰 *Faturamento Total:* ' + fmtBRL(DADOS_ATUAIS.faturamentoTotal) + '\n';
-      msg += '🧳 *Total de Malas:* ' + DADOS_ATUAIS.totalMalas + '\n';
-      msg += '💳 *Lançamentos:* ' + DADOS_ATUAIS.totalLinhas + '\n\n';
-      msg += '🏆 *RANKING DOS COLABORADORES:*\n';
+      let msg = '📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*\n';
+      msg += '📅 *Data:* ' + DADOS_ATUAIS.dataTurno + '\n';
+      msg += '━━━━━━━━━━━━━━━━━━━━━\n';
 
-      DADOS_ATUAIS.colabs.forEach((c, i) => {
-        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + 'º';
-        msg += `${medal} *${c.nome.toUpperCase()}* - ${fmtBRL(c.fat)} (${c.malas} malas)\n`;
+      const turnosConfig = [
+        { id: 'A', nome: '🌅 TURNO A (Manhã)' },
+        { id: 'B', nome: '☀️ TURNO B (Tarde)' },
+        { id: 'D', nome: '🌙 TURNO D (Madrugada)' }
+      ];
+
+      turnosConfig.forEach(t => {
+        const tDados = (DADOS_ATUAIS.turnos && DADOS_ATUAIS.turnos[t.id]) || { fat: 0, malas: 0 };
+        const colabsTurno = DADOS_ATUAIS.colabs.filter(c => c.turno === t.id);
+
+        msg += `\n*${t.nome}*\n`;
+        msg += `💰 Fat: ${fmtBRL(tDados.fat)} | 🧳 Malas: ${tDados.malas}\n`;
+
+        if (colabsTurno.length > 0) {
+          colabsTurno.slice(0, 5).forEach((c, i) => {
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '▫️';
+            msg += `${medal} *${c.nome.toUpperCase()}*: ${fmtBRL(c.fat)} (${c.malas} malas)\n`;
+          });
+        } else {
+          msg += `_Nenhum colaborador registrado neste turno_\n`;
+        }
       });
 
-      msg += '\n🚀 *Equipe Protecbag GRU*';
+      msg += '\n━━━━━━━━━━━━━━━━━━━━━\n';
+      msg += '🎯 *TOTAL GERAL DO DIA*\n';
+      msg += '💵 *Faturamento Total:* ' + fmtBRL(DADOS_ATUAIS.faturamentoTotal) + '\n';
+      msg += '🧳 *Total de Malas:* ' + DADOS_ATUAIS.totalMalas + '\n';
+      msg += '💳 *Lançamentos:* ' + DADOS_ATUAIS.totalLinhas + '\n\n';
+      msg += '🚀 *Equipe Protecbag GRU*';
 
       navigator.clipboard.writeText(msg).then(() => {
         const btn = document.getElementById('btnWhatsapp');

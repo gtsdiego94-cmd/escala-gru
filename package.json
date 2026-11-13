@@ -1,5 +1,13 @@
 {
+  "name": "escala-gru",
+  "version": "1.0.0",
+  "description": "OneBoss hourly report",
+  "main": "one-boss-report.js",
+  "type": "commonjs",
+  "scripts": {},
+  "license": "MIT",
   "dependencies": {
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "axios": "^1.7.2"
   }
 }
