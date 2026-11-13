@@ -173,5 +173,75 @@
     "val": 199,
     "isMala": true,
     "turno": "A"
+  },
+  "2026-11-13_rodrigo silva_GRU01_199_serviao": {
+    "data": "2026-11-13",
+    "func": "rodrigo silva",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
+  },
+  "2026-11-13_rodrigo silva_GRU01_129_serviao": {
+    "data": "2026-11-13",
+    "func": "rodrigo silva",
+    "val": 129,
+    "isMala": true,
+    "turno": "A"
+  },
+  "2026-11-13_rodrigo silva_GRU01_149_serviao": {
+    "data": "2026-11-13",
+    "func": "rodrigo silva",
+    "val": 149,
+    "isMala": true,
+    "turno": "A"
+  },
+  "2026-11-13_wellington ferreirad2_GRU02_90_serviao": {
+    "data": "2026-11-13",
+    "func": "wellington ferreirad2",
+    "val": 90,
+    "isMala": true,
+    "turno": "D"
+  },
+  "2026-11-13_gabriel donadellod2_GRU02_199_serviao": {
+    "data": "2026-11-13",
+    "func": "gabriel donadellod2",
+    "val": 199,
+    "isMala": true,
+    "turno": "D"
+  },
+  "2026-11-13_gabriel donadellod2_GRU02_80_produto": {
+    "data": "2026-11-13",
+    "func": "gabriel donadellod2",
+    "val": 80,
+    "isMala": false,
+    "turno": "D"
+  },
+  "2026-11-13_wellington ferreirad2_GRU05_129_serviao": {
+    "data": "2026-11-13",
+    "func": "wellington ferreirad2",
+    "val": 129,
+    "isMala": true,
+    "turno": "D"
+  },
+  "2026-11-13_wellington ferreirad2_GRU05_149_serviao": {
+    "data": "2026-11-13",
+    "func": "wellington ferreirad2",
+    "val": 149,
+    "isMala": true,
+    "turno": "D"
+  },
+  "2026-11-13_Dalton Duarte_GRU05_199_serviao": {
+    "data": "2026-11-13",
+    "func": "Dalton Duarte",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
+  },
+  "2026-11-13_Dalton Duarte_GRU05_149_serviao": {
+    "data": "2026-11-13",
+    "func": "Dalton Duarte",
+    "val": 149,
+    "isMala": true,
+    "turno": "A"
   }
 }
