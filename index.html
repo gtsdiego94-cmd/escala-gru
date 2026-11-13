@@ -1072,6 +1072,55 @@
     }
 
 
+    function inferirTurnoOneBoss(nome, turnoIdStr, turnoNumStr, horaStr) {
+      const normNome = (nome || '').toUpperCase().trim();
+
+      // 1. Turno ID (001=A, 002=B, 003=D, 004=D)
+      const tId = (turnoIdStr || '').trim();
+      if (tId === '001' || tId === '1') return 'A';
+      if (tId === '002' || tId === '2') return 'B';
+      if (tId === '003' || tId === '3') return 'D';
+      if (tId === '004' || tId === '4') return 'D';
+
+      // 2. Sufixo d2 = Turno D (Madrugada)
+      if (normNome.endsWith('D2') || normNome.includes(' D2') || normNome.includes('(D2)')) {
+        return 'D';
+      }
+
+      // 3. Turno Número simples (1=Manhã A, 2=Tarde B, 3=Madrugada D antes meia-noite, 4=Madrugada D pós meia-noite)
+      const tNum = (turnoNumStr || '').trim();
+      if (tNum === '1') return 'A';
+      if (tNum === '2') return 'B';
+      if (tNum === '3' || tNum === '4') return 'D';
+
+      // 4. Horário se disponível (A: 05h-13h40, B: 13h41-21h40, D: 21h41-04h59)
+      if (horaStr && horaStr.includes(':')) {
+        const parts = horaStr.split(':');
+        const h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1] || '0', 10);
+        if (!isNaN(h)) {
+          const minTot = h * 60 + m;
+          if (minTot >= 300 && minTot <= 820) return 'A';
+          if (minTot > 820 && minTot <= 1300) return 'B';
+          return 'D';
+        }
+      }
+
+      // 5. Verificar lista do Turno A (escala conhecida)
+      if (typeof TURNO_A_NOV !== 'undefined' && Array.isArray(TURNO_A_NOV)) {
+        const limpo = normNome.replace(/[^A-Z]/g, '');
+        if (limpo && limpo.length > 3) {
+          const ehA = TURNO_A_NOV.some(col => {
+            const cLimpo = col.nome.toUpperCase().replace(/[^A-Z]/g, '');
+            return (cLimpo.length > 3 && (limpo.includes(cLimpo) || cLimpo.includes(limpo)));
+          });
+          if (ehA) return 'A';
+        }
+      }
+
+      return 'B';
+    }
+
     function processarCSVOneBoss(text, fileName) {
       if (!text || !text.trim()) {
         alert('O arquivo selecionado está vazio.');
@@ -1111,13 +1160,15 @@
         return matches;
       }
 
-      // Procurar qual linha é o cabeçalho real (pode estar na linha 0, 1, 2, 3...)
+      // Procurar qual linha é o cabeçalho real
       let headerLineIndex = -1;
       let header = [];
       let idxValor = -1;
       let idxFunc = -1;
       let idxTipo = -1;
-      let idxTurno = -1;
+      let idxTurnoNum = -1;
+      let idxTurnoId = -1;
+      let idxHora = -1;
       let idxData = -1;
 
       for (let i = 0; i < Math.min(15, rawLines.length); i++) {
@@ -1131,7 +1182,9 @@
           idxFunc = testFunc;
           idxValor = testValor;
           idxTipo = testCols.findIndex(h => h === 'tipo' || h === 'tiposervico' || h === 'itemtipo' || h === 'item');
-          idxTurno = testCols.findIndex(h => h === 'turno' || h === 'turnoid');
+          idxTurnoId = testCols.findIndex(h => h === 'turnoid');
+          idxTurnoNum = testCols.findIndex(h => h === 'turno');
+          idxHora = testCols.findIndex(h => h === 'hora' || h.includes('horario'));
           idxData = testCols.findIndex(h => h.includes('dataturno') || h === 'data' || h.includes('dataemissao'));
           break;
         }
@@ -1171,7 +1224,10 @@
         let funcNome = (cols[idxFunc] || '').trim();
         if (!funcNome || norm(funcNome) === 'total') continue; // ignora linha de total do relatório
 
-        const turno = idxTurno !== -1 && cols[idxTurno] ? cols[idxTurno].trim() : '-';
+        const rawTurnoId  = idxTurnoId  !== -1 && cols[idxTurnoId]  ? cols[idxTurnoId].trim()  : '';
+        const rawTurnoNum = idxTurnoNum !== -1 && cols[idxTurnoNum] ? cols[idxTurnoNum].trim() : '';
+        const rawHora     = idxHora     !== -1 && cols[idxHora]     ? cols[idxHora].trim()     : '';
+        const turnoLetra  = inferirTurnoOneBoss(funcNome, rawTurnoId, rawTurnoNum, rawHora);
 
         if (idxData !== -1 && cols[idxData]) {
           const dt = cols[idxData].trim();
@@ -1187,10 +1243,15 @@
         if (!mapaColabs[key]) {
           mapaColabs[key] = {
             nome: funcNome,
-            turno: turno,
+            turno: turnoLetra,
             fat: 0,
             malas: 0
           };
+        } else {
+          // Se estava B como fallback e agora identificou A ou D com precisão, atualiza
+          if (mapaColabs[key].turno === 'B' && turnoLetra !== 'B') {
+            mapaColabs[key].turno = turnoLetra;
+          }
         }
         mapaColabs[key].fat += val;
         if (isMala) mapaColabs[key].malas++;
