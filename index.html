@@ -716,12 +716,14 @@
     const ab = document.getElementById(`tab-btn-${tab}`);
     if(ac) ac.classList.remove('hidden');
     if(ab) ab.className='px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm';
+    if(tab === 'vendas' && typeof renderDashboardVendas === 'function') { renderDashboardVendas(); }
   }
 
   // Inicialização padrão
   render();
   </script>
 
+  <script>if (typeof renderDashboardVendas === 'function') { renderDashboardVendas(); }</script>
   </main>
 
   <!-- ABA VENDAS (Ativa & Dinâmica) -->
