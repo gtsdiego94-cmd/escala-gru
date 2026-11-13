@@ -1,72 +1,177 @@
 {
-  "2026-11-13_rodrigo silva_GRU01_199_serviao": {
-    "data": "2026-11-13",
+  "46339.2455952894_rodrigo silva_GRU01_199_servico": {
+    "data": "46339.2455952894",
     "func": "rodrigo silva",
     "val": 199,
     "isMala": true,
-    "turno": "1"
+    "turno": "A"
   },
-  "2026-11-13_rodrigo silva_GRU01_129_serviao": {
-    "data": "2026-11-13",
+  "46339.260077662_rodrigo silva_GRU01_129_servico": {
+    "data": "46339.260077662",
     "func": "rodrigo silva",
     "val": 129,
     "isMala": true,
-    "turno": "1"
+    "turno": "A"
   },
-  "2026-11-13_rodrigo silva_GRU01_149_serviao": {
-    "data": "2026-11-13",
+  "46339.2911966782_rodrigo silva_GRU01_149_servico": {
+    "data": "46339.2911966782",
     "func": "rodrigo silva",
     "val": 149,
     "isMala": true,
-    "turno": "1"
+    "turno": "A"
   },
-  "2026-11-13_wellington ferreirad2_GRU02_90_serviao": {
-    "data": "2026-11-13",
+  "46339.0094671644_wellington ferreirad2_GRU02_90_servico": {
+    "data": "46339.0094671644",
     "func": "wellington ferreirad2",
     "val": 90,
     "isMala": true,
-    "turno": "1"
+    "turno": "D"
   },
-  "2026-11-13_gabriel donadellod2_GRU02_199_serviao": {
-    "data": "2026-11-13",
+  "46339.187343831_gabriel donadellod2_GRU02_199_servico": {
+    "data": "46339.187343831",
     "func": "gabriel donadellod2",
     "val": 199,
     "isMala": true,
-    "turno": "2"
+    "turno": "D"
   },
-  "2026-11-13_gabriel donadellod2_GRU02_80_produto": {
-    "data": "2026-11-13",
+  "46339.1879902431_gabriel donadellod2_GRU02_80_produto": {
+    "data": "46339.1879902431",
     "func": "gabriel donadellod2",
     "val": 80,
     "isMala": false,
-    "turno": "2"
+    "turno": "D"
   },
-  "2026-11-13_wellington ferreirad2_GRU05_129_serviao": {
-    "data": "2026-11-13",
+  "46339.2021649653_wellington ferreirad2_GRU05_129_servico": {
+    "data": "46339.2021649653",
     "func": "wellington ferreirad2",
     "val": 129,
     "isMala": true,
-    "turno": "1"
+    "turno": "D"
   },
-  "2026-11-13_wellington ferreirad2_GRU05_149_serviao": {
-    "data": "2026-11-13",
+  "46339.2080834838_wellington ferreirad2_GRU05_149_servico": {
+    "data": "46339.2080834838",
     "func": "wellington ferreirad2",
     "val": 149,
     "isMala": true,
-    "turno": "1"
+    "turno": "D"
   },
-  "2026-11-13_Dalton Duarte_GRU05_199_serviao": {
-    "data": "2026-11-13",
+  "46339.2270040856_Dalton Duarte_GRU05_199_servico": {
+    "data": "46339.2270040856",
     "func": "Dalton Duarte",
     "val": 199,
     "isMala": true,
-    "turno": "2"
+    "turno": "A"
   },
-  "2026-11-13_Dalton Duarte_GRU05_149_serviao": {
-    "data": "2026-11-13",
+  "46339.2433029282_Dalton Duarte_GRU05_199_servico": {
+    "data": "46339.2433029282",
+    "func": "Dalton Duarte",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
+  },
+  "46339.2538243403_Dalton Duarte_GRU05_149_servico": {
+    "data": "46339.2538243403",
     "func": "Dalton Duarte",
     "val": 149,
     "isMala": true,
-    "turno": "2"
+    "turno": "A"
+  },
+  "46339.2641771991_Dalton Duarte_GRU05_149_servico": {
+    "data": "46339.2641771991",
+    "func": "Dalton Duarte",
+    "val": 149,
+    "isMala": true,
+    "turno": "A"
+  },
+  "46339.2458122338_matheus senhorinho_GRU06_80_produto": {
+    "data": "46339.2458122338",
+    "func": "matheus senhorinho",
+    "val": 80,
+    "isMala": false,
+    "turno": "A"
+  },
+  "46339.2458122338_matheus senhorinho_GRU06_149_servico": {
+    "data": "46339.2458122338",
+    "func": "matheus senhorinho",
+    "val": 149,
+    "isMala": true,
+    "turno": "A"
+  },
+  "46339.2463015856_matheus senhorinho_GRU06_90_produto": {
+    "data": "46339.2463015856",
+    "func": "matheus senhorinho",
+    "val": 90,
+    "isMala": false,
+    "turno": "A"
+  },
+  "46339.249487581_matheus senhorinho_GRU06_199_servico": {
+    "data": "46339.249487581",
+    "func": "matheus senhorinho",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
+  },
+  "46339.2517080671_matheus senhorinho_GRU06_199_servico": {
+    "data": "46339.2517080671",
+    "func": "matheus senhorinho",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
+  },
+  "46339.0044385417_israel lucasd2_GRU08_179_servico": {
+    "data": "46339.0044385417",
+    "func": "israel lucasd2",
+    "val": 179,
+    "isMala": true,
+    "turno": "D"
+  },
+  "46339.0292887384_israel lucasd2_GRU08_199_servico": {
+    "data": "46339.0292887384",
+    "func": "israel lucasd2",
+    "val": 199,
+    "isMala": true,
+    "turno": "D"
+  },
+  "46339.0962287847_israel lucasd2_GRU08_199_servico": {
+    "data": "46339.0962287847",
+    "func": "israel lucasd2",
+    "val": 199,
+    "isMala": true,
+    "turno": "D"
+  },
+  "46339.1778220255_wellington ferreirad2_GRU08_149_servico": {
+    "data": "46339.1778220255",
+    "func": "wellington ferreirad2",
+    "val": 149,
+    "isMala": true,
+    "turno": "D"
+  },
+  "46339.1821626157_israel lucasd2_GRU08_149_servico": {
+    "data": "46339.1821626157",
+    "func": "israel lucasd2",
+    "val": 149,
+    "isMala": true,
+    "turno": "D"
+  },
+  "46339.1949177431_israel lucasd2_GRU08_199_servico": {
+    "data": "46339.1949177431",
+    "func": "israel lucasd2",
+    "val": 199,
+    "isMala": true,
+    "turno": "D"
+  },
+  "46339.1967804051_israel lucasd2_GRU08_80_produto": {
+    "data": "46339.1967804051",
+    "func": "israel lucasd2",
+    "val": 80,
+    "isMala": false,
+    "turno": "D"
+  },
+  "46339.2230892361_danilo pereira_GRU08_199_servico": {
+    "data": "46339.2230892361",
+    "func": "danilo pereira",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
   }
 }

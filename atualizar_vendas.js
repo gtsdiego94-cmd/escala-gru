@@ -1,54 +1,45 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const XLSX = require('xlsx');
 
 const REPO_DIR = 'C:\\Users\\User\\Desktop\\escala-gru';
 const EXPORT_DIR = 'C:\\Export';
 const DB_FILE = path.join(REPO_DIR, 'dados_vendas_mes.json');
 
-// Mapeamento oficial de colaboradores conhecidos da escala para Turno A
-const COLABS_TURNO_A = new Set([
-  'LUCAS TRINDADE', 'MATHEUS SENHORINHO', 'WILSON RAMOS', 'WILSON', 'RICARDO LIMA',
-  'DANILO PEREIRA DO SANTOS', 'DANILO PEREIRA', 'KAUAN SANTOS', 'DALTON', 'DALTON DUARTE',
-  'PEDRO', 'PEDRO HENRIQUE DA SILVA SANTOS', 'EDUARDO LIMA', 'JOÃO PAULO', 'JOAO PAULO',
-  'GABRIEL DONADELLO', 'LUCAS NASCIMENTO', 'KAUAN MIRANDA', 'JOSE RAMOS', 'JOAO FERREIRA',
-  'VICTOR COSTA DOMENE DOS SANTOS', 'DYLAN CASAGRANDE'
-]);
+// Mapeamento de Turno ID do OneBoss para Turno A, B, D
+// Turno 1 (001) = Turno A (Manhã)
+// Turno 2 (002) = Turno B (Tarde)
+// Turno 3 (003) = Turno D (Madrugada - antes da meia noite)
+// Turno 4 (004) = Turno D (Madrugada - depois da meia noite)
+function turnoIdParaLetra(turnoId) {
+  const t = (turnoId || '').trim();
+  if (t === '001' || t === '1') return 'A';
+  if (t === '002' || t === '2') return 'B';
+  if (t === '003' || t === '3') return 'D';
+  if (t === '004' || t === '4') return 'D';
+  return null; // não identificado pelo ID
+}
 
-function inferirTurno(nome, horaStr, turnoOneBoss) {
+function inferirTurno(nome, turnoIdStr, turnoNumStr) {
   const normNome = (nome || '').toUpperCase().trim();
-  
-  // Se tem d2 no final ou D no nome, é Turno D (Madrugada)
+
+  // 1. Prioridade: Turno ID do OneBoss (001, 002, 003, 004)
+  const porId = turnoIdParaLetra(turnoIdStr);
+  if (porId) return porId;
+
+  // 2. Se nome tem d2 = Turno D (Madrugada)
   if (normNome.endsWith('D2') || normNome.includes(' D2') || normNome.includes('(D2)')) {
     return 'D';
   }
 
-  // Se tem hora da venda
-  if (horaStr && horaStr.includes(':')) {
-    const parts = horaStr.split(':');
-    const h = parseInt(parts[0]) || 0;
-    const m = parseInt(parts[1]) || 0;
-    const timeNum = h * 60 + m;
+  // 3. Número do turno simples
+  if (turnoNumStr === '1') return 'A';
+  if (turnoNumStr === '2') return 'B';
+  if (turnoNumStr === '3' || turnoNumStr === '4') return 'D';
 
-    if (timeNum >= 300 && timeNum <= 820) return 'A'; // 05:00 as 13:40
-    if (timeNum > 820 && timeNum <= 1300) return 'B'; // 13:41 as 21:40
-    return 'D'; // 21:41 as 04:59
-  }
-
-  // Se já é conhecido da escala do Turno A
-  const nomeLimpo = normNome.replace(/D2$/, '').trim();
-  for (const cA of COLABS_TURNO_A) {
-    if (nomeLimpo.includes(cA) || cA.includes(nomeLimpo)) {
-      return 'A';
-    }
-  }
-
-  // Turno vindo do OneBoss
-  if (turnoOneBoss === '1' || turnoOneBoss === 'A' || turnoOneBoss === '001') return 'A';
-  if (turnoOneBoss === '2' || turnoOneBoss === 'B' || turnoOneBoss === '002') return 'B';
-  if (turnoOneBoss === '3' || turnoOneBoss === 'D' || turnoOneBoss === '004') return 'D';
-
-  return 'B'; // Padrão tarde se não identificado
+  // 4. Fallback: B
+  return 'B';
 }
 
 // 1. Localizar arquivo de entrada
@@ -72,18 +63,36 @@ if (!targetFile || !fs.existsSync(targetFile)) {
 
 console.log(`\n📂 Lendo relatório: ${path.basename(targetFile)}...`);
 
-let textContent = fs.readFileSync(targetFile, 'latin1').replace(/^\uFEFF/, '').trim();
-const rawLines = textContent.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+// Lê o arquivo — suporta XLSX e CSV/TXT
+let rawLines = [];
+
+const ext = path.extname(targetFile).toLowerCase();
+if (ext === '.xlsx' || ext === '.xls') {
+  // Lê XLSX com SheetJS (node)
+  const wb = XLSX.readFile(targetFile);
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+  rawLines = rows.map(row => row.map(c => String(c).trim()).join('\t')).filter(l => l.trim().length > 0);
+  // Força separador tab para linhas geradas do XLSX
+  var forceSep = '\t';
+} else {
+  // CSV/TXT
+  let textContent = fs.readFileSync(targetFile, 'latin1').replace(/^\uFEFF/, '').trim();
+  rawLines = textContent.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  var forceSep = null;
+}
 
 if (rawLines.length < 2) {
   console.log('❌ Arquivo vazio ou sem linhas de dados.');
   process.exit(1);
 }
 
-let sep = ',';
-const firstLine = rawLines[0];
-if ((firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length) sep = ';';
-if ((firstLine.match(/\t/g) || []).length > (firstLine.match(/,/g) || []).length) sep = '\t';
+let sep = forceSep || ',';
+if (!forceSep) {
+  const firstLine = rawLines[0];
+  if ((firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length) sep = ';';
+  if ((firstLine.match(/\t/g) || []).length > (firstLine.match(/,/g) || []).length) sep = '\t';
+}
 
 function splitLine(line) {
   const regex = new RegExp('(?:^|' + (sep === ';' ? ';' : (sep === '\t' ? '\t' : ',')) + ')(?:"([^"]*(?:""[^"]*)*)"|([^"' + (sep === ';' ? ';' : (sep === '\t' ? '\t' : ',')) + ']*))', 'g');
@@ -101,7 +110,7 @@ function norm(str) {
 }
 
 let headerIdx = -1;
-let idxValor = -1, idxFunc = -1, idxTipo = -1, idxTurno = -1, idxData = -1, idxHora = -1, idxRPS = -1;
+let idxValor = -1, idxFunc = -1, idxTipo = -1, idxTurnoNum = -1, idxTurnoId = -1, idxData = -1, idxHora = -1, idxRPS = -1;
 
 for (let i = 0; i < Math.min(10, rawLines.length); i++) {
   const cols = splitLine(rawLines[i]).map(norm);
@@ -112,10 +121,14 @@ for (let i = 0; i < Math.min(10, rawLines.length); i++) {
     idxFunc = fIdx;
     idxValor = vIdx;
     idxTipo = cols.findIndex(h => h === 'tipo' || h === 'tiposervico' || h.includes('item'));
-    idxTurno = cols.findIndex(h => h === 'turno' || h === 'turnoid');
+    // Separa "Turno" (número 1,2,3,4) de "Turno ID" (001,002,003,004)
+    idxTurnoId  = cols.findIndex(h => h === 'turnoid');
+    idxTurnoNum = cols.findIndex(h => h === 'turno' && !cols[cols.indexOf(h)].includes('id'));
+    if (idxTurnoNum === -1) idxTurnoNum = cols.findIndex(h => h === 'turno');
     idxData = cols.findIndex(h => h.includes('dataturno') || h === 'data' || h.includes('emissao'));
     idxHora = cols.findIndex(h => h === 'hora' || h.includes('horario'));
     idxRPS = cols.findIndex(h => h.includes('rpsnumero') || h.includes('rps') || h.includes('numero'));
+    console.log(`📋 Colunas detectadas: Func=${idxFunc} Valor=${idxValor} TurnoNum=${idxTurnoNum} TurnoID=${idxTurnoId} Tipo=${idxTipo} Data=${idxData}`);
     break;
   }
 }
@@ -149,12 +162,13 @@ for (let i = headerIdx + 1; i < rawLines.length; i++) {
 
   const tipo = norm(idxTipo !== -1 ? cols[idxTipo] : '');
   const isMala = tipo.includes('servico') || tipo.includes('serv') || tipo.includes('aerobag') || tipo.includes('lacre');
-  const rawTurno = idxTurno !== -1 && cols[idxTurno] ? cols[idxTurno].trim() : '';
+  const rawTurnoId  = idxTurnoId  !== -1 && cols[idxTurnoId]  ? cols[idxTurnoId].trim()  : '';
+  const rawTurnoNum = idxTurnoNum !== -1 && cols[idxTurnoNum] ? cols[idxTurnoNum].trim() : '';
   const hora = idxHora !== -1 && cols[idxHora] ? cols[idxHora].trim() : '';
   const data = idxData !== -1 && cols[idxData] ? cols[idxData].trim() : new Date().toISOString().split('T')[0];
   const rps = idxRPS !== -1 && cols[idxRPS] ? cols[idxRPS].trim() : (i + '_' + Math.random());
 
-  const turnoDefinido = inferirTurno(func, hora, rawTurno);
+  const turnoDefinido = inferirTurno(func, rawTurnoId, rawTurnoNum);
   dataUltima = data;
 
   const vendaKey = `${data}_${func}_${rps}_${val}_${tipo}`;
