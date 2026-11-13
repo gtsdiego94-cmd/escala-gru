@@ -1,14 +1,15 @@
 ✈️ *RESUMO DE VENDAS - ONEBOSS GRU*
-📅 *Atualizado até:* 2026-11-13
+📅 *Atualizado:* 2026-11-13
 
-💰 *Faturamento Total:* R$ 1.472,00
-🧳 *Total de Malas:* 9
+💰 *FATURAMENTO TOTAL:* R$ 1.472,00 (9 malas)
 
-🏆 *TOP 5 COLABORADORES:*
-🥇 *RODRIGO SILVA* - R$ 477,00 (3 malas)
-🥈 *WELLINGTON FERREIRAD2* - R$ 368,00 (3 malas)
-🥉 *DALTON DUARTE* - R$ 348,00 (2 malas)
-4º *GABRIEL DONADELLOD2* - R$ 279,00 (1 malas)
+⏱️ *DESEMPENHO POR TURNO:*
+🌅 *TURNO A (Manhã):* R$ 0,00 (0 malas) • 0.0%
+☀️ *TURNO B (Tarde):* R$ 1.472,00 (9 malas) • 100.0%
+🌙 *TURNO D (Madrugada):* R$ 0,00 (0 malas) • 0.0%
+
+🏆 *DESTAQUES POR TURNO:*
+*Turno B:* 🥇 rodrigo silva (R$ 477,00)
 
 🔗 *Acompanhe ao vivo:* https://gtsdiego94-cmd.github.io/escala-gru/
 🚀 *Equipe Protecbag GRU*
