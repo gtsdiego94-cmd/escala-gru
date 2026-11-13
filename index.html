@@ -28,6 +28,7 @@
     
     .sticky-col { position: sticky; left: 0; background: #121215; z-index: 10; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body class="bg-[#09090b] text-[#f4f4f5] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
 
@@ -41,7 +42,7 @@
       <button id="tab-btn-novembro" onclick="switchTab('novembro')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm">
         <span>📅</span> <span>Nov/2026</span>
       </button>
-      <button id="tab-btn-vendas" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-not-allowed opacity-30 text-[#a1a1aa]" title="Em breve" disabled>
+      <button id="tab-btn-vendas" onclick="switchTab('vendas')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]" title="Vendas & Metas">
         <span>💰</span> <span class="hidden sm:inline">Vendas</span>
       </button>
     </div>
@@ -723,13 +724,529 @@
 
   </main>
 
-  <!-- ABA VENDAS (inativa) -->
+  <!-- ABA VENDAS (Ativa & Dinâmica) -->
   <main id="tab-content-vendas" class="space-y-6 hidden">
-    <div class="max-w-2xl mx-auto text-center py-20">
-      <div class="text-6xl mb-4">💰</div>
-      <h2 class="text-2xl font-bold mb-2">Vendas &amp; Metas OneBoss</h2>
-      <p class="text-[var(--muted-foreground)]">Esta aba está temporariamente inativa.<br>Em breve estará disponível novamente.</p>
+
+    <!-- CABEÇALHO DA ABA DE VENDAS -->
+    <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-3xl">💰</span>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Performance & Metas de Vendas</h1>
+        </div>
+        <p class="text-[#a1a1aa] text-sm mt-1">
+          Monitoramento Integrado • OneBoss • GRU Aeroporto
+        </p>
+      </div>
+
+      <!-- BOTÕES DE AÇÃO: CARREGAR CSV E COPIAR WHATSAPP -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <input type="file" id="csvFileInput" accept=".csv,.txt,.tsv,text/plain,text/csv,*" class="hidden" onchange="handleCSVUpload(event)">
+        
+        <button onclick="document.getElementById('csvFileInput').click()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all cursor-pointer active:scale-95">
+          <span>📂</span>
+          <span>Carregar Relatório OneBoss</span>
+        </button>
+
+        <button id="btnWhatsapp" onclick="copiarResumoWhatsApp()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all cursor-pointer active:scale-95">
+          <span>📲</span>
+          <span>Copiar WhatsApp</span>
+        </button>
+      </div>
     </div>
+
+    <!-- TERMÔMETRO DE METAS -->
+    <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-5">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <div>
+          <h2 class="text-lg font-bold flex items-center gap-2 text-white">
+            🎯 Termômetro de Faturamento vs. Metas
+          </h2>
+          <p class="text-xs text-[#a1a1aa]" id="periodoVendasLabel">Aguardando importação do relatório OneBoss...</p>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-[#a1a1aa]">Faturamento Realizado</span>
+          <p class="text-3xl font-extrabold text-amber-400" id="vendasTotalFat">R$ 0,00</p>
+        </div>
+      </div>
+
+      <div class="relative pt-4 pb-2">
+        <div class="w-full bg-[#27272a]/50 rounded-full h-5 overflow-hidden flex">
+          <div id="vendasProgressBar" class="bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-300 h-5 rounded-full transition-all duration-1000 progress-bar-glow" style="width: 0%;"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 pt-2 border-t border-[#27272a]/40 text-xs sm:text-sm">
+          <div class="p-3.5 rounded-xl bg-orange-950/20 border border-orange-700/30">
+            <div class="flex justify-between items-center font-bold text-amber-500">
+              <span>🥉 1ª Bronze</span>
+              <span>R$ 1.500.000,00</span>
+            </div>
+            <div class="text-xs text-[#a1a1aa] mt-1.5 flex justify-between">
+              <span>Falta para Meta:</span>
+              <span class="font-semibold text-white" id="faltaBronze">R$ 1.500.000,00</span>
+            </div>
+            <div class="text-[11px] font-bold text-amber-400 mt-1" id="pctBronze">0% alcançado</div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-500/30">
+            <div class="flex justify-between items-center font-bold text-slate-300">
+              <span>🥈 2ª Prata</span>
+              <span>R$ 1.550.000,00</span>
+            </div>
+            <div class="text-xs text-[#a1a1aa] mt-1.5 flex justify-between">
+              <span>Falta para Meta:</span>
+              <span class="font-semibold text-white" id="faltaPrata">R$ 1.550.000,00</span>
+            </div>
+            <div class="text-[11px] font-bold text-slate-400 mt-1" id="pctPrata">0% alcançado</div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-yellow-950/20 border border-yellow-600/30">
+            <div class="flex justify-between items-center font-bold text-yellow-400">
+              <span>🥇 3ª Ouro</span>
+              <span>R$ 1.650.000,00</span>
+            </div>
+            <div class="text-xs text-[#a1a1aa] mt-1.5 flex justify-between">
+              <span>Falta para Meta:</span>
+              <span class="font-semibold text-white" id="faltaOuro">R$ 1.650.000,00</span>
+            </div>
+            <div class="text-[11px] font-bold text-yellow-500 mt-1" id="pctOuro">0% alcançado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARDS DE RESUMO -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-5 shadow-sm metric-card">
+        <div class="text-xs font-semibold text-[#a1a1aa]">Total de Malas (Serviços)</div>
+        <p class="text-2xl sm:text-3xl font-extrabold text-blue-400 mt-1" id="cardTotalMalas">0</p>
+        <div class="text-[11px] text-zinc-500 mt-1">Aerobag, Lacres, etc.</div>
+      </div>
+      <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-5 shadow-sm metric-card">
+        <div class="text-xs font-semibold text-[#a1a1aa]">Ticket Médio p/ Mala</div>
+        <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1" id="cardTicketMedio">R$ 0,00</p>
+        <div class="text-[11px] text-zinc-500 mt-1">Faturamento / Malas</div>
+      </div>
+      <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-5 shadow-sm metric-card">
+        <div class="text-xs font-semibold text-[#a1a1aa]">Total de Vendas / Lançamentos</div>
+        <p class="text-2xl sm:text-3xl font-extrabold text-purple-400 mt-1" id="cardTotalTransacoes">0</p>
+        <div class="text-[11px] text-zinc-500 mt-1">Itens faturados</div>
+      </div>
+      <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-5 shadow-sm metric-card">
+        <div class="text-xs font-semibold text-[#a1a1aa]">Colaboradores Ativos</div>
+        <p class="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1" id="cardTotalColabs">0</p>
+        <div class="text-[11px] text-zinc-500 mt-1">Com vendas registradas</div>
+      </div>
+    </div>
+
+    <!-- RANKING DE COLABORADORES -->
+    <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h2 class="text-lg font-bold flex items-center gap-2 text-white">
+            🏆 Ranking de Vendas por Colaborador
+          </h2>
+          <p class="text-xs text-[#a1a1aa]">Classificação baseada em faturamento e volume de malas</p>
+        </div>
+
+        <!-- BUSCA -->
+        <input type="text" id="filtroColabInput" oninput="filtrarRanking(this.value)" placeholder="Buscar colaborador..." class="bg-[#18181b] border border-[#27272a] rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 w-full sm:w-60">
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-[#27272a]">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-[#18181b] text-[#a1a1aa] uppercase font-bold text-[10px] tracking-wider border-b border-[#27272a]">
+            <tr>
+              <th class="py-3 px-3 text-center">Pos</th>
+              <th class="py-3 px-3">Colaborador</th>
+              <th class="py-3 px-3">Turno</th>
+              <th class="py-3 px-3 text-right">Malas</th>
+              <th class="py-3 px-3 text-right">Faturamento</th>
+              <th class="py-3 px-3 w-1/4">Desempenho</th>
+            </tr>
+          </thead>
+          <tbody id="vendasRankingBody" class="divide-y divide-[#27272a]/50">
+            <tr>
+              <td colspan="6" class="py-8 text-center text-[#a1a1aa]">
+                Clique no botão <b>📂 Carregar Relatório OneBoss</b> acima para carregar as vendas!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SCRIPT DE PROCESSAMENTO DO ONEBOSS CSV -->
+    <script>
+    
+    let DADOS_ATUAIS = {
+      faturamentoTotal: 1472,
+      totalMalas: 9,
+      totalLinhas: 10,
+      colabs: [{"pos":1,"nome":"rodrigo silva","turno":"1","fat":477,"malas":3,"media":159},{"pos":2,"nome":"wellington ferreirad2","turno":"1","fat":368,"malas":3,"media":122.67},{"pos":3,"nome":"Dalton Duarte","turno":"2","fat":348,"malas":2,"media":174},{"pos":4,"nome":"gabriel donadellod2","turno":"2","fat":279,"malas":1,"media":279}],
+      dataTurno: '2026-11-13',
+      arquivoNome: 'exemplo_oneboss_dia13.csv'
+    };
+
+    const META_BRONZE = 1500000;
+    const META_PRATA  = 1550000;
+    const META_OURO   = 1650000;
+
+    function fmtBRL(val) {
+      return 'R$ ' + (val || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    
+    
+    function handleCSVUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const fileName = file.name || '';
+      const isExcel = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
+
+      // Feedback visual de carregando
+      const btnCarregar = event.target.parentElement.querySelector('button');
+      const textoOriginal = btnCarregar ? btnCarregar.innerHTML : '';
+      if (btnCarregar) {
+        btnCarregar.innerHTML = '<span>⏳</span> <span>Processando vendas...</span>';
+      }
+
+      const finalizarLoading = () => {
+        if (btnCarregar && textoOriginal) {
+          btnCarregar.innerHTML = textoOriginal;
+        }
+        event.target.value = ''; // Permite carregar o mesmo arquivo novamente se quiser
+      };
+
+      const reader = new FileReader();
+
+      if (isExcel) {
+        reader.onload = function(e) {
+          setTimeout(() => {
+            try {
+              const data = new Uint8Array(e.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              
+              // Procurar a melhor aba que contenha dados de vendas
+              let targetSheet = workbook.Sheets[workbook.SheetNames[0]];
+              for (const name of workbook.SheetNames) {
+                const sheet = workbook.Sheets[name];
+                const csvSample = XLSX.utils.sheet_to_csv(sheet, { FS: ',' });
+                const normSample = csvSample.toLowerCase();
+                if (normSample.includes('func') || normSample.includes('valor')) {
+                  targetSheet = sheet;
+                  break;
+                }
+              }
+
+              const csvText = XLSX.utils.sheet_to_csv(targetSheet, { FS: ',' });
+              processarCSVOneBoss(csvText, file.name);
+            } catch (err) {
+              alert('Erro ao processar planilha Excel: ' + err.message);
+            } finally {
+              finalizarLoading();
+            }
+          }, 50);
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.onload = function(e) {
+          setTimeout(() => {
+            try {
+              let text = e.target.result;
+              if (text && text.startsWith('PK')) {
+                const r2 = new FileReader();
+                r2.onload = function(e2) {
+                  try {
+                    const data = new Uint8Array(e2.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    let ws = workbook.Sheets[workbook.SheetNames[0]];
+                    for (const name of workbook.SheetNames) {
+                      const sheet = workbook.Sheets[name];
+                      const csvSample = XLSX.utils.sheet_to_csv(sheet, { FS: ',' }).toLowerCase();
+                      if (csvSample.includes('func') || csvSample.includes('valor')) {
+                        ws = sheet;
+                        break;
+                      }
+                    }
+                    processarCSVOneBoss(XLSX.utils.sheet_to_csv(ws, { FS: ',' }), file.name);
+                  } catch (err2) {
+                    alert('Erro ao processar: ' + err2.message);
+                  } finally {
+                    finalizarLoading();
+                  }
+                };
+                r2.readAsArrayBuffer(file);
+                return;
+              }
+              processarCSVOneBoss(text, file.name);
+            } catch (err) {
+              alert('Erro ao processar arquivo: ' + err.message);
+            } finally {
+              finalizarLoading();
+            }
+          }, 50);
+        };
+        reader.readAsText(file, 'ISO-8859-1');
+      }
+    }
+
+
+    function processarCSVOneBoss(text, fileName) {
+      if (!text || !text.trim()) {
+        alert('O arquivo selecionado está vazio.');
+        return;
+      }
+
+      text = text.replace(/^\uFEFF/, '').trim();
+      const rawLines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (rawLines.length < 2) {
+        alert('Arquivo precisa ter cabeçalho e dados.');
+        return;
+      }
+
+      function norm(str) {
+        return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      }
+
+      // Detectar separador analisando as primeiras 5 linhas
+      let sep = ',';
+      let maxSemi = 0, maxComma = 0, maxTab = 0;
+      for (let i = 0; i < Math.min(5, rawLines.length); i++) {
+        maxSemi += (rawLines[i].match(/;/g) || []).length;
+        maxComma += (rawLines[i].match(/,/g) || []).length;
+        maxTab += (rawLines[i].match(/\t/g) || []).length;
+      }
+      if (maxSemi > maxComma && maxSemi > maxTab) sep = ';';
+      else if (maxTab > maxComma) sep = '\t';
+
+      function splitCSVLine(line, delimiter) {
+        const regex = new RegExp('(?:^|' + (delimiter === ';' ? ';' : (delimiter === '\t' ? '\t' : ',')) + ')(?:"([^"]*(?:""[^"]*)*)"|([^"' + (delimiter === ';' ? ';' : (delimiter === '\t' ? '\t' : ',')) + ']*))', 'g');
+        const matches = [];
+        let match;
+        while ((match = regex.exec(line)) !== null) {
+          let val = match[1] !== undefined ? match[1].replace(/""/g, '"') : match[2];
+          matches.push((val || '').trim());
+        }
+        return matches;
+      }
+
+      // Procurar qual linha é o cabeçalho real (pode estar na linha 0, 1, 2, 3...)
+      let headerLineIndex = -1;
+      let header = [];
+      let idxValor = -1;
+      let idxFunc = -1;
+      let idxTipo = -1;
+      let idxTurno = -1;
+      let idxData = -1;
+
+      for (let i = 0; i < Math.min(15, rawLines.length); i++) {
+        const testCols = splitCSVLine(rawLines[i], sep).map(norm);
+        const testFunc = testCols.findIndex(h => h.includes('func') || h.includes('operador') || h.includes('vendedor') || h.includes('colab'));
+        const testValor = testCols.findIndex(h => h === 'valor' || h === 'valortotal' || h === 'totalvenda' || h === 'vlunitario' || (h.includes('valor') && !h.includes('pago')));
+        
+        if (testFunc !== -1 && testValor !== -1) {
+          headerLineIndex = i;
+          header = splitCSVLine(rawLines[i], sep);
+          idxFunc = testFunc;
+          idxValor = testValor;
+          idxTipo = testCols.findIndex(h => h === 'tipo' || h === 'tiposervico' || h === 'itemtipo' || h === 'item');
+          idxTurno = testCols.findIndex(h => h === 'turno' || h === 'turnoid');
+          idxData = testCols.findIndex(h => h.includes('dataturno') || h === 'data' || h.includes('dataemissao'));
+          break;
+        }
+      }
+
+      if (headerLineIndex === -1) {
+        alert('Não foi possível identificar as colunas de "Valor" e "Funcionário" no arquivo.\n\nVerifique se o arquivo exportado possui essas colunas.');
+        return;
+      }
+
+      let fatTotal = 0;
+      let malasTotal = 0;
+      let totalLctos = 0;
+      const mapaColabs = {};
+      let dataInicio = '';
+      let dataFim = '';
+
+      for (let i = headerLineIndex + 1; i < rawLines.length; i++) {
+        const line = rawLines[i];
+        if (!line) continue;
+
+        const cols = splitCSVLine(line, sep);
+        if (cols.length <= Math.max(idxValor, idxFunc)) continue;
+
+        let rawVal = cols[idxValor] || '0';
+        rawVal = rawVal.replace(/[^0-9,\.-]/g, '');
+        if (rawVal.includes(',') && rawVal.includes('.')) {
+          rawVal = rawVal.replace(/\./g, '').replace(',', '.');
+        } else if (rawVal.includes(',')) {
+          rawVal = rawVal.replace(',', '.');
+        }
+        const val = parseFloat(rawVal) || 0;
+
+        const tipoStr = norm(idxTipo !== -1 ? cols[idxTipo] : '');
+        const isMala = tipoStr.includes('servico') || tipoStr.includes('serv') || tipoStr.includes('aerobag') || tipoStr.includes('lacre');
+        
+        let funcNome = (cols[idxFunc] || '').trim();
+        if (!funcNome || norm(funcNome) === 'total') continue; // ignora linha de total do relatório
+
+        const turno = idxTurno !== -1 && cols[idxTurno] ? cols[idxTurno].trim() : '-';
+
+        if (idxData !== -1 && cols[idxData]) {
+          const dt = cols[idxData].trim();
+          if (!dataInicio) dataInicio = dt;
+          dataFim = dt;
+        }
+
+        fatTotal += val;
+        totalLctos++;
+        if (isMala) malasTotal++;
+
+        const key = norm(funcNome);
+        if (!mapaColabs[key]) {
+          mapaColabs[key] = {
+            nome: funcNome,
+            turno: turno,
+            fat: 0,
+            malas: 0
+          };
+        }
+        mapaColabs[key].fat += val;
+        if (isMala) mapaColabs[key].malas++;
+      }
+
+      const listaColabs = Object.values(mapaColabs).sort((a, b) => b.fat - a.fat);
+
+      let periodoTexto = dataInicio;
+      if (dataFim && dataFim !== dataInicio) {
+        periodoTexto = dataInicio + ' até ' + dataFim;
+      }
+      if (!periodoTexto) periodoTexto = 'Novembro / 2026';
+
+      DADOS_ATUAIS = {
+        faturamentoTotal: fatTotal,
+        totalMalas: malasTotal,
+        totalLinhas: totalLctos,
+        colabs: listaColabs,
+        dataTurno: periodoTexto,
+        arquivoNome: fileName
+      };
+
+      renderDashboardVendas();
+    }
+
+    function renderDashboardVendas() {
+      // 1. Atualizar cards principais
+      document.getElementById('vendasTotalFat').innerText = fmtBRL(DADOS_ATUAIS.faturamentoTotal);
+      document.getElementById('cardTotalMalas').innerText = DADOS_ATUAIS.totalMalas.toLocaleString('pt-BR');
+      
+      const tktMedio = DADOS_ATUAIS.totalMalas > 0 ? (DADOS_ATUAIS.faturamentoTotal / DADOS_ATUAIS.totalMalas) : 0;
+      document.getElementById('cardTicketMedio').innerText = fmtBRL(tktMedio);
+      document.getElementById('cardTotalTransacoes').innerText = DADOS_ATUAIS.totalLinhas.toLocaleString('pt-BR');
+      document.getElementById('cardTotalColabs').innerText = DADOS_ATUAIS.colabs.length;
+
+      document.getElementById('periodoVendasLabel').innerText = 'Data: ' + DADOS_ATUAIS.dataTurno + ' • Arquivo: ' + (DADOS_ATUAIS.arquivoNome || 'OneBoss');
+
+      // 2. Termômetro e Metas
+      const pctBronzeVal = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_BRONZE) * 100);
+      const pctPrataVal  = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_PRATA) * 100);
+      const pctOuroVal   = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_OURO) * 100);
+
+      document.getElementById('vendasProgressBar').style.width = Math.min(100, (DADOS_ATUAIS.faturamentoTotal / META_OURO) * 100).toFixed(2) + '%';
+
+      const faltaB = Math.max(0, META_BRONZE - DADOS_ATUAIS.faturamentoTotal);
+      const faltaP = Math.max(0, META_PRATA - DADOS_ATUAIS.faturamentoTotal);
+      const faltaO = Math.max(0, META_OURO - DADOS_ATUAIS.faturamentoTotal);
+
+      document.getElementById('faltaBronze').innerText = faltaB === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaB);
+      document.getElementById('pctBronze').innerText = pctBronzeVal.toFixed(1) + '% alcançado';
+
+      document.getElementById('faltaPrata').innerText = faltaP === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaP);
+      document.getElementById('pctPrata').innerText = pctPrataVal.toFixed(1) + '% alcançado';
+
+      document.getElementById('faltaOuro').innerText = faltaO === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaO);
+      document.getElementById('pctOuro').innerText = pctOuroVal.toFixed(1) + '% alcançado';
+
+      // 3. Renderizar Ranking Tabela
+      renderTabelaRanking(DADOS_ATUAIS.colabs);
+    }
+
+    function renderTabelaRanking(lista) {
+      const tbody = document.getElementById('vendasRankingBody');
+      if (!tbody) return;
+
+      if (!lista || lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-[#a1a1aa]">Nenhum colaborador encontrado.</td></tr>';
+        return;
+      }
+
+      const maxFat = lista[0].fat || 1;
+
+      tbody.innerHTML = lista.map((c, idx) => {
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1) + 'º';
+        const pct = ((c.fat / maxFat) * 100).toFixed(1);
+
+        return `
+          <tr class="hover:bg-[#27272a]/30 transition-colors">
+            <td class="py-2.5 px-3 text-center font-bold text-xs text-white">${medal}</td>
+            <td class="py-2.5 px-3 font-semibold text-white capitalize">${c.nome.toLowerCase()}</td>
+            <td class="py-2.5 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300">Turno ${c.turno}</span>
+            </td>
+            <td class="py-2.5 px-3 text-right font-medium text-blue-400">${c.malas}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-emerald-400">${fmtBRL(c.fat)}</td>
+            <td class="py-2.5 px-3">
+              <div class="w-full bg-[#27272a] rounded-full h-2 overflow-hidden">
+                <div class="bg-emerald-400 h-2 rounded-full" style="width: ${pct}%;"></div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filtrarRanking(query) {
+      const q = (query || '').toLowerCase().trim();
+      const filtrados = DADOS_ATUAIS.colabs.filter(c => c.nome.toLowerCase().includes(q));
+      renderTabelaRanking(filtrados);
+    }
+
+    function copiarResumoWhatsApp() {
+      if (!DADOS_ATUAIS.colabs || DADOS_ATUAIS.colabs.length === 0) {
+        alert('Carregue primeiro um relatório do OneBoss para gerar o resumo do WhatsApp!');
+        return;
+      }
+
+      let msg = '✈️ *RESUMO DE VENDAS - ONEBOSS GRU*\n';
+      msg += '📅 *Data:* ' + DADOS_ATUAIS.dataTurno + '\n\n';
+      msg += '💰 *Faturamento Total:* ' + fmtBRL(DADOS_ATUAIS.faturamentoTotal) + '\n';
+      msg += '🧳 *Total de Malas:* ' + DADOS_ATUAIS.totalMalas + '\n';
+      msg += '💳 *Lançamentos:* ' + DADOS_ATUAIS.totalLinhas + '\n\n';
+      msg += '🏆 *RANKING DOS COLABORADORES:*\n';
+
+      DADOS_ATUAIS.colabs.forEach((c, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + 'º';
+        msg += `${medal} *${c.nome.toUpperCase()}* - ${fmtBRL(c.fat)} (${c.malas} malas)\n`;
+      });
+
+      msg += '\n🚀 *Equipe Protecbag GRU*';
+
+      navigator.clipboard.writeText(msg).then(() => {
+        const btn = document.getElementById('btnWhatsapp');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>✅</span> <span>Copiado com Sucesso!</span>';
+        btn.classList.replace('bg-emerald-600', 'bg-green-600');
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.replace('bg-green-600', 'bg-emerald-600');
+        }, 2500);
+      }).catch(err => {
+        alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
+      });
+    }
+    </script>
   </main>
 
 </body>
