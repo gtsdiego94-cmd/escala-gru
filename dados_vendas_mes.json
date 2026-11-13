@@ -18471,5 +18471,19 @@
     "val": 149,
     "isMala": true,
     "turno": "A"
+  },
+  "46339.3710461806_Dalton Duarte_GRU05_199_servico": {
+    "data": "46339.3710461806",
+    "func": "Dalton Duarte",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
+  },
+  "46339.3630331829_Pedro Henrique da Silva Santos_GRU10_199_servico": {
+    "data": "46339.3630331829",
+    "func": "Pedro Henrique da Silva Santos",
+    "val": 199,
+    "isMala": true,
+    "turno": "A"
   }
 }
