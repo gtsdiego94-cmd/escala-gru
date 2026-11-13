@@ -839,18 +839,88 @@
       </div>
     </div>
 
-    <!-- RANKING DE COLABORADORES -->
+    <!-- CARDS DE RESUMO POR TURNO -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="turnoCardsArea">
+      <!-- Turno A -->
+      <div class="bg-[#121215] border border-blue-800/40 rounded-2xl p-5 shadow-sm metric-card cursor-pointer hover:border-blue-500/70 transition-all" onclick="selecionarTurno('A')" id="cardTurnoA">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🌅</span>
+            <span class="font-bold text-white text-base">Turno A</span>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Manhã</span>
+        </div>
+        <p class="text-2xl font-extrabold text-blue-400" id="turnoAFat">R$ 0,00</p>
+        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2">
+          <span id="turnoAMalas">0 malas</span>
+          <span id="turnoAColabs">0 colaboradores</span>
+        </div>
+      </div>
+
+      <!-- Turno B -->
+      <div class="bg-[#121215] border border-amber-800/40 rounded-2xl p-5 shadow-sm metric-card cursor-pointer hover:border-amber-500/70 transition-all" onclick="selecionarTurno('B')" id="cardTurnoB">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">☀️</span>
+            <span class="font-bold text-white text-base">Turno B</span>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Tarde</span>
+        </div>
+        <p class="text-2xl font-extrabold text-amber-400" id="turnoBFat">R$ 0,00</p>
+        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2">
+          <span id="turnoBMalas">0 malas</span>
+          <span id="turnoBColabs">0 colaboradores</span>
+        </div>
+      </div>
+
+      <!-- Turno D -->
+      <div class="bg-[#121215] border border-purple-800/40 rounded-2xl p-5 shadow-sm metric-card cursor-pointer hover:border-purple-500/70 transition-all" onclick="selecionarTurno('D')" id="cardTurnoD">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🌙</span>
+            <span class="font-bold text-white text-base">Turno D</span>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">Madrugada</span>
+        </div>
+        <p class="text-2xl font-extrabold text-purple-400" id="turnoDFat">R$ 0,00</p>
+        <div class="flex justify-between text-xs text-[#a1a1aa] mt-2">
+          <span id="turnoDMalas">0 malas</span>
+          <span id="turnoDColabs">0 colaboradores</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANKING POR TURNO -->
     <div class="bg-[#121215] border border-[#27272a] rounded-2xl p-6 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h2 class="text-lg font-bold flex items-center gap-2 text-white">
-            🏆 Ranking de Vendas por Colaborador
+            🏆 Ranking por Turno
           </h2>
-          <p class="text-xs text-[#a1a1aa]">Classificação baseada em faturamento e volume de malas</p>
+          <p class="text-xs text-[#a1a1aa]">Clique em um turno acima para filtrar • Classificação por faturamento</p>
         </div>
-
         <!-- BUSCA -->
-        <input type="text" id="filtroColabInput" oninput="filtrarRanking(this.value)" placeholder="Buscar colaborador..." class="bg-[#18181b] border border-[#27272a] rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 w-full sm:w-60">
+        <input type="text" id="filtroColabInput" oninput="filtrarRanking(this.value)" placeholder="Buscar colaborador..." class="bg-[#18181b] border border-[#27272a] rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 w-full sm:w-56">
+      </div>
+
+      <!-- ABAS DE TURNO -->
+      <div class="flex gap-2 flex-wrap" id="turnoTabBtns">
+        <button onclick="selecionarTurno('TODOS')" id="btnTodos"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-zinc-700 text-white">
+          Todos
+        </button>
+        <button onclick="selecionarTurno('A')" id="btnTurnoA"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#18181b] text-[#a1a1aa] hover:bg-blue-900/40 hover:text-blue-300">
+          🌅 Turno A — Manhã
+        </button>
+        <button onclick="selecionarTurno('B')" id="btnTurnoB"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#18181b] text-[#a1a1aa] hover:bg-amber-900/40 hover:text-amber-300">
+          ☀️ Turno B — Tarde
+        </button>
+        <button onclick="selecionarTurno('D')" id="btnTurnoD"
+          class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#18181b] text-[#a1a1aa] hover:bg-purple-900/40 hover:text-purple-300">
+          🌙 Turno D — Madrugada
+        </button>
       </div>
 
       <div class="overflow-x-auto rounded-xl border border-[#27272a]">
@@ -1147,7 +1217,7 @@
     }
 
     function renderDashboardVendas() {
-      // 1. Atualizar cards principais
+      // 1. Cards principais
       document.getElementById('vendasTotalFat').innerText = fmtBRL(DADOS_ATUAIS.faturamentoTotal);
       document.getElementById('cardTotalMalas').innerText = DADOS_ATUAIS.totalMalas.toLocaleString('pt-BR');
       
@@ -1178,8 +1248,64 @@
       document.getElementById('faltaOuro').innerText = faltaO === 0 ? 'Meta Atingida! 🎉' : fmtBRL(faltaO);
       document.getElementById('pctOuro').innerText = pctOuroVal.toFixed(1) + '% alcançado';
 
-      // 3. Renderizar Ranking Tabela
-      renderTabelaRanking(DADOS_ATUAIS.colabs);
+      // 3. Cards de turno
+      const colabs = DADOS_ATUAIS.colabs || [];
+      const turnos = { A: { fat: 0, malas: 0, n: 0 }, B: { fat: 0, malas: 0, n: 0 }, D: { fat: 0, malas: 0, n: 0 } };
+      colabs.forEach(c => {
+        const t = (c.turno === 'A' || c.turno === 'B' || c.turno === 'D') ? c.turno : 'B';
+        turnos[t].fat  += c.fat;
+        turnos[t].malas += c.malas;
+        turnos[t].n++;
+      });
+
+      document.getElementById('turnoAFat').innerText = fmtBRL(turnos.A.fat);
+      document.getElementById('turnoAMalas').innerText = turnos.A.malas + ' malas';
+      document.getElementById('turnoAColabs').innerText = turnos.A.n + ' colaboradores';
+
+      document.getElementById('turnoBFat').innerText = fmtBRL(turnos.B.fat);
+      document.getElementById('turnoBMalas').innerText = turnos.B.malas + ' malas';
+      document.getElementById('turnoBColabs').innerText = turnos.B.n + ' colaboradores';
+
+      document.getElementById('turnoDFat').innerText = fmtBRL(turnos.D.fat);
+      document.getElementById('turnoDMalas').innerText = turnos.D.malas + ' malas';
+      document.getElementById('turnoDColabs').innerText = turnos.D.n + ' colaboradores';
+
+      // 4. Tabela — começa mostrando todos
+      selecionarTurno('TODOS');
+    }
+
+    let turnoAtivo = 'TODOS';
+
+    function selecionarTurno(t) {
+      turnoAtivo = t;
+
+      // Estilo dos botões de aba
+      const btnCfg = {
+        TODOS: { id: 'btnTodos',  on: 'bg-zinc-700 text-white',         off: 'bg-[#18181b] text-[#a1a1aa]' },
+        A:     { id: 'btnTurnoA', on: 'bg-blue-700 text-white',         off: 'bg-[#18181b] text-[#a1a1aa]' },
+        B:     { id: 'btnTurnoB', on: 'bg-amber-600 text-white',        off: 'bg-[#18181b] text-[#a1a1aa]' },
+        D:     { id: 'btnTurnoD', on: 'bg-purple-700 text-white',       off: 'bg-[#18181b] text-[#a1a1aa]' },
+      };
+      Object.entries(btnCfg).forEach(([key, cfg]) => {
+        const btn = document.getElementById(cfg.id);
+        if (!btn) return;
+        btn.className = btn.className.replace(/(bg-\S+|text-\S+)/g, '').trim();
+        const classes = (key === t ? cfg.on : cfg.off).split(' ');
+        classes.forEach(cls => btn.classList.add(cls));
+        btn.classList.add('px-4', 'py-2', 'rounded-xl', 'text-xs', 'font-bold', 'transition-all');
+      });
+
+      // Destaque nos cards de turno
+      ['A','B','D'].forEach(tr => {
+        const card = document.getElementById('cardTurno' + tr);
+        if (!card) return;
+        card.style.boxShadow = (tr === t) ? '0 0 0 2px #6366f1' : '';
+        card.style.transform = (tr === t) ? 'scale(1.02)' : '';
+      });
+
+      // Filtrar e renderizar
+      const q = (document.getElementById('filtroColabInput') || {}).value || '';
+      filtrarRanking(q);
     }
 
     function renderTabelaRanking(lista) {
@@ -1193,22 +1319,28 @@
 
       const maxFat = lista[0].fat || 1;
 
+      const corTurno = { A: 'text-blue-300 bg-blue-500/20', B: 'text-amber-300 bg-amber-500/20', D: 'text-purple-300 bg-purple-500/20' };
+      const emojiTurno = { A: '🌅', B: '☀️', D: '🌙' };
+
       tbody.innerHTML = lista.map((c, idx) => {
         const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1) + 'º';
         const pct = ((c.fat / maxFat) * 100).toFixed(1);
+        const cor = corTurno[c.turno] || 'text-zinc-300 bg-zinc-500/20';
+        const emoji = emojiTurno[c.turno] || '';
+        const barCor = c.turno === 'A' ? 'bg-blue-400' : c.turno === 'D' ? 'bg-purple-400' : 'bg-amber-400';
 
         return `
           <tr class="hover:bg-[#27272a]/30 transition-colors">
             <td class="py-2.5 px-3 text-center font-bold text-xs text-white">${medal}</td>
             <td class="py-2.5 px-3 font-semibold text-white capitalize">${c.nome.toLowerCase()}</td>
             <td class="py-2.5 px-3">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300">Turno ${c.turno}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${cor}">${emoji} Turno ${c.turno}</span>
             </td>
             <td class="py-2.5 px-3 text-right font-medium text-blue-400">${c.malas}</td>
             <td class="py-2.5 px-3 text-right font-bold text-emerald-400">${fmtBRL(c.fat)}</td>
             <td class="py-2.5 px-3">
               <div class="w-full bg-[#27272a] rounded-full h-2 overflow-hidden">
-                <div class="bg-emerald-400 h-2 rounded-full" style="width: ${pct}%;"></div>
+                <div class="${barCor} h-2 rounded-full" style="width: ${pct}%;"></div>
               </div>
             </td>
           </tr>
@@ -1218,8 +1350,14 @@
 
     function filtrarRanking(query) {
       const q = (query || '').toLowerCase().trim();
-      const filtrados = DADOS_ATUAIS.colabs.filter(c => c.nome.toLowerCase().includes(q));
-      renderTabelaRanking(filtrados);
+      let lista = DADOS_ATUAIS.colabs || [];
+      if (turnoAtivo !== 'TODOS') {
+        lista = lista.filter(c => c.turno === turnoAtivo);
+      }
+      if (q) {
+        lista = lista.filter(c => c.nome.toLowerCase().includes(q));
+      }
+      renderTabelaRanking(lista);
     }
 
     function copiarResumoWhatsApp() {
