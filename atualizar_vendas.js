@@ -170,24 +170,27 @@ console.log(`☀️ Turno B (Tarde):     ${fmtBRL(turnosTotais.B.fat)} (${turnos
 console.log(`🌙 Turno D (Madrugada): ${fmtBRL(turnosTotais.D.fat)} (${turnosTotais.D.malas} malas)`);
 console.log(`💰 Faturamento Geral:   ${fmtBRL(fatTotal)} (${malasTotal} malas)`);
 
-// Atualizar index.html com dados por turno
+// Atualizar index.html com dados por turno de forma segura
 const indexPath = path.join(REPO_DIR, 'index.html');
 let indexHtml = fs.readFileSync(indexPath, 'utf8');
 
-const dadosInjetados = `
-    let DADOS_ATUAIS = {
-      faturamentoTotal: ${fatTotal},
-      totalMalas: ${malasTotal},
-      totalLinhas: ${rows.length},
-      turnos: ${JSON.stringify(turnosTotais)},
-      colabs: ${JSON.stringify(colabsList)},
-      dataTurno: '${dataUltima}',
-      arquivoNome: '${path.basename(targetFile)}'
-    };
-`;
-
-indexHtml = indexHtml.replace(/let DADOS_ATUAIS\s*=\s*\{[\s\S]*?\};\s*(?=function|\n\s*function|\n\s*let)/, dadosInjetados);
-fs.writeFileSync(indexPath, indexHtml, 'utf8');
+const startIdx = indexHtml.indexOf('let DADOS_ATUAIS = {');
+if (startIdx !== -1) {
+  const endIdx = indexHtml.indexOf('};', startIdx) + 2;
+  const novoBloco = 'let DADOS_ATUAIS = ' + JSON.stringify({
+    faturamentoTotal: fatTotal,
+    totalMalas: malasTotal,
+    totalLinhas: rows.length,
+    turnos: turnosTotais,
+    colabs: colabsList,
+    dataTurno: dataUltima,
+    arquivoNome: path.basename(targetFile)
+  }, null, 2) + ';';
+  indexHtml = indexHtml.slice(0, startIdx) + novoBloco + indexHtml.slice(endIdx);
+  fs.writeFileSync(indexPath, indexHtml, 'utf8');
+} else {
+  console.log('⚠️ Aviso: bloco DADOS_ATUAIS não encontrado no index.html');
+}
 
 // Gerar resumo formatado do WhatsApp
 let msgWpp = `📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*\n`;
