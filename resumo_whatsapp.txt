@@ -1,17 +1,35 @@
-✈️ *RESUMO DE VENDAS - ONEBOSS GRU*
-📅 *Atualizado:* 46338.2990701736
+📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*
+📅 *Data:* 12/11/2026
+━━━━━━━━━━━━━━━━━━━━━
 
-💰 *FATURAMENTO TOTAL:* R$ 420.824,00 (2388 malas)
+*🌅 TURNO A (Manhã)*
+💰 Fat: R$ 217.200,00 | 🧳 Malas: 1266
+🥇 *DALTON DUARTE*: R$ 25.602,00 (146 malas)
+🥈 *EDUARDO LIMA*: R$ 25.572,00 (144 malas)
+🥉 *VICTOR COSTA DOMENE DOS SANTOS*: R$ 17.700,00 (98 malas)
+▫️ *LUCAS TRINDADE*: R$ 16.206,00 (105 malas)
+▫️ *MATHEUS SENHORINHO*: R$ 16.109,00 (99 malas)
 
-⏱️ *DESEMPENHO POR TURNO:*
-🌅 *TURNO A (Manhã):* R$ 157.615,00 (895 malas) • 37.5%
-☀️ *TURNO B (Tarde):* R$ 228.662,00 (1295 malas) • 54.3%
-🌙 *TURNO D (Madrugada):* R$ 34.547,00 (198 malas) • 8.2%
+*☀️ TURNO B (Tarde)*
+💰 Fat: R$ 316.307,00 | 🧳 Malas: 1844
+🥇 *DAVI ARAUJO*: R$ 33.837,00 (196 malas)
+🥈 *GABRIEL GONCALVES*: R$ 32.618,00 (181 malas)
+🥉 *JOSE MACEDO*: R$ 32.473,00 (192 malas)
+▫️ *WESLEY MATHEUS*: R$ 28.714,00 (165 malas)
+▫️ *KAIQUE MENDES*: R$ 26.618,00 (150 malas)
 
-🏆 *DESTAQUES POR TURNO:*
-*Turno A:* 🥇 Dalton Duarte (R$ 18.616,00)
-*Turno B:* 🥇 gabriel goncalves (R$ 24.828,00)
-*Turno D:* 🥇 elton gimenesd2 (R$ 5.129,00)
+*🌙 TURNO D (Madrugada)*
+💰 Fat: R$ 53.960,00 | 🧳 Malas: 326
+🥇 *ELTON GIMENESD2*: R$ 10.335,00 (65 malas)
+🥈 *GABRIEL DONADELLO*: R$ 7.351,00 (44 malas)
+🥉 *WELLINGTON FERREIRA*: R$ 7.326,00 (53 malas)
+▫️ *GABRIEL DONADELLOD2*: R$ 6.636,00 (36 malas)
+▫️ *ELTON GIMENES*: R$ 6.020,00 (30 malas)
 
-🔗 *Acompanhe ao vivo:* https://gtsdiego94-cmd.github.io/escala-gru/
+━━━━━━━━━━━━━━━━━━━━━
+🎯 *TOTAL GERAL DO DIA*
+💵 *Faturamento Total:* R$ 587.467,00
+🧳 *Total de Malas:* 3436
+💳 *Lançamentos:* 3743
+
 🚀 *Equipe Protecbag GRU*

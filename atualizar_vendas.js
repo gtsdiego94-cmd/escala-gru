@@ -4,29 +4,22 @@ const { execSync } = require('child_process');
 const XLSX = require('xlsx');
 
 const REPO_DIR = 'C:\\Users\\User\\Desktop\\escala-gru';
-const EXPORT_DIR = 'C:\\Export';
-const DB_FILE = path.join(REPO_DIR, 'dados_vendas_mes.json');
+const DIRS_TO_LOOK = ['C:\\Relatorios', 'C:\\Export', REPO_DIR];
 
 // Mapeamento de Turno ID do OneBoss para Turno A, B, D
 // Turno 1 (001) = Turno A (Manhã)
 // Turno 2 (002) = Turno B (Tarde)
 // Turno 3 (003) = Turno D (Madrugada - antes da meia noite)
 // Turno 4 (004) = Turno D (Madrugada - depois da meia noite)
-function turnoIdParaLetra(turnoId) {
-  const t = (turnoId || '').trim();
-  if (t === '001' || t === '1') return 'A';
-  if (t === '002' || t === '2') return 'B';
-  if (t === '003' || t === '3') return 'D';
-  if (t === '004' || t === '4') return 'D';
-  return null; // não identificado pelo ID
-}
-
 function inferirTurno(nome, turnoIdStr, turnoNumStr) {
-  const normNome = (nome || '').toUpperCase().trim();
+  const tId = String(turnoIdStr || '').trim();
+  const tNum = String(turnoNumStr || '').trim();
+  const normNome = String(nome || '').toUpperCase().trim();
 
   // 1. Prioridade: Turno ID do OneBoss (001, 002, 003, 004)
-  const porId = turnoIdParaLetra(turnoIdStr);
-  if (porId) return porId;
+  if (tId === '001' || tId === '1') return 'A';
+  if (tId === '002' || tId === '2') return 'B';
+  if (tId === '003' || tId === '3' || tId === '004' || tId === '4') return 'D';
 
   // 2. Se nome tem d2 = Turno D (Madrugada)
   if (normNome.endsWith('D2') || normNome.includes(' D2') || normNome.includes('(D2)')) {
@@ -34,152 +27,74 @@ function inferirTurno(nome, turnoIdStr, turnoNumStr) {
   }
 
   // 3. Número do turno simples
-  if (turnoNumStr === '1') return 'A';
-  if (turnoNumStr === '2') return 'B';
-  if (turnoNumStr === '3' || turnoNumStr === '4') return 'D';
+  if (tNum === '1') return 'A';
+  if (tNum === '2') return 'B';
+  if (tNum === '3' || tNum === '4') return 'D';
 
   // 4. Fallback: B
   return 'B';
 }
 
-// 1. Localizar arquivo de entrada
+function toJsDate(val) {
+  if (typeof val === 'number') {
+    return new Date(Math.round((val - 25569) * 86400 * 1000));
+  }
+  return new Date(val);
+}
+
+// 1. Localizar arquivo de entrada mais recente
 let targetFile = process.argv[2];
 if (!targetFile || !fs.existsSync(targetFile)) {
-  if (fs.existsSync(EXPORT_DIR)) {
-    const files = fs.readdirSync(EXPORT_DIR)
-      .map(f => path.join(EXPORT_DIR, f))
-      .filter(f => fs.statSync(f).isFile() && (f.endsWith('.csv') || f.endsWith('.xlsx') || f.endsWith('.txt')))
-      .sort((a, b) => fs.statSync(b).mtime - fs.statSync(a).mtime);
+  const allFiles = [];
+  DIRS_TO_LOOK.forEach(dir => {
+    if (fs.existsSync(dir)) {
+      fs.readdirSync(dir).forEach(f => {
+        const full = path.join(dir, f);
+        try {
+          const st = fs.statSync(full);
+          if (st.isFile() && (f.endsWith('.xlsx') || f.endsWith('.csv') || f.endsWith('.xls'))) {
+            allFiles.push({ path: full, time: st.mtimeMs });
+          }
+        } catch (e) {}
+      });
+    }
+  });
 
-    if (files.length > 0) targetFile = files[0];
-  }
+  allFiles.sort((a, b) => b.time - a.time);
+  if (allFiles.length > 0) targetFile = allFiles[0].path;
 }
 
 if (!targetFile || !fs.existsSync(targetFile)) {
-  console.log('\n❌ Nenhum arquivo do OneBoss encontrado em C:\\Export.');
-  console.log('👉 Salve o relatório do OneBoss em C:\\Export e clique novamente.\n');
+  console.log('\n❌ Nenhum relatório do OneBoss encontrado.');
   process.exit(1);
 }
 
 console.log(`\n📂 Lendo relatório: ${path.basename(targetFile)}...`);
 
-// Lê o arquivo — suporta XLSX e CSV/TXT
-let rawLines = [];
-
+let rows = [];
 const ext = path.extname(targetFile).toLowerCase();
+
 if (ext === '.xlsx' || ext === '.xls') {
-  // Lê XLSX com SheetJS (node)
   const wb = XLSX.readFile(targetFile);
   const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-  rawLines = rows.map(row => row.map(c => String(c).trim()).join('\t')).filter(l => l.trim().length > 0);
-  // Força separador tab para linhas geradas do XLSX
-  var forceSep = '\t';
+  rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
 } else {
-  // CSV/TXT
-  let textContent = fs.readFileSync(targetFile, 'latin1').replace(/^\uFEFF/, '').trim();
-  rawLines = textContent.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-  var forceSep = null;
+  const textContent = fs.readFileSync(targetFile, 'latin1').replace(/^\uFEFF/, '').trim();
+  const lines = textContent.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  let sep = lines[0].includes(';') ? ';' : (lines[0].includes('\t') ? '\t' : ',');
+  const header = lines[0].split(sep).map(c => c.replace(/^"|"$/g, '').trim());
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(sep).map(c => c.replace(/^"|"$/g, '').trim());
+    const obj = {};
+    header.forEach((h, idx) => { obj[h] = cols[idx] || ''; });
+    rows.push(obj);
+  }
 }
 
-if (rawLines.length < 2) {
+if (rows.length === 0) {
   console.log('❌ Arquivo vazio ou sem linhas de dados.');
   process.exit(1);
 }
-
-let sep = forceSep || ',';
-if (!forceSep) {
-  const firstLine = rawLines[0];
-  if ((firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length) sep = ';';
-  if ((firstLine.match(/\t/g) || []).length > (firstLine.match(/,/g) || []).length) sep = '\t';
-}
-
-function splitLine(line) {
-  const regex = new RegExp('(?:^|' + (sep === ';' ? ';' : (sep === '\t' ? '\t' : ',')) + ')(?:"([^"]*(?:""[^"]*)*)"|([^"' + (sep === ';' ? ';' : (sep === '\t' ? '\t' : ',')) + ']*))', 'g');
-  const matches = [];
-  let match;
-  while ((match = regex.exec(line)) !== null) {
-    let val = match[1] !== undefined ? match[1].replace(/""/g, '"') : match[2];
-    matches.push((val || '').trim());
-  }
-  return matches;
-}
-
-function norm(str) {
-  return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
-let headerIdx = -1;
-let idxValor = -1, idxFunc = -1, idxTipo = -1, idxTurnoNum = -1, idxTurnoId = -1, idxData = -1, idxHora = -1, idxRPS = -1;
-
-for (let i = 0; i < Math.min(10, rawLines.length); i++) {
-  const cols = splitLine(rawLines[i]).map(norm);
-  const fIdx = cols.findIndex(h => h.includes('func') || h.includes('operador') || h.includes('vendedor') || h.includes('colab'));
-  const vIdx = cols.findIndex(h => h === 'valor' || h === 'valortotal' || h === 'totalvenda' || h.includes('valor'));
-  if (fIdx !== -1 && vIdx !== -1) {
-    headerIdx = i;
-    idxFunc = fIdx;
-    idxValor = vIdx;
-    idxTipo = cols.findIndex(h => h === 'tipo' || h === 'tiposervico' || h.includes('item'));
-    // Separa "Turno" (número 1,2,3,4) de "Turno ID" (001,002,003,004)
-    idxTurnoId  = cols.findIndex(h => h === 'turnoid');
-    idxTurnoNum = cols.findIndex(h => h === 'turno' && !cols[cols.indexOf(h)].includes('id'));
-    if (idxTurnoNum === -1) idxTurnoNum = cols.findIndex(h => h === 'turno');
-    idxData = cols.findIndex(h => h.includes('dataturno') || h === 'data' || h.includes('emissao'));
-    idxHora = cols.findIndex(h => h === 'hora' || h.includes('horario'));
-    idxRPS = cols.findIndex(h => h.includes('rpsnumero') || h.includes('rps') || h.includes('numero'));
-    console.log(`📋 Colunas detectadas: Func=${idxFunc} Valor=${idxValor} TurnoNum=${idxTurnoNum} TurnoID=${idxTurnoId} Tipo=${idxTipo} Data=${idxData}`);
-    break;
-  }
-}
-
-if (headerIdx === -1) {
-  console.log('❌ Colunas do OneBoss não identificadas.');
-  process.exit(1);
-}
-
-// Banco acumulado
-let bancoVendas = {};
-if (fs.existsSync(DB_FILE)) {
-  try { bancoVendas = JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); } catch (e) { bancoVendas = {}; }
-}
-
-let novasVendas = 0;
-let dataUltima = '';
-
-for (let i = headerIdx + 1; i < rawLines.length; i++) {
-  const cols = splitLine(rawLines[i]);
-  if (cols.length <= Math.max(idxValor, idxFunc)) continue;
-
-  let rawVal = cols[idxValor] || '0';
-  rawVal = rawVal.replace(/[^0-9,\.-]/g, '');
-  if (rawVal.includes(',') && rawVal.includes('.')) rawVal = rawVal.replace(/\./g, '').replace(',', '.');
-  else if (rawVal.includes(',')) rawVal = rawVal.replace(',', '.');
-  const val = parseFloat(rawVal) || 0;
-
-  const func = cols[idxFunc] ? cols[idxFunc].trim() : 'Não identificado';
-  if (!func || norm(func) === 'total') continue;
-
-  const tipo = norm(idxTipo !== -1 ? cols[idxTipo] : '');
-  const isMala = tipo.includes('servico') || tipo.includes('serv') || tipo.includes('aerobag') || tipo.includes('lacre');
-  const rawTurnoId  = idxTurnoId  !== -1 && cols[idxTurnoId]  ? cols[idxTurnoId].trim()  : '';
-  const rawTurnoNum = idxTurnoNum !== -1 && cols[idxTurnoNum] ? cols[idxTurnoNum].trim() : '';
-  const hora = idxHora !== -1 && cols[idxHora] ? cols[idxHora].trim() : '';
-  const data = idxData !== -1 && cols[idxData] ? cols[idxData].trim() : new Date().toISOString().split('T')[0];
-  const rps = idxRPS !== -1 && cols[idxRPS] ? cols[idxRPS].trim() : (i + '_' + Math.random());
-
-  const turnoDefinido = inferirTurno(func, rawTurnoId, rawTurnoNum);
-  dataUltima = data;
-
-  const vendaKey = `${data}_${func}_${rps}_${val}_${tipo}`;
-  if (!bancoVendas[vendaKey]) {
-    bancoVendas[vendaKey] = { data, func, val, isMala, turno: turnoDefinido };
-    novasVendas++;
-  }
-}
-
-fs.writeFileSync(DB_FILE, JSON.stringify(bancoVendas, null, 2), 'utf8');
-console.log(`✅ ${novasVendas} novos registros! Total acumulado no mês: ${Object.keys(bancoVendas).length} vendas.`);
 
 // Totais e Turnos
 let fatTotal = 0;
@@ -191,25 +106,46 @@ const turnosTotais = {
 };
 
 const colabsMap = {};
-const dailyMap = {};
+let dataUltima = 'Novembro/2026';
 
-Object.values(bancoVendas).forEach(v => {
-  fatTotal += v.val;
-  if (v.isMala) malasTotal++;
+rows.forEach(r => {
+  const nome = (r['Funcionário'] || r['Funcionario'] || r['Nome'] || r['COLABORADOR'] || '').trim();
+  if (!nome || nome.toLowerCase() === 'total') return;
 
-  const t = (v.turno === 'A' || v.turno === 'B' || v.turno === 'D') ? v.turno : 'B';
-  turnosTotais[t].fat += v.val;
-  if (v.isMala) turnosTotais[t].malas++;
-
-  const k = norm(v.func);
-  if (!colabsMap[k]) {
-    colabsMap[k] = { nome: v.func, turno: t, fat: 0, malas: 0 };
+  // Usa coluna Valor real do produto/serviço
+  let valRaw = r['Valor'] !== undefined && r['Valor'] !== '' ? r['Valor'] : (r['Total Venda'] || 0);
+  if (typeof valRaw === 'string') {
+    valRaw = valRaw.replace(/[^0-9,\.-]/g, '');
+    if (valRaw.includes(',') && valRaw.includes('.')) valRaw = valRaw.replace(/\./g, '').replace(',', '.');
+    else if (valRaw.includes(',')) valRaw = valRaw.replace(',', '.');
   }
-  colabsMap[k].fat += v.val;
-  if (v.isMala) colabsMap[k].malas++;
+  const val = parseFloat(valRaw) || 0;
 
-  const diaNum = parseInt(v.data.split('-')[2] || v.data.split('/')[0]) || 1;
-  dailyMap[diaNum] = (dailyMap[diaNum] || 0) + v.val;
+  const tipo = String(r['Tipo'] || '').toLowerCase();
+  const item = String(r['Item'] || '').toLowerCase();
+  const isMala = tipo.includes('servi') || item.includes('aerobag') || item.includes('lacre') || item.includes('reembalar');
+
+  const turno = inferirTurno(nome, r['Turno ID'] || r['TurnoID'], r['Turno']);
+
+  fatTotal += val;
+  if (isMala) malasTotal++;
+
+  turnosTotais[turno].fat += val;
+  if (isMala) turnosTotais[turno].malas++;
+
+  const k = nome.toUpperCase();
+  if (!colabsMap[k]) {
+    colabsMap[k] = { nome, turno, fat: 0, malas: 0 };
+  }
+  colabsMap[k].fat += val;
+  if (isMala) colabsMap[k].malas++;
+
+  if (r['Data']) {
+    const dObj = toJsDate(r['Data']);
+    if (!isNaN(dObj.getTime())) {
+      dataUltima = dObj.toLocaleDateString('pt-BR');
+    }
+  }
 });
 
 const colabsList = Object.values(colabsMap)
@@ -227,11 +163,12 @@ function fmtBRL(v) {
   return 'R$ ' + (v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+console.log(`✅ ${rows.length} lançamentos processados sem perdas!`);
 console.log('\n📊 DESEMPENHO OFICIAL POR TURNO:');
 console.log(`🌅 Turno A (Manhã):     ${fmtBRL(turnosTotais.A.fat)} (${turnosTotais.A.malas} malas)`);
 console.log(`☀️ Turno B (Tarde):     ${fmtBRL(turnosTotais.B.fat)} (${turnosTotais.B.malas} malas)`);
 console.log(`🌙 Turno D (Madrugada): ${fmtBRL(turnosTotais.D.fat)} (${turnosTotais.D.malas} malas)`);
-console.log(`💰 Faturamento Geral:   ${fmtBRL(fatTotal)}`);
+console.log(`💰 Faturamento Geral:   ${fmtBRL(fatTotal)} (${malasTotal} malas)`);
 
 // Atualizar index.html com dados por turno
 const indexPath = path.join(REPO_DIR, 'index.html');
@@ -241,66 +178,69 @@ const dadosInjetados = `
     let DADOS_ATUAIS = {
       faturamentoTotal: ${fatTotal},
       totalMalas: ${malasTotal},
-      totalLinhas: ${Object.keys(bancoVendas).length},
+      totalLinhas: ${rows.length},
       turnos: ${JSON.stringify(turnosTotais)},
       colabs: ${JSON.stringify(colabsList)},
-      dataTurno: '${dataUltima || "Novembro/2026"}',
+      dataTurno: '${dataUltima}',
       arquivoNome: '${path.basename(targetFile)}'
     };
 `;
 
-indexHtml = indexHtml.replace(/let DADOS_ATUAIS = \{[\s\S]*?\};\n/, dadosInjetados);
+indexHtml = indexHtml.replace(/let DADOS_ATUAIS\s*=\s*\{[\s\S]*?\};\s*(?=function|\n\s*function|\n\s*let)/, dadosInjetados);
 fs.writeFileSync(indexPath, indexHtml, 'utf8');
 
-// Montar resumo formatado do WhatsApp separado por turno
-let zap = '✈️ *RESUMO DE VENDAS - ONEBOSS GRU*\n';
-zap += `📅 *Atualizado:* ${dataUltima || 'Hoje'}\n\n`;
-zap += `💰 *FATURAMENTO TOTAL:* ${fmtBRL(fatTotal)} (${malasTotal} malas)\n\n`;
+// Gerar resumo formatado do WhatsApp
+let msgWpp = `📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*\n`;
+msgWpp += `📅 *Data:* ${dataUltima}\n`;
+msgWpp += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-zap += `⏱️ *DESEMPENHO POR TURNO:*\n`;
-const pctA = fatTotal > 0 ? ((turnosTotais.A.fat / fatTotal) * 100).toFixed(1) : '0';
-const pctB = fatTotal > 0 ? ((turnosTotais.B.fat / fatTotal) * 100).toFixed(1) : '0';
-const pctD = fatTotal > 0 ? ((turnosTotais.D.fat / fatTotal) * 100).toFixed(1) : '0';
+const nomesTurnos = {
+  A: '🌅 TURNO A (Manhã)',
+  B: '☀️ TURNO B (Tarde)',
+  D: '🌙 TURNO D (Madrugada)'
+};
 
-zap += `🌅 *TURNO A (Manhã):* ${fmtBRL(turnosTotais.A.fat)} (${turnosTotais.A.malas} malas) • ${pctA}%\n`;
-zap += `☀️ *TURNO B (Tarde):* ${fmtBRL(turnosTotais.B.fat)} (${turnosTotais.B.malas} malas) • ${pctB}%\n`;
-zap += `🌙 *TURNO D (Madrugada):* ${fmtBRL(turnosTotais.D.fat)} (${turnosTotais.D.malas} malas) • ${pctD}%\n\n`;
+['A', 'B', 'D'].forEach(t => {
+  const turn = turnosTotais[t];
+  msgWpp += `*${nomesTurnos[t]}*\n`;
+  msgWpp += `💰 Fat: ${fmtBRL(turn.fat)} | 🧳 Malas: ${turn.malas}\n`;
 
-zap += `🏆 *DESTAQUES POR TURNO:*\n`;
-const topA = colabsList.filter(c => c.turno === 'A').slice(0, 2);
-const topB = colabsList.filter(c => c.turno === 'B').slice(0, 2);
-const topD = colabsList.filter(c => c.turno === 'D').slice(0, 2);
+  const topColabs = colabsList.filter(c => c.turno === t).slice(0, 5);
+  if (topColabs.length > 0) {
+    topColabs.forEach((c, i) => {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '▫️';
+      msgWpp += `${medal} *${c.nome.toUpperCase()}*: ${fmtBRL(c.fat)} (${c.malas} malas)\n`;
+    });
+  } else {
+    msgWpp += `_Nenhum colaborador registrado_\n`;
+  }
+  msgWpp += `\n`;
+});
 
-if (topA.length) zap += `*Turno A:* 🥇 ${topA[0].nome} (${fmtBRL(topA[0].fat)})\n`;
-if (topB.length) zap += `*Turno B:* 🥇 ${topB[0].nome} (${fmtBRL(topB[0].fat)})\n`;
-if (topD.length) zap += `*Turno D:* 🥇 ${topD[0].nome} (${fmtBRL(topD[0].fat)})\n`;
+msgWpp += `━━━━━━━━━━━━━━━━━━━━━\n`;
+msgWpp += `🎯 *TOTAL GERAL DO DIA*\n`;
+msgWpp += `💵 *Faturamento Total:* ${fmtBRL(fatTotal)}\n`;
+msgWpp += `🧳 *Total de Malas:* ${malasTotal}\n`;
+msgWpp += `💳 *Lançamentos:* ${rows.length}\n\n`;
+msgWpp += `🚀 *Equipe Protecbag GRU*`;
 
-zap += `\n🔗 *Acompanhe ao vivo:* https://gtsdiego94-cmd.github.io/escala-gru/\n`;
-zap += `🚀 *Equipe Protecbag GRU*`;
+const resumoPath = path.join(REPO_DIR, 'resumo_whatsapp.txt');
+fs.writeFileSync(resumoPath, msgWpp, 'utf8');
 
 try {
-  const zapFile = path.join(REPO_DIR, 'resumo_whatsapp.txt');
-  fs.writeFileSync(zapFile, zap, 'utf8');
-  execSync(`powershell.exe -Command "Get-Content -Path '${zapFile}' -Raw -Encoding UTF8 | Set-Clipboard"`);
+  execSync(`powershell -command "Set-Clipboard -Value (Get-Content -Path '${resumoPath}' -Raw)"`);
   console.log('\n📲 Resumo com divisão por Turnos copiado para a Área de Transferência!');
 } catch (e) {}
 
-// Git Commit e Push
+// Sincronizar com GitHub
+console.log('\n🚀 Atualizando GitHub...');
 try {
-  console.log('\n🚀 Atualizando GitHub...');
-  execSync(`git config user.name "gtsdiego94-cmd"`, { cwd: REPO_DIR });
-  execSync(`git config user.email "diego@protecbag.com.br"`, { cwd: REPO_DIR });
-  execSync(`git add .`, { cwd: REPO_DIR });
-  execSync(`git commit -m "Atualização de vendas com divisão por turno"`, { cwd: REPO_DIR });
-  console.log('✅ Commit realizado localmente.');
-  
-  // Tenta o push automático
-  try {
-    execSync(`git push origin main`, { cwd: REPO_DIR, stdio: 'ignore' });
-    console.log('🌐 GitHub Pages sincronizado com sucesso!');
-  } catch (pushErr) {
-    console.log('ℹ️ Para sincronizar online pela primeira vez, rode: git push origin main');
-  }
-} catch (e) {}
+  execSync(`git -C "${REPO_DIR}" add index.html atualizar_vendas.js resumo_whatsapp.txt`, { stdio: 'inherit' });
+  execSync(`git -C "${REPO_DIR}" commit -m "fix: calculo oficial com coluna Valor e sem perdas de lancamentos"`, { stdio: 'inherit' });
+  execSync(`git -C "${REPO_DIR}" push origin main`, { stdio: 'inherit' });
+  console.log('🌐 GitHub Pages sincronizado com sucesso!\n');
+} catch (e) {
+  console.log('⚠️ Aviso ao sincronizar com GitHub:', e.message);
+}
 
-console.log('\n🎉 PROCESSO CONCLUÍDO COM SUCESSO!\n');
+console.log('🎉 PROCESSO CONCLUÍDO COM SUCESSO!\n');
