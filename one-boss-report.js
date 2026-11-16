@@ -4,18 +4,34 @@ const path = require('path');
 const XLSX = require('xlsx');
 
 // ----- CONFIG ---------------------------------------------------------
-const UPLOADS_DIR = path.resolve(__dirname);          // pasta onde o .xlsx chega
+const UPLOADS_DIR = path.resolve(__dirname);
+const REPORT_DIRS = [
+  'C:\\Relatorios',
+  'C:\\Export',
+  path.resolve(__dirname),
+  'C:\\Users\\User\\Desktop',
+  'C:\\Users\\User\\Downloads'
+];
 const ONEBOSS_WEBHOOK = process.env.ONEBOSS_WEBHOOK; // opcional webhook
 // ---------------------------------------------------------------------
 
 // encontra o último .xlsx (padrão usado pelo portal)
 function getLatestXlsx() {
-  const files = fs.readdirSync(UPLOADS_DIR)
-    .filter(f => f.endsWith('.xlsx'))
-    .map(f => ({ name: f, time: fs.statSync(path.join(UPLOADS_DIR, f)).mtimeMs }))
-    .sort((a, b) => b.time - a.time);
-  if (!files.length) throw new Error('Nenhum .xlsx encontrado');
-  return path.join(UPLOADS_DIR, files[0].name);
+  const allFiles = [];
+  for (const dir of REPORT_DIRS) {
+    if (!fs.existsSync(dir)) continue;
+    fs.readdirSync(dir)
+      .filter(f => (f.endsWith('.xlsx') || f.endsWith('.csv')) && !f.startsWith('~$') && !f.includes('vendas_atual'))
+      .forEach(f => {
+        try {
+          const full = path.join(dir, f);
+          allFiles.push({ name: full, time: fs.statSync(full).mtimeMs });
+        } catch (e) {}
+      });
+  }
+  if (!allFiles.length) throw new Error('Nenhum relatório encontrado');
+  allFiles.sort((a, b) => b.time - a.time);
+  return allFiles[0].name;
 }
 
 // inferência de turno OneBoss precisa ser idêntica ao index.html
@@ -112,19 +128,22 @@ async function executar() {
 
     for (const r of rows) {
       const nome = normalizarNome(r['Funcionário'] || r['Funcionario'] || r['Nome'] || r['COLABORADOR'] || '');
-      const valor = parseFloat(r['Total Venda'] || r['Valor'] || r['Faturamento'] || 0) || 0;
+      const valor = parseFloat(r['Valor'] || r['Total Venda'] || r['Faturamento'] || 0) || 0;
       const turno = inferirTurnoOneBoss(r);
+
+      const tipoStr = String(r['Tipo'] || r['Item'] || '').toLowerCase();
+      const isMala = tipoStr.includes('servi') || tipoStr.includes('aerobag') || tipoStr.includes('lacre') || tipoStr.includes('reembalar');
 
       // Soma por turno
       DADOS.turnos[turno].faturamento += valor;
-      DADOS.turnos[turno].malas += 1;
+      if (isMala) DADOS.turnos[turno].malas += 1;
 
       // Agrupa colaborador
       if (!DADOS.colabsMap[nome]) {
         DADOS.colabsMap[nome] = { nome, turno, faturamento: 0, malas: 0 };
       }
       DADOS.colabsMap[nome].faturamento += valor;
-      DADOS.colabsMap[nome].malas += 1;
+      if (isMala) DADOS.colabsMap[nome].malas += 1;
     }
 
     const texto = gerarRelatorio(DADOS);

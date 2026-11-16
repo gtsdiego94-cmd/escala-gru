@@ -207,7 +207,11 @@ def processar_relatorio():
 
         start = html.find("let DADOS_ATUAIS = {")
         if start != -1:
-            end = html.find("};", start) + 2
+            end_marker = html.find("// __END_DADOS_ATUAIS__", start)
+            if end_marker == -1:
+                end = html.find("};", start) + 2
+            else:
+                end = end_marker + len("// __END_DADOS_ATUAIS__")
             novo_dados = {
                 "faturamentoTotal": round(fat_total),
                 "totalMalas": malas_total,
@@ -218,7 +222,7 @@ def processar_relatorio():
                 "dataTurno": data_ultima,
                 "arquivoNome": os.path.basename(arquivo)
             }
-            bloco_subst = "let DADOS_ATUAIS = " + json.dumps(novo_dados, indent=2, ensure_ascii=False) + ";"
+            bloco_subst = "let DADOS_ATUAIS = " + json.dumps(novo_dados, indent=2, ensure_ascii=False) + "; // __END_DADOS_ATUAIS__"
             html = html[:start] + bloco_subst + html[end:]
             with open(INDEX_PATH, "w", encoding="utf-8") as f:
                 f.write(html)

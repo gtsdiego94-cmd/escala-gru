@@ -189,7 +189,13 @@ let indexHtml = fs.readFileSync(indexPath, 'utf8');
 
 const startIdx = indexHtml.indexOf('let DADOS_ATUAIS = {');
 if (startIdx !== -1) {
-  const endIdx = indexHtml.indexOf('};', startIdx) + 2;
+  let endIdx;
+  const endMarker = indexHtml.indexOf('// __END_DADOS_ATUAIS__', startIdx);
+  if (endMarker !== -1) {
+    endIdx = endMarker + '// __END_DADOS_ATUAIS__'.length;
+  } else {
+    endIdx = indexHtml.indexOf('};', startIdx) + 2;
+  }
   const novoBloco = 'let DADOS_ATUAIS = ' + JSON.stringify({
     faturamentoTotal: Math.round(fatTotal),
     totalMalas: malasTotal,
@@ -199,7 +205,7 @@ if (startIdx !== -1) {
     colabs: colabsList,
     dataTurno: dataUltima,
     arquivoNome: path.basename(targetFile)
-  }, null, 2) + ';';
+  }, null, 2) + '; // __END_DADOS_ATUAIS__';
   indexHtml = indexHtml.slice(0, startIdx) + novoBloco + indexHtml.slice(endIdx);
   fs.writeFileSync(indexPath, indexHtml, 'utf8');
 } else {

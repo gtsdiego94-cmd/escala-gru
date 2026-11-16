@@ -1469,7 +1469,7 @@
   ],
   "dataTurno": "16/11/2026",
   "arquivoNome": "RelatorioMovimentoCaixa 2026-11-16 07-35-24.xlsx"
-};
+}; // __END_DADOS_ATUAIS__
 
     const META_BRONZE = 1500000;
     const META_PRATA  = 1600000;
@@ -1854,12 +1854,15 @@
     function renderDashboardVendas() {
       // 0. Dias de Operação (com suporte a simulação em tempo real)
       const inputDias = document.getElementById('inputDiasOperacao');
-      let diasOp = 12;
-      if (DADOS_ATUAIS.diasOperacao) {
-        diasOp = DADOS_ATUAIS.diasOperacao;
-      }
-      if (inputDias && inputDias.value) {
-        diasOp = parseInt(inputDias.value, 10) || diasOp;
+      let diasOp = DADOS_ATUAIS.diasOperacao || 12;
+      if (inputDias) {
+        // Na primeira renderização, sincronizar input com dados reais
+        if (!window._diasInputInitialized) {
+          inputDias.value = diasOp;
+          window._diasInputInitialized = true;
+        } else {
+          diasOp = parseInt(inputDias.value, 10) || diasOp;
+        }
       }
       diasOp = Math.max(1, Math.min(30, diasOp));
       if (inputDias && inputDias.value != diasOp) {
@@ -1970,22 +1973,26 @@
       const mediaB = diasOp > 0 ? (fatB / diasOp) : 0;
       const mediaD = diasOp > 0 ? (fatD / diasOp) : 0;
 
+      // Determinar turno destaque dinamicamente
+      const turnoDestaque = fatB >= fatA && fatB >= fatD ? 'B' : (fatA >= fatD ? 'A' : 'D');
+      const destaqueLabel = {A: 'turnoAPart', B: 'turnoBPart', D: 'turnoDPart'};
+
       if (document.getElementById('turnoAFat')) document.getElementById('turnoAFat').innerText = fmtBRL(fatA);
       if (document.getElementById('turnoAMalas')) document.getElementById('turnoAMalas').innerText = malasA.toLocaleString('pt-BR') + ' malas';
       if (document.getElementById('turnoAColabs')) document.getElementById('turnoAColabs').innerText = (turnosCount.A || turnos.A?.n || 0) + ' colaboradores';
-      if (document.getElementById('turnoAPart')) document.getElementById('turnoAPart').innerText = pctA.toFixed(2) + '% do faturamento';
+      if (document.getElementById('turnoAPart')) document.getElementById('turnoAPart').innerHTML = pctA.toFixed(2) + '% do faturamento' + (turnoDestaque === 'A' ? ' <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Destaque 🔥</span>' : '');
       if (document.getElementById('turnoAMedia')) document.getElementById('turnoAMedia').innerText = 'Média: ' + fmtBRL(mediaA) + '/dia';
 
       if (document.getElementById('turnoBFat')) document.getElementById('turnoBFat').innerText = fmtBRL(fatB);
       if (document.getElementById('turnoBMalas')) document.getElementById('turnoBMalas').innerText = malasB.toLocaleString('pt-BR') + ' malas';
       if (document.getElementById('turnoBColabs')) document.getElementById('turnoBColabs').innerText = (turnosCount.B || turnos.B?.n || 0) + ' colaboradores';
-      if (document.getElementById('turnoBPart')) document.getElementById('turnoBPart').innerHTML = pctB.toFixed(2) + '% do faturamento <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Destaque 🔥</span>';
+      if (document.getElementById('turnoBPart')) document.getElementById('turnoBPart').innerHTML = pctB.toFixed(2) + '% do faturamento' + (turnoDestaque === 'B' ? ' <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Destaque 🔥</span>' : '');
       if (document.getElementById('turnoBMedia')) document.getElementById('turnoBMedia').innerText = 'Média: ' + fmtBRL(mediaB) + '/dia';
 
       if (document.getElementById('turnoDFat')) document.getElementById('turnoDFat').innerText = fmtBRL(fatD);
       if (document.getElementById('turnoDMalas')) document.getElementById('turnoDMalas').innerText = malasD.toLocaleString('pt-BR') + ' malas';
       if (document.getElementById('turnoDColabs')) document.getElementById('turnoDColabs').innerText = (turnosCount.D || turnos.D?.n || 0) + ' colaboradores';
-      if (document.getElementById('turnoDPart')) document.getElementById('turnoDPart').innerText = pctD.toFixed(2) + '% do faturamento';
+      if (document.getElementById('turnoDPart')) document.getElementById('turnoDPart').innerHTML = pctD.toFixed(2) + '% do faturamento' + (turnoDestaque === 'D' ? ' <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Destaque 🔥</span>' : '');
       if (document.getElementById('turnoDMedia')) document.getElementById('turnoDMedia').innerText = 'Média: ' + fmtBRL(mediaD) + '/dia';
 
       // 4. Renderizar Tabela Gerencial da Diretoria

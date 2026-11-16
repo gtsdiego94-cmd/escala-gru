@@ -3,3 +3,4 @@ package-lock.json
 *.log
 __pycache__/
 *.pyc
+dados_vendas_mes.json

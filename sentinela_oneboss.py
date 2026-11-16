@@ -26,13 +26,16 @@ class RelatorioWatcherHandler(FileSystemEventHandler):
             return
 
         nome = os.path.basename(caminho_arquivo)
-        if nome.startswith("~$") or "relatorio" not in nome.lower():
+        if nome.startswith("~$"):
             return
 
-        # Evita disparos duplicados em menos de 10 segundos
+        # Evita disparos duplicados em menos de 15 segundos
         agora = time.time()
-        if agora - self.ultimo_processamento < 10:
+        if agora - self.ultimo_processamento < 15:
             return
+
+        # Marca ANTES do sleep para evitar re-entrada
+        self.ultimo_processamento = time.time()
 
         print("\n" + "=" * 60)
         print(f"🚨 NOVO RELATÓRIO DETECTADO INSTANTANEAMENTE!")
@@ -44,7 +47,6 @@ class RelatorioWatcherHandler(FileSystemEventHandler):
         time.sleep(3)
 
         print("\n⚡ DISPARANDO ATUALIZAÇÃO AUTOMÁTICA VIA PYTHON...")
-        self.ultimo_processamento = time.time()
 
         try:
             subprocess.run([PYTHON_EXE, SCRIPT_PROCESSAR], check=True)
