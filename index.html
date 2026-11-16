@@ -57,7 +57,7 @@
   <script>
   const WEEKDAY_NAMES = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
   const GRU02_FORTE = new Set([0,2,4,5]);
-  const GRUS_ATIVAS = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-13"];
+  const GRUS_ATIVAS = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-11","GRU-13"];
 
   // Novembro 2026: dia 1 = Domingo → índice 6 (0=Seg)
   const NOV_OFFSET = 6;
@@ -162,6 +162,7 @@
     if (gru==="GRU-02") return GRU02_FORTE.has(dow)?"forte":"media";
     if (gru==="GRU-05"||gru==="GRU-10") return "media";
     if (gru==="GRU-01"||gru==="GRU-04"||gru==="GRU-13") return "fraca";
+    if (gru==="GRU-11") return "apoio";
     return "desativada";
   }
 
@@ -195,8 +196,12 @@
       const strongGrus=isGru02Forte?["GRU-06","GRU-08","GRU-02"]:["GRU-06","GRU-08"];
       const mediumGrus=isGru02Forte?["GRU-05","GRU-10"]:["GRU-02","GRU-05","GRU-10"];
       const weakGrus=["GRU-01","GRU-04","GRU-13"];
-      const positionOrder=[...strongGrus,"R1","R2",...mediumGrus,...weakGrus];
-      const dayResult={postos:{},r1:null,r2:null,apoio:[],availCount:avail.length};
+      // Desbloqueia GRU-11 a partir do dia 17 (amanhã) ou em Dezembro:
+      const usaGru11 = (totalDias === 31) || (day >= 17);
+      const positionOrder = usaGru11
+        ? [...strongGrus,"R1","R2",...mediumGrus,...weakGrus,"GRU-11"]
+        : [...strongGrus,"R1","R2",...mediumGrus,...weakGrus];
+      const dayResult={postos:{},r1:null,r2:null,apoio:[],availCount:avail.length,gru11Ativa:usaGru11};
       GRUS_ATIVAS.forEach(g=>dayResult.postos[g]=null);
       avail.forEach((person,i)=>{
         if(i<positionOrder.length){
@@ -304,7 +309,6 @@
               <span class="badge bg-gray-500/20 text-gray-400">GRU-03</span>
               <span class="badge bg-gray-500/20 text-gray-400">GRU-07</span>
               <span class="badge bg-gray-500/20 text-gray-400">GRU-09</span>
-              <span class="badge bg-gray-500/20 text-gray-400">GRU-11</span>
               <span class="badge bg-gray-500/20 text-gray-400">GRU-12</span>
             </div>
           </div>
@@ -406,7 +410,8 @@
           <span class="badge bg-orange-500/20 text-orange-400">R1/R2 Rendição</span>
           <span class="badge bg-yellow-500/20 text-yellow-400">G05/G10 Média</span>
           <span class="badge bg-blue-500/20 text-blue-400">G01/G04/G13 Fraca</span>
-          <span class="badge bg-green-500/20 text-green-400">AP Apoio</span>
+          <span class="badge bg-emerald-500/20 text-emerald-400">G11 Apoio</span>
+          <span class="badge bg-green-500/20 text-green-400">AP Apoio Volante</span>
           <span class="badge bg-zinc-800 text-zinc-400">FOLGA</span>
         </div>
 
@@ -416,7 +421,7 @@
   </div>
 
   <script>
-  let selectedDay = 1;
+  let selectedDay = 17; // Inicia em 17/11 (amanhã) com a GRU-11 desbloqueada
   let currentView = 'dia';
   let selectedColab = TURNO_A_NOV[0].nome;
 
@@ -424,6 +429,7 @@
     forte: {bg:"bg-red-500/15",   border:"border-red-500/40",    text:"text-red-400",    label:"🔥 FORTE"},
     media: {bg:"bg-yellow-500/15",border:"border-yellow-500/40", text:"text-yellow-400", label:"⚡ MÉDIA"},
     fraca: {bg:"bg-blue-500/15",  border:"border-blue-500/40",   text:"text-blue-400",   label:"🧊 FRACA"},
+    apoio: {bg:"bg-emerald-500/15",border:"border-emerald-500/40",text:"text-emerald-400",label:"🛠️ APOIO"},
   };
 
   function trocarMesEscala(chave) {
@@ -518,15 +524,21 @@
         <div class="text-2xl font-bold text-purple-400">${WEEKDAY_NAMES[dow]}</div>
         <div class="text-xs text-[var(--muted-foreground)]">Dia ${selectedDay}/${mesNum}</div></div>`;
 
-    const gruOrder = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-13"];
+    const gruOrder = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-11","GRU-13"];
     document.getElementById('postos').innerHTML = gruOrder.map(gru => {
       const cat = getGruCat(gru,dow);
-      const s = CAT_STYLE[cat];
+      const s = CAT_STYLE[cat] || CAT_STYLE.fraca;
       const person = day.postos[gru];
+      const isGru11Inativa = (gru === "GRU-11" && !day.gru11Ativa);
+      const displayPerson = isGru11Inativa 
+        ? '<span class="text-zinc-500 italic text-xs">Desativada até dia 16</span>'
+        : (person || '<span class="text-[var(--muted-foreground)] italic">—</span>');
+      const badgeLabel = isGru11Inativa ? '⛔ INATIVA' : s.label;
+      const badgeStyle = isGru11Inativa ? 'bg-zinc-800 text-zinc-500' : `${s.bg} ${s.text}`;
       return `<div class="gru-row ${s.bg} border ${s.border}">
         <span class="font-bold text-lg min-w-[3rem]">G${parseInt(gru.replace("GRU-",""))}</span>
-        <span class="flex-1 font-medium">${person||'<span class="text-[var(--muted-foreground)] italic">—</span>'}</span>
-        <span class="badge ${s.bg} ${s.text} text-xs">${s.label}</span></div>`;
+        <span class="flex-1 font-medium">${displayPerson}</span>
+        <span class="badge ${badgeStyle} text-xs">${badgeLabel}</span></div>`;
     }).join('');
 
     const folga  = activeEscalaConfig.dados.filter(e=>e.dias[selectedDay-1]==="F");
@@ -639,7 +651,11 @@
             if(p === nome) {
               assigned = gru;
               const cat = getGruCat(gru, dow);
-              if(cat === "forte") {
+              if(gru === "GRU-11") {
+                label = `🛠️ G11 (Apoio)`;
+                badgeClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40 font-bold";
+                apoioCount++;
+              } else if(cat === "forte") {
                 label = `🔥 G${parseInt(gru.replace("GRU-",""))}`;
                 badgeClass = "bg-red-500/20 text-red-400 border-red-500/40 font-bold";
                 forteCount++;
@@ -757,7 +773,9 @@
             if(p === nome) {
               const num = parseInt(gru.replace("GRU-",""));
               const cat = getGruCat(gru, dow);
-              if(cat === "forte") {
+              if(gru === "GRU-11") {
+                badge = `<span class="badge bg-emerald-500/25 text-emerald-400 text-[10px] px-1 font-bold">G11</span>`;
+              } else if(cat === "forte") {
                 badge = `<span class="badge bg-red-500/25 text-red-400 text-[10px] px-1 font-bold">G${num}</span>`;
               } else if(cat === "media") {
                 badge = `<span class="badge bg-yellow-500/20 text-yellow-400 text-[9px] px-1 font-semibold">G${num}</span>`;
