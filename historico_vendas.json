@@ -4,15 +4,15 @@
     "mesNome": "Novembro",
     "ano": 2026,
     "periodo": "Novembro / 2026",
-    "faturamentoTotal": 743836,
-    "totalMalas": 4391,
-    "totalLinhas": 4777,
+    "faturamentoTotal": 747237,
+    "totalMalas": 4420,
+    "totalLinhas": 4806,
     "diasOperacao": 16,
     "totalDiasMes": 30,
     "turnos": {
       "A": {
-        "fat": 278986.0,
-        "malas": 1622
+        "fat": 282387.0,
+        "malas": 1651
       },
       "B": {
         "fat": 398570.0,
@@ -74,19 +74,19 @@
       },
       {
         "pos": 7,
+        "nome": "Dalton Duarte",
+        "turno": "A",
+        "fat": 33577,
+        "malas": 203,
+        "media": 165.4
+      },
+      {
+        "pos": 8,
         "nome": "Wesley Matheus",
         "turno": "B",
         "fat": 32830,
         "malas": 193,
         "media": 170.1
-      },
-      {
-        "pos": 8,
-        "nome": "Dalton Duarte",
-        "turno": "A",
-        "fat": 32473,
-        "malas": 190,
-        "media": 170.91
       },
       {
         "pos": 9,
@@ -140,17 +140,17 @@
         "pos": 15,
         "nome": "matheus senhorinho",
         "turno": "A",
-        "fat": 22052,
-        "malas": 136,
-        "media": 162.15
+        "fat": 22112,
+        "malas": 137,
+        "media": 161.4
       },
       {
         "pos": 16,
         "nome": "lucas trindade",
         "turno": "A",
-        "fat": 21326,
-        "malas": 138,
-        "media": 154.54
+        "fat": 21525,
+        "malas": 139,
+        "media": 154.86
       },
       {
         "pos": 17,
@@ -170,19 +170,19 @@
       },
       {
         "pos": 19,
+        "nome": "rodrigo silva",
+        "turno": "A",
+        "fat": 19772,
+        "malas": 120,
+        "media": 164.77
+      },
+      {
+        "pos": 20,
         "nome": "eric vinicius",
         "turno": "B",
         "fat": 19144,
         "malas": 123,
         "media": 155.64
-      },
-      {
-        "pos": 20,
-        "nome": "rodrigo silva",
-        "turno": "A",
-        "fat": 18679,
-        "malas": 111,
-        "media": 168.28
       },
       {
         "pos": 21,
@@ -220,17 +220,17 @@
         "pos": 25,
         "nome": "kaue amorim",
         "turno": "A",
-        "fat": 12938,
-        "malas": 71,
-        "media": 182.23
+        "fat": 13734,
+        "malas": 75,
+        "media": 183.12
       },
       {
         "pos": 26,
         "nome": "kauan miranda",
         "turno": "A",
-        "fat": 11614,
-        "malas": 71,
-        "media": 163.58
+        "fat": 11763,
+        "malas": 72,
+        "media": 163.38
       },
       {
         "pos": 27,
@@ -322,7 +322,7 @@
       }
     ],
     "dataTurno": "16/11/2026",
-    "arquivoNome": "RelatorioMovimentoCaixa 2026-11-16 12-31-55.xlsx",
-    "atualizadoEm": "16/11/2026 12:32"
+    "arquivoNome": "RelatorioMovimentoCaixa 2026-11-16 13-37-53.xlsx",
+    "atualizadoEm": "16/11/2026 13:37"
   }
 }
