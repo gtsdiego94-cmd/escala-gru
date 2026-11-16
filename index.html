@@ -81,6 +81,43 @@
     {nome:"VICTOR COSTA",              dias:["F","1","F","F","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","F","1","1","F","F","1"]},
   ];
 
+  // Dezembro 2026: dia 1 = Terça-feira → índice 1 (0=Seg). Total: 31 dias.
+  const TURNO_A_DEZ = [
+    {nome:"LUCAS TRINDADE",            dias:["1","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","F","1","1","1","1","1","F","F","F","1"]},
+    {nome:"MATHEUS SENHORINHO",        dias:["1","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","F","1","1","1","F","F","1","1","1","1"]},
+    {nome:"WILSON RAMOS",              dias:["F","1","1","1","F","1","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","1","F","F","1"]},
+    {nome:"RICARDO LIMA",              dias:["F","1","F","1","1","1","1","F","F","1","1","1","F","1","1","F","1","1","1","1","1","F","F","1","1","1","F","1","1","1","F"]},
+    {nome:"DANILO PEREIRA DO SANTOS",  dias:["1","1","F","1","1","1","F","F","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","F","1","1","1","F","1"]},
+    {nome:"KAUAN SANTOS",              dias:["F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","F"]},
+    {nome:"DALTON",                    dias:["F","1","1","1","1","F","1","1","1","F","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","1","1","1","F"]},
+    {nome:"PEDRO",                     dias:["1","1","1","1","F","1","F","F","1","1","F","1","1","1","1","F","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1"]},
+    {nome:"EDUARDO LIMA",              dias:["1","1","1","F","1","1","1","1","F","F","1","1","1","F","F","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F"]},
+    {nome:"JOÃO PAULO",                dias:["1","1","F","1","1","1","F","F","1","1","1","1","1","F","F","1","1","1","1","1","1","F","1","1","1","F","1","1","1","1","1"]},
+    {nome:"KAUAN GERALDO SANTOS",      dias:["F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1"]},
+    {nome:"JOSE RAMOS",                dias:["F","1","1","1","1","F","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","1","1","1","F","F","F","F","1"]},
+    {nome:"KAUE AMORIM",               dias:["1","1","F","1","1","1","1","1","F","1","1","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1","F","F","1","1"]},
+    {nome:"RODRIGO SILVA",             dias:["F","1","1","1","F","1","1","1","1","F","F","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","F"]},
+    {nome:"VICTOR COSTA",              dias:["F","1","F","F","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","F","1","1","F","F","1","1"]},
+  ];
+
+  const MESES_ESCALA = {
+    '2026-11': {
+      nome: 'Novembro 2026',
+      dias: 30,
+      offset: 6, // 1 Nov = Domingo
+      dados: TURNO_A_NOV
+    },
+    '2026-12': {
+      nome: 'Dezembro 2026',
+      dias: 31,
+      offset: 1, // 1 Dez = Terça-feira
+      dados: TURNO_A_DEZ
+    }
+  };
+
+  let activeEscalaKey = '2026-11';
+  let activeEscalaConfig = MESES_ESCALA[activeEscalaKey];
+
   const FRASES = [
     { frase:"O segredo para avançar é começar.", autor:"Mark Twain", fonte:"Citações de Mark Twain" },
     { frase:"Vendas é o resultado de relacionamentos genuínos, não de técnicas forçadas.", autor:"Jeffrey Gitomer", fonte:"The Sales Bible" },
@@ -112,8 +149,12 @@
     { frase:"Faça o que for necessário agora para ter o que quiser amanhã.", autor:"Jim Rohn", fonte:"The Art of Exceptional Living" },
     { frase:"Grandes realizações normalmente requerem tempo, dedicação, perseverança e um esforço inabalável.", autor:"Colin Powell", fonte:"It Worked for Me" },
     { frase:"O segredo da sua produtividade está na forma como você começa cada manhã.", autor:"Robin Sharma", fonte:"The 5 AM Club" },
+    { frase:"Comemore as conquistas, aprenda com cada desafio e mantenha o foco firme na excelência a cada atendimento.", autor:"Equipe Protecbag GRU", fonte:"Encerramento de Ciclo & Metas" },
   ];
 
+  function getDowCurrent(d) {
+    return (activeEscalaConfig.offset + d - 1) % 7;
+  }
   function getDowNov(d) { return (NOV_OFFSET + d - 1) % 7; }
 
   function getGruCat(gru, dow) {
@@ -171,7 +212,12 @@
     return{allDays,score};
   }
 
-  const resNov=runMonth(TURNO_A_NOV,NOV_DIAS,getDowNov);
+  const resNov = runMonth(TURNO_A_NOV, 30, (d) => (NOV_OFFSET + d - 1) % 7);
+  const resDez = runMonth(TURNO_A_DEZ, 31, (d) => (1 + d - 1) % 7);
+
+  function getActiveRes() {
+    return activeEscalaKey === '2026-12' ? resDez : resNov;
+  }
   </script>
 
   <!-- UI PRINCIPAL -->
@@ -181,11 +227,15 @@
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <h1 class="text-2xl font-black tracking-tight text-white">🏭 Escala Operacional GRU</h1>
             <span class="badge bg-blue-500/20 text-blue-400">Turno A</span>
+            <select id="seletorMesEscala" onchange="trocarMesEscala(this.value)" class="bg-[#18181b] border border-blue-500/40 rounded-xl px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer">
+              <option value="2026-11" selected>Novembro 2026</option>
+              <option value="2026-12">Dezembro 2026</option>
+            </select>
           </div>
-          <p class="text-[var(--muted-foreground)] text-sm mt-1">Novembro 2026 • 15 Colaboradores • Rodízio Equilibrado</p>
+          <p id="escalaSubtitulo" class="text-[var(--muted-foreground)] text-sm mt-1">Novembro 2026 • 15 Colaboradores • Rodízio Equilibrado</p>
         </div>
         <div class="flex items-center gap-2 flex-wrap text-xs">
           <span class="badge bg-red-500/20 text-red-400">🔥 Forte (+3)</span>
@@ -340,22 +390,8 @@
         <div class="overflow-x-auto rounded-xl border border-[var(--border)] bg-[#18181b]">
           <table class="w-full text-xs text-left border-collapse">
             <thead>
-              <tr class="bg-[#121215] text-[var(--muted-foreground)] border-b border-[var(--border)]">
-                <th class="p-2.5 font-bold sticky-col min-w-[170px] border-r border-[var(--border)]">Colaborador</th>
-                <th class="p-2 text-center font-bold min-w-[50px] border-r border-[var(--border)]">Pts</th>
-                <!-- Dias 1 a 30 preenchidos via JS -->
-                <script>
-                  for(let d=1; d<=30; d++){
-                    const dow = getDowNov(d);
-                    const isWknd = dow === 5 || dow === 6;
-                    document.write(`
-                      <th class="p-1.5 text-center min-w-[42px] border-r border-[var(--border)]/50 ${isWknd ? 'bg-orange-500/10 text-orange-400 font-bold' : ''}">
-                        <div>${d}</div>
-                        <div class="text-[9px] font-normal opacity-70">${WEEKDAY_NAMES[dow]}</div>
-                      </th>
-                    `);
-                  }
-                </script>
+              <tr id="matriz-thead-tr" class="bg-[#121215] text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <!-- Cabeçalho de dias gerado dinamicamente para 30 ou 31 dias -->
               </tr>
             </thead>
             <tbody id="matriz-tbody" class="divide-y divide-[var(--border)]/40">
@@ -1119,108 +1155,361 @@
     
     
     let DADOS_ATUAIS = {
-  "faturamentoTotal": 11201,
-  "totalMalas": 64,
-  "totalLinhas": 72,
-  "diasOperacao": 1,
+  "chaveMes": "2026-11",
+  "mesNome": "Novembro",
+  "ano": 2026,
+  "periodo": "Novembro / 2026",
+  "totalDiasMes": 30,
+  "faturamentoTotal": 932485,
+  "totalMalas": 5465,
+  "totalLinhas": 5986,
+  "diasOperacao": 20,
   "turnos": {
     "A": {
-      "fat": 9978.0,
-      "malas": 54
+      "fat": 341402.0,
+      "malas": 1966
     },
     "B": {
-      "fat": 0.0,
-      "malas": 0
+      "fat": 509888.0,
+      "malas": 3015
     },
     "D": {
-      "fat": 1223.0,
-      "malas": 10
+      "fat": 81195.0,
+      "malas": 484
     }
   },
   "colabs": [
     {
       "pos": 1,
-      "nome": "rodrigo silva",
-      "turno": "A",
-      "fat": 2696,
-      "malas": 14,
-      "media": 192.57
+      "nome": "rafael messias",
+      "turno": "B",
+      "fat": 63528,
+      "malas": 369,
+      "media": 172.16
     },
     {
       "pos": 2,
-      "nome": "kauan geraldo",
-      "turno": "A",
-      "fat": 1677,
-      "malas": 9,
-      "media": 186.33
+      "nome": "Davi Araujo",
+      "turno": "B",
+      "fat": 52706,
+      "malas": 293,
+      "media": 179.88
     },
     {
       "pos": 3,
-      "nome": "lucas trindade",
-      "turno": "A",
-      "fat": 1552,
-      "malas": 9,
-      "media": 172.44
+      "nome": "Jose Carlos Guilherme",
+      "turno": "B",
+      "fat": 51244,
+      "malas": 308,
+      "media": 166.38
     },
     {
       "pos": 4,
-      "nome": "Dalton Duarte",
-      "turno": "A",
-      "fat": 1168,
-      "malas": 7,
-      "media": 166.86
+      "nome": "gabriel goncalves",
+      "turno": "B",
+      "fat": 49580,
+      "malas": 286,
+      "media": 173.36
     },
     {
       "pos": 5,
-      "nome": "kaue amorim",
-      "turno": "A",
-      "fat": 1085,
-      "malas": 5,
-      "media": 217.0
+      "nome": "kaique mendes",
+      "turno": "B",
+      "fat": 47149,
+      "malas": 260,
+      "media": 181.34
     },
     {
       "pos": 6,
-      "nome": "joao ferreira",
-      "turno": "A",
-      "fat": 1024,
-      "malas": 6,
-      "media": 170.67
+      "nome": "jose macedo",
+      "turno": "B",
+      "fat": 45136,
+      "malas": 265,
+      "media": 170.32
     },
     {
       "pos": 7,
-      "nome": "danilo pereira",
-      "turno": "A",
-      "fat": 776,
-      "malas": 4,
-      "media": 194.0
+      "nome": "Henrique Pedro",
+      "turno": "B",
+      "fat": 42574,
+      "malas": 255,
+      "media": 166.96
     },
     {
       "pos": 8,
-      "nome": "kauan miranda",
-      "turno": "D",
-      "fat": 676,
-      "malas": 5,
-      "media": 135.2
+      "nome": "Dalton Duarte",
+      "turno": "A",
+      "fat": 39712,
+      "malas": 226,
+      "media": 175.72
     },
     {
       "pos": 9,
-      "nome": "elton gimenesd2",
-      "turno": "D",
-      "fat": 547,
-      "malas": 4,
-      "media": 136.75
+      "nome": "Wesley Matheus",
+      "turno": "B",
+      "fat": 34729,
+      "malas": 207,
+      "media": 167.77
     },
     {
       "pos": 10,
+      "nome": "eduardo lima",
+      "turno": "A",
+      "fat": 32632,
+      "malas": 179,
+      "media": 182.3
+    },
+    {
+      "pos": 11,
+      "nome": "ricardo lima",
+      "turno": "A",
+      "fat": 30832,
+      "malas": 168,
+      "media": 183.52
+    },
+    {
+      "pos": 12,
+      "nome": "Victor Costa Domene dos Santos",
+      "turno": "A",
+      "fat": 30527,
+      "malas": 168,
+      "media": 181.71
+    },
+    {
+      "pos": 13,
+      "nome": "roni oliveira",
+      "turno": "B",
+      "fat": 30376,
+      "malas": 177,
+      "media": 171.62
+    },
+    {
+      "pos": 14,
+      "nome": "mihael henrique",
+      "turno": "B",
+      "fat": 28996,
+      "malas": 169,
+      "media": 171.57
+    },
+    {
+      "pos": 15,
+      "nome": "danilo pereira",
+      "turno": "A",
+      "fat": 27196,
+      "malas": 151,
+      "media": 180.11
+    },
+    {
+      "pos": 16,
+      "nome": "vitor viana",
+      "turno": "B",
+      "fat": 26771,
+      "malas": 171,
+      "media": 156.56
+    },
+    {
+      "pos": 17,
+      "nome": "wilson",
+      "turno": "A",
+      "fat": 24110,
+      "malas": 138,
+      "media": 174.71
+    },
+    {
+      "pos": 18,
+      "nome": "matheus senhorinho",
+      "turno": "A",
+      "fat": 22052,
+      "malas": 136,
+      "media": 162.15
+    },
+    {
+      "pos": 19,
+      "nome": "lucas trindade",
+      "turno": "A",
+      "fat": 21177,
+      "malas": 137,
+      "media": 154.58
+    },
+    {
+      "pos": 20,
+      "nome": "rodrigo silva",
+      "turno": "A",
+      "fat": 20816,
+      "malas": 124,
+      "media": 167.87
+    },
+    {
+      "pos": 21,
+      "nome": "eric vinicius",
+      "turno": "B",
+      "fat": 20315,
+      "malas": 132,
+      "media": 153.9
+    },
+    {
+      "pos": 22,
+      "nome": "kaue amorim",
+      "turno": "A",
+      "fat": 19577,
+      "malas": 103,
+      "media": 190.07
+    },
+    {
+      "pos": 23,
+      "nome": "jose ramos",
+      "turno": "A",
+      "fat": 19123,
+      "malas": 125,
+      "media": 152.98
+    },
+    {
+      "pos": 24,
+      "nome": "joao ferreira",
+      "turno": "A",
+      "fat": 18699,
+      "malas": 112,
+      "media": 166.96
+    },
+    {
+      "pos": 25,
+      "nome": "kauan geraldo",
+      "turno": "A",
+      "fat": 16184,
+      "malas": 96,
+      "media": 168.58
+    },
+    {
+      "pos": 26,
+      "nome": "Pedro Henrique da Silva Santos",
+      "turno": "A",
+      "fat": 15942,
+      "malas": 83,
+      "media": 192.07
+    },
+    {
+      "pos": 27,
+      "nome": "kauan miranda",
+      "turno": "A",
+      "fat": 11962,
+      "malas": 73,
+      "media": 163.86
+    },
+    {
+      "pos": 28,
+      "nome": "elton gimenesd2",
+      "turno": "D",
+      "fat": 11479,
+      "malas": 72,
+      "media": 159.43
+    },
+    {
+      "pos": 29,
+      "nome": "gabriel donadello",
+      "turno": "D",
+      "fat": 11073,
+      "malas": 66,
+      "media": 167.77
+    },
+    {
+      "pos": 30,
+      "nome": "Diego Pereira",
+      "turno": "B",
+      "fat": 10839,
+      "malas": 59,
+      "media": 183.71
+    },
+    {
+      "pos": 31,
+      "nome": "israel lucas",
+      "turno": "D",
+      "fat": 10306,
+      "malas": 62,
+      "media": 166.23
+    },
+    {
+      "pos": 32,
+      "nome": "elton gimenes",
+      "turno": "D",
+      "fat": 9461,
+      "malas": 51,
+      "media": 185.51
+    },
+    {
+      "pos": 33,
+      "nome": "wellington ferreira",
+      "turno": "B",
+      "fat": 7773,
+      "malas": 56,
+      "media": 138.8
+    },
+    {
+      "pos": 34,
+      "nome": "gabriel donadellod2",
+      "turno": "D",
+      "fat": 7581,
+      "malas": 41,
+      "media": 184.9
+    },
+    {
+      "pos": 35,
       "nome": "israel lucasd2",
       "turno": "D",
+      "fat": 7031,
+      "malas": 41,
+      "media": 171.49
+    },
+    {
+      "pos": 36,
+      "nome": "dylan casagrande",
+      "turno": "B",
+      "fat": 5647,
+      "malas": 52,
+      "media": 108.6
+    },
+    {
+      "pos": 37,
+      "nome": "wellington ferreirad2",
+      "turno": "D",
+      "fat": 5032,
+      "malas": 32,
+      "media": 157.25
+    },
+    {
+      "pos": 38,
+      "nome": "willy silva",
+      "turno": "D",
+      "fat": 1502,
+      "malas": 8,
+      "media": 187.75
+    },
+    {
+      "pos": 39,
+      "nome": "willy silvad2",
+      "turno": "D",
+      "fat": 1116,
+      "malas": 4,
+      "media": 279.0
+    },
+    {
+      "pos": 40,
+      "nome": "diego melo",
+      "turno": "A",
       "fat": 0,
-      "malas": 1,
+      "malas": 7,
+      "media": 0.0
+    },
+    {
+      "pos": 41,
+      "nome": "Douglas Amorim",
+      "turno": "A",
+      "fat": 0,
+      "malas": 3,
       "media": 0.0
     }
   ],
   "dataTurno": "16/11/2026",
-  "arquivoNome": "RelatorioMovimentoCaixa 2026-11-16 11-55-06.xlsx"
+  "arquivoNome": "RelatorioMovimentoCaixa 2026-11-16 07-35-24.xlsx"
 }; // __END_DADOS_ATUAIS__
 
     const META_BRONZE = 1500000;

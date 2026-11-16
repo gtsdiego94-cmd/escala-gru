@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import json
+import calendar
 import subprocess
 import pandas as pd
 from datetime import datetime
@@ -20,6 +21,7 @@ REPO_DIR = r"C:\Users\User\Desktop\escala-gru"
 INDEX_PATH = os.path.join(REPO_DIR, "index.html")
 RESUMO_PATH = os.path.join(REPO_DIR, "resumo_whatsapp.txt")
 RESUMO_DIRETORIA_PATH = os.path.join(REPO_DIR, "resumo_diretoria.txt")
+HISTORICO_PATH = os.path.join(REPO_DIR, "historico_vendas.json")
 
 META_BRONZE = 1500000.0
 META_PRATA  = 1600000.0
@@ -59,7 +61,8 @@ def achar_ultimo_relatorio():
                         if base.startswith("~$") or "vendas_atual" in base:
                             continue
                         mtime = os.path.getmtime(arquivo)
-                        candidatos.append((arquivo, mtime))
+                        size = os.path.getsize(arquivo)
+                        candidatos.append((arquivo, mtime, size))
                     except:
                         pass
 
@@ -67,6 +70,17 @@ def achar_ultimo_relatorio():
         return None
 
     candidatos.sort(key=lambda x: x[1], reverse=True)
+
+    # Proteção de perito:
+    # Se o arquivo mais recente for pequeno (< 50KB = relatório parcial de turno/hora),
+    # mas existir um arquivo acumulado do mês recente (>= 100KB), usa o acumulado
+    # para não substituir os 20 dias do mês por apenas 1 turno!
+    mais_recente = candidatos[0]
+    if mais_recente[2] < 50000:
+        acumulados = [c for c in candidatos if c[2] >= 100000]
+        if acumulados:
+            return acumulados[0][0]
+
     return candidatos[0][0]
 
 def fmt_brl(v):
@@ -170,9 +184,22 @@ def processar_relatorio():
             'media': media
         })
 
+    # Detecção dinâmica do Mês e Dias (Multi-Mês)
+    MESES_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+    ano_atual = datetime.now().year
+    mes_atual = datetime.now().month
+    if len(dias_unicos) > 0:
+        dt_ref = max(dias_unicos)
+        ano_atual = dt_ref.year
+        mes_atual = dt_ref.month
+
+    nome_mes = MESES_PT[mes_atual - 1]
+    total_dias_mes = calendar.monthrange(ano_atual, mes_atual)[1]
+    periodo_str = f"{nome_mes} / {ano_atual}"
+    chave_mes = f"{ano_atual}-{mes_atual:02d}"
+
     # Métricas Gerenciais & Diretoria
-    total_dias_mes = 30
-    dias_restantes = max(1, total_dias_mes - dias_operacao)
+    dias_restantes = max(0, total_dias_mes - dias_operacao)
     media_diaria = fat_total / dias_operacao if dias_operacao > 0 else 0.0
     projecao_mes = media_diaria * total_dias_mes
 
@@ -190,20 +217,80 @@ def processar_relatorio():
     pct_d = (turnos['D']['fat'] / fat_total) * 100 if fat_total > 0 else 0.0
 
     print("\n" + "─" * 45)
-    print(f"📈 RESULTADO CONSOLIDADO ({dias_operacao} DIAS DE OPERAÇÃO):")
+    print(f"📈 RESULTADO CONSOLIDADO ({periodo_str} - {dias_operacao} DIAS DE OPERAÇÃO):")
     print(f"🌅 Turno A (Manhã):     {fmt_brl(turnos['A']['fat'])} ({turnos['A']['malas']} malas) - {pct_a:.2f}%")
     print(f"☀️ Turno B (Tarde):     {fmt_brl(turnos['B']['fat'])} ({turnos['B']['malas']} malas) - {pct_b:.2f}%")
     print(f"🌙 Turno D/C (Madrug.): {fmt_brl(turnos['D']['fat'])} ({turnos['D']['malas']} malas) - {pct_d:.2f}%")
     print(f"💰 Faturamento Geral:   {fmt_brl(fat_total)} ({malas_total} malas)")
     print(f"📊 Média Diária:        {fmt_brl(media_diaria)}/dia")
-    print(f"🔮 Projeção (30 dias):  {fmt_brl(projecao_mes)}")
+    print(f"🔮 Projeção ({total_dias_mes} dias):  {fmt_brl(projecao_mes)}")
     print(f"🎯 Falta Meta Bronze:   {fmt_brl(falta_bronze)} (Ritmo: {fmt_brl(media_nec_bronze)}/dia)")
     print("─" * 45)
+
+    # 1. Atualizar e Salvar Histórico Mensal
+    historico = {}
+    if os.path.exists(HISTORICO_PATH):
+        try:
+            with open(HISTORICO_PATH, "r", encoding="utf-8") as f:
+                historico = json.load(f)
+        except:
+            historico = {}
+
+    historico[chave_mes] = {
+        "chaveMes": chave_mes,
+        "mesNome": nome_mes,
+        "ano": ano_atual,
+        "periodo": periodo_str,
+        "faturamentoTotal": round(fat_total),
+        "totalMalas": malas_total,
+        "totalLinhas": total_linhas,
+        "diasOperacao": dias_operacao,
+        "totalDiasMes": total_dias_mes,
+        "turnos": turnos,
+        "colabs": colabs_list,
+        "dataTurno": data_ultima,
+        "arquivoNome": os.path.basename(arquivo),
+        "atualizadoEm": datetime.now().strftime("%d/%m/%Y %H:%M")
+    }
+
+    try:
+        with open(HISTORICO_PATH, "w", encoding="utf-8") as f:
+            json.dump(historico, f, indent=2, ensure_ascii=False)
+        print("💾 historico_vendas.json salvo com sucesso!")
+    except Exception as e_hist:
+        print(f"⚠️ Erro ao salvar histórico: {e_hist}")
 
     # Injeção cirúrgica no index.html
     if os.path.exists(INDEX_PATH):
         with open(INDEX_PATH, "r", encoding="utf-8") as f:
             html = f.read()
+
+        novo_dados = {
+            "chaveMes": chave_mes,
+            "mesNome": nome_mes,
+            "ano": ano_atual,
+            "periodo": periodo_str,
+            "totalDiasMes": total_dias_mes,
+            "faturamentoTotal": round(fat_total),
+            "totalMalas": malas_total,
+            "totalLinhas": total_linhas,
+            "diasOperacao": dias_operacao,
+            "turnos": turnos,
+            "colabs": colabs_list,
+            "dataTurno": data_ultima,
+            "arquivoNome": os.path.basename(arquivo)
+        }
+
+        # Bloco HISTORICO_VENDAS
+        start_h = html.find("let HISTORICO_VENDAS = {")
+        if start_h != -1:
+            end_h_marker = html.find("// __END_HISTORICO_VENDAS__", start_h)
+            if end_h_marker != -1:
+                end_h = end_h_marker + len("// __END_HISTORICO_VENDAS__")
+            else:
+                end_h = html.find("};", start_h) + 2
+            bloco_h_subst = "let HISTORICO_VENDAS = " + json.dumps(historico, indent=2, ensure_ascii=False) + "; // __END_HISTORICO_VENDAS__"
+            html = html[:start_h] + bloco_h_subst + html[end_h:]
 
         start = html.find("let DADOS_ATUAIS = {")
         if start != -1:
@@ -212,21 +299,12 @@ def processar_relatorio():
                 end = html.find("};", start) + 2
             else:
                 end = end_marker + len("// __END_DADOS_ATUAIS__")
-            novo_dados = {
-                "faturamentoTotal": round(fat_total),
-                "totalMalas": malas_total,
-                "totalLinhas": total_linhas,
-                "diasOperacao": dias_operacao,
-                "turnos": turnos,
-                "colabs": colabs_list,
-                "dataTurno": data_ultima,
-                "arquivoNome": os.path.basename(arquivo)
-            }
+
             bloco_subst = "let DADOS_ATUAIS = " + json.dumps(novo_dados, indent=2, ensure_ascii=False) + "; // __END_DADOS_ATUAIS__"
             html = html[:start] + bloco_subst + html[end:]
             with open(INDEX_PATH, "w", encoding="utf-8") as f:
                 f.write(html)
-            print("✅ index.html atualizado com sucesso!")
+            print("✅ index.html atualizado com sucesso (DADOS_ATUAIS + HISTORICO_VENDAS)!")
         else:
             print("⚠️ Aviso: bloco DADOS_ATUAIS não localizado no index.html")
 
@@ -306,7 +384,7 @@ def processar_relatorio():
         pct_o_total = (turnos['B']['fat'] / META_OURO) * 100 if META_OURO else 0
 
         dados_card = {
-            'periodo': f"Novembro / {datetime.now().year}",
+            'periodo': periodo_str,
             'dias_op': dias_operacao,
             'dias_rest': dias_restantes,
             'fat_total': fmt_brl(fat_total),
@@ -348,7 +426,7 @@ def processar_relatorio():
     # Sincroniza com GitHub
     print("\n🌐 Enviando para o GitHub Pages...")
     try:
-        subprocess.run(["git", "-C", REPO_DIR, "add", "index.html", "resumo_whatsapp.txt", "resumo_diretoria.txt", "relatorio_diretoria.png", "gerar_card_imagem.py", "atualizar_vendas_python.py"], check=False)
+        subprocess.run(["git", "-C", REPO_DIR, "add", "index.html", "resumo_whatsapp.txt", "resumo_diretoria.txt", "relatorio_diretoria.png", "gerar_card_imagem.py", "atualizar_vendas_python.py", "historico_vendas.json"], check=False)
         subprocess.run(["git", "-C", REPO_DIR, "commit", "-m", f"feat: geracao automatica de imagem executiva para diretoria ({data_ultima})"], check=False)
         subprocess.run(["git", "-C", REPO_DIR, "push", "origin", "main"], check=False)
         print("🎉 Página online atualizada no GitHub!")

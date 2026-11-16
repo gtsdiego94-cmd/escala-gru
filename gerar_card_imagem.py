@@ -41,7 +41,8 @@ def gerar_card_imagem(dados, caminho_saida):
     draw.text((230, 41), dados.get('periodo', 'Novembro / 2026'), fill=C_MUTED, font=f_subtitle)
 
     draw.text((45, 75), 'PROTECBAG GRU • METAS & PROJEÇÃO', fill=C_TEXT, font=f_title)
-    sub = f"{dados['dias_op']} Dias de Operação • Restam {dados['dias_rest']} dias (Novembro/2026)"
+    periodo_txt = dados.get('periodo', 'Novembro / 2026')
+    sub = f"{dados['dias_op']} Dias de Operação • Restam {dados['dias_rest']} dias ({periodo_txt})"
     draw.text((45, 115), sub, fill=C_MUTED, font=f_subtitle)
 
     draw.line([(45, 150), (1035, 150)], fill=C_CARD_BORDER, width=1)
