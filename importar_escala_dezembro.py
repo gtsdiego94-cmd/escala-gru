@@ -23,10 +23,8 @@ def normalizar_codigo_dia(val):
         return "1"
     if s in ["F", "FOLGA", "DSR", "DF", "0", "0.0", "FERIAS", "FER", "ATESTADO", "LICENCA"]:
         return "F"
-    # Se for número inteiro 1
     if s == "1":
         return "1"
-    # Padrão seguro: se tiver F é folga, se for 1 é trabalho
     if "F" in s:
         return "F"
     return "1"
@@ -37,11 +35,12 @@ def localizar_arquivo_escala():
         return sys.argv[1]
     
     # 2. Procurar na pasta atual ou Desktop
+    desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     padroes = [
+        os.path.join(desktop, "*escala*dezembro*.xlsx"),
+        os.path.join(desktop, "*escala*.xlsx"),
         os.path.join(os.path.dirname(__file__), "*escala*dezembro*.xlsx"),
         os.path.join(os.path.dirname(__file__), "*escala*.xlsx"),
-        os.path.join(os.path.expanduser("~"), "Desktop", "*escala*dezembro*.xlsx"),
-        os.path.join(os.path.expanduser("~"), "Desktop", "*escala*.xlsx"),
         os.path.join(os.path.dirname(__file__), "modelo_escala_dezembro.xlsx"),
     ]
     
@@ -52,9 +51,11 @@ def localizar_arquivo_escala():
                 arquivos_encontrados.append(f)
                 
     if arquivos_encontrados:
-        print("\n🔍 Arquivos de escala encontrados automaticamente:")
+        print("\n🔍 Arquivos de escala encontrados no sistema:")
         for idx, f in enumerate(arquivos_encontrados, start=1):
-            print(f"  [{idx}] {f}")
+            nome_arq = os.path.basename(f)
+            pasta = "Desktop" if desktop in f else "escala-gru"
+            print(f"  [{idx}] {nome_arq} ({pasta})")
         print("  [0] Digitar ou arrastar outro arquivo manualmente")
         
         escolha = input("\nEscolha o número do arquivo (ou 0 para manual): ").strip()
@@ -75,80 +76,91 @@ def processar_escala_excel(caminho_arquivo):
     sheet = wb.active
     print(f"📋 Aba ativa: '{sheet.title}' (Linhas: {sheet.max_row}, Colunas: {sheet.max_column})")
     
-    # Identificar a linha de cabeçalho dos dias (1 a 31)
-    linha_dias = None
-    colunas_dias = {} # dia (1..31) -> indice da coluna (1-based)
-    coluna_nome = 1
-    
-    for r in range(1, min(15, sheet.max_row + 1)):
+    # Identificar mapeamento de colunas para dias 1 a 31
+    colunas_dias = {}
+    for r in range(1, min(10, sheet.max_row + 1)):
         dias_detectados = {}
-        col_nome_candidata = None
-        for c in range(1, min(40, sheet.max_column + 1)):
+        for c in range(2, min(40, sheet.max_column + 1)):
             val = sheet.cell(r, c).value
             if val is not None:
                 s_val = str(val).strip()
-                # Verifica se é número do dia 1..31
                 if s_val.isdigit() and 1 <= int(s_val) <= 31:
                     dias_detectados[int(s_val)] = c
-                elif any(termo in s_val.lower() for termo in ["nome", "colaborador", "funcionario", "operador"]):
-                    col_nome_candidata = c
-        
-        # Se encontramos pelo menos 20 dias nessa linha, é o cabeçalho de dias!
-        if len(dias_detectados) >= 20:
-            linha_dias = r
+        if len(dias_detectados) >= 15:
             colunas_dias = dias_detectados
-            if col_nome_candidata:
-                coluna_nome = col_nome_candidata
             break
-            
-    if not linha_dias:
-        # Fallback: se colunas 2..32 são dias 1..31
-        print("⚠️ Cabeçalho explícito de dias não detectado com certeza. Usando mapeamento padrão: Coluna 1 = Nome, Colunas 2 a 32 = Dias 1 a 31.")
-        coluna_nome = 1
-        colunas_dias = {d: d + 1 for d in range(1, 32)}
-        linha_inicio = 2
-    else:
-        linha_inicio = linha_dias + 1
-        # Completar dias que porventura faltem se sequência for contínua
-        for d in range(1, 32):
-            if d not in colunas_dias and (d - 1) in colunas_dias:
-                colunas_dias[d] = colunas_dias[d - 1] + 1
 
-    print(f"✅ Mapeamento: Coluna Nome = {coluna_nome}, Linha inicial de dados = {linha_inicio}")
-    print(f"   Dias mapeados: {len(colunas_dias)} dias (1 a 31)")
+    if not colunas_dias:
+        # Fallback padrão: colunas 2 a 32 representam dias 1 a 31
+        colunas_dias = {d: d + 1 for d in range(1, 32)}
+
+    # Mapear seções na planilha (TURNO A, TURNO B, LIDER, etc.)
+    secoes = {}
+    secao_atual = "TURNO A"
+    secoes[secao_atual] = []
     
-    colaboradores = []
-    
-    for r in range(linha_inicio, sheet.max_row + 1):
-        val_nome = sheet.cell(r, coluna_nome).value
-        if not val_nome:
+    for r in range(1, sheet.max_row + 1):
+        val_col1 = sheet.cell(r, 1).value
+        if not val_col1:
             continue
-        nome = str(val_nome).strip().upper()
-        # Ignorar linhas de totais, rodapé, ou em branco
-        if any(ign in nome for ign in ["TOTAL", "TRABALHANDO", "FOLGAS", "OBS:", "LEGENDA", "TURNO"]):
+        txt = str(val_col1).strip().upper()
+        
+        # Mudança de seção
+        if "TURNO A" in txt:
+            secao_atual = "TURNO A"
+            if secao_atual not in secoes: secoes[secao_atual] = []
             continue
-        if len(nome) < 3:
+        elif "TURNO B" in txt:
+            secao_atual = "TURNO B"
+            if secao_atual not in secoes: secoes[secao_atual] = []
+            continue
+        elif "LIDER" in txt:
+            secao_atual = "LIDERES"
+            if secao_atual not in secoes: secoes[secao_atual] = []
+            continue
+        elif any(k in txt for k in ["TURNO C", "TURNO D", "OUTROS", "REFORCO"]):
+            secao_atual = txt
+            if secao_atual not in secoes: secoes[secao_atual] = []
+            continue
+        elif any(k in txt for k in ["QTA.", "TOTAL", "NOVEMBRO", "DEZEMBRO", "JANEIRO", "COLABORADOR", "DOM", "SEG", "TER"]):
             continue
             
-        dias = []
-        for d in range(1, 32):
-            col_idx = colunas_dias.get(d)
-            if col_idx:
-                raw_val = sheet.cell(r, col_idx).value
-                dias.append(normalizar_codigo_dia(raw_val))
-            else:
-                dias.append("1") # fallback padrão
-                
-        colaboradores.append({
-            "nome": nome,
-            "dias": dias
-        })
-        
-    return colaboradores
+        # Nome de colaborador válido (> 2 caracteres)
+        if len(txt) > 2:
+            dias = []
+            for d in range(1, 32):
+                col_idx = colunas_dias.get(d)
+                if col_idx:
+                    raw_val = sheet.cell(r, col_idx).value
+                    dias.append(normalizar_codigo_dia(raw_val))
+                else:
+                    dias.append("1")
+                    
+            secoes[secao_atual].append({
+                "nome": txt,
+                "dias": dias
+            })
+
+    print(f"\n📑 Seções detectadas no arquivo:")
+    for sec, colabs in secoes.items():
+        if colabs:
+            print(f"   • {sec}: {len(colabs)} pessoas")
+            
+    # O portal de escala principal utiliza o TURNO A
+    alvo = secoes.get("TURNO A")
+    if not alvo:
+        # Se não houver divisão explícita, pega a primeira seção com colaboradores
+        for sec, colabs in secoes.items():
+            if colabs:
+                alvo = colabs
+                print(f"ℹ️ Usando colaboradores da seção: {sec}")
+                break
+
+    return alvo
 
 def exibir_preview(colaboradores):
     print("\n" + "="*80)
-    print("📊 PRÉVIA DA ESCALA DE DEZEMBRO (31 DIAS)")
+    print("📊 PRÉVIA DA ESCALA DE DEZEMBRO - TURNO A (31 DIAS)")
     print("="*80)
     print(f"{'Nº':<3} | {'COLABORADOR':<26} | {'TRAB':<5} | {'FOLGAS':<6} | {'AMOSTRA (DIAS 1 A 15)':<25}")
     print("-"*80)
@@ -160,7 +172,7 @@ def exibir_preview(colaboradores):
         print(f"{idx:<3} | {c['nome'][:26]:<26} | {trab:<5} | {folgas:<6} | {amostra}")
         
     print("-"*80)
-    print(f"Total de Colaboradores: {len(colaboradores)}")
+    print(f"Total de Colaboradores no Turno A: {len(colaboradores)}")
     print("="*80 + "\n")
 
 def atualizar_index_html(colaboradores):
@@ -188,13 +200,10 @@ def atualizar_index_html(colaboradores):
     html_mod = re.sub(padrao_dez, novo_bloco_dez, html, count=1)
     
     # 3. Habilitar Dezembro no selector: remover 'disabled' e ajustar label
-    # <option value="2026-12" disabled>Dezembro 2026 (Aguardando Gerente)</option>
-    # -> <option value="2026-12">Dezembro 2026 (Oficial)</option>
     html_mod = html_mod.replace(
         '<option value="2026-12" disabled>Dezembro 2026 (Aguardando Gerente)</option>',
         '<option value="2026-12">Dezembro 2026 (Oficial)</option>'
     )
-    # Caso já estivesse sem o disabled
     html_mod = html_mod.replace(
         '<option value="2026-12">Dezembro 2026</option>',
         '<option value="2026-12">Dezembro 2026 (Oficial)</option>'
@@ -240,7 +249,7 @@ def main():
     exibir_preview(colaboradores)
     
     print("⚠️ ATENÇÃO:")
-    print("Ao confirmar abaixo, a escala de Dezembro será ativada no portal oficial da equipe.")
+    print("Ao confirmar abaixo, a escala de Dezembro será ATIVADA no portal oficial da equipe.")
     print("Se ainda estiver aguardando aprovação final do gerente, responda 'N'.")
     
     resp = input("\nDeseja ATUALIZAR e PUBLICAR a escala de Dezembro agora? [S/N]: ").strip().upper()
