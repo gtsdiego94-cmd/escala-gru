@@ -1,35 +1,29 @@
 📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*
-📅 *Data:* 16/11/2026 (20 dias de operação)
+📅 *Data:* 16/11/2026 (1 dias de operação)
 ━━━━━━━━━━━━━━━━━━━━━
 
 *🌅 TURNO A (Manhã)*
-💰 Fat: R$ 341.402,00 | 🧳 Malas: 1966
-🥇 *DALTON DUARTE*: R$ 39.712,00 (226 malas)
-🥈 *EDUARDO LIMA*: R$ 32.632,00 (179 malas)
-🥉 *RICARDO LIMA*: R$ 30.832,00 (168 malas)
-▫️ *VICTOR COSTA DOMENE DOS SANTOS*: R$ 30.527,00 (168 malas)
-▫️ *DANILO PEREIRA*: R$ 27.196,00 (151 malas)
+💰 Fat: R$ 9.978,00 | 🧳 Malas: 54
+🥇 *RODRIGO SILVA*: R$ 2.696,00 (14 malas)
+🥈 *KAUAN GERALDO*: R$ 1.677,00 (9 malas)
+🥉 *LUCAS TRINDADE*: R$ 1.552,00 (9 malas)
+▫️ *DALTON DUARTE*: R$ 1.168,00 (7 malas)
+▫️ *KAUE AMORIM*: R$ 1.085,00 (5 malas)
 
 *☀️ TURNO B (Tarde)*
-💰 Fat: R$ 509.888,00 | 🧳 Malas: 3015
-🥇 *RAFAEL MESSIAS*: R$ 63.528,00 (369 malas)
-🥈 *DAVI ARAUJO*: R$ 52.706,00 (293 malas)
-🥉 *JOSE CARLOS GUILHERME*: R$ 51.244,00 (308 malas)
-▫️ *GABRIEL GONCALVES*: R$ 49.580,00 (286 malas)
-▫️ *KAIQUE MENDES*: R$ 47.149,00 (260 malas)
+💰 Fat: R$ 0,00 | 🧳 Malas: 0
+_Nenhum colaborador registrado_
 
 *🌙 TURNO D (Madrugada)*
-💰 Fat: R$ 81.195,00 | 🧳 Malas: 484
-🥇 *ELTON GIMENESD2*: R$ 11.479,00 (72 malas)
-🥈 *GABRIEL DONADELLO*: R$ 11.073,00 (66 malas)
-🥉 *ISRAEL LUCAS*: R$ 10.306,00 (62 malas)
-▫️ *ELTON GIMENES*: R$ 9.461,00 (51 malas)
-▫️ *GABRIEL DONADELLOD2*: R$ 7.581,00 (41 malas)
+💰 Fat: R$ 1.223,00 | 🧳 Malas: 10
+🥇 *KAUAN MIRANDA*: R$ 676,00 (5 malas)
+🥈 *ELTON GIMENESD2*: R$ 547,00 (4 malas)
+🥉 *ISRAEL LUCASD2*: R$ 0,00 (1 malas)
 
 ━━━━━━━━━━━━━━━━━━━━━
 🎯 *TOTAL GERAL ACUMULADO*
-💵 *Faturamento Total:* R$ 932.485,00
-🧳 *Total de Malas:* 5465
-💳 *Lançamentos:* 5986
+💵 *Faturamento Total:* R$ 11.201,00
+🧳 *Total de Malas:* 64
+💳 *Lançamentos:* 72
 
 🚀 *Equipe Protecbag GRU*
