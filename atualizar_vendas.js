@@ -65,7 +65,18 @@ if (!targetFile || !fs.existsSync(targetFile)) {
   });
 
   allFiles.sort((a, b) => b.time - a.time);
-  if (allFiles.length > 0) targetFile = allFiles[0].path;
+  if (allFiles.length > 0) {
+    targetFile = allFiles[0].path;
+    try {
+      const topSize = fs.statSync(targetFile).size;
+      if (topSize < 50000) {
+        const big = allFiles.find(f => {
+          try { return fs.statSync(f.path).size >= 100000; } catch (e) { return false; }
+        });
+        if (big) targetFile = big.path;
+      }
+    } catch (e) {}
+  }
 }
 
 if (!targetFile || !fs.existsSync(targetFile)) {
@@ -168,20 +179,32 @@ const colabsList = Object.values(colabsMap)
     media: c.malas > 0 ? parseFloat((c.fat / c.malas).toFixed(2)) : 0
   }));
 
-const totalDiasMes = 30;
-const diasRestantes = Math.max(1, totalDiasMes - diasOperacao);
+const MESES_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+let refDate = new Date();
+if (diasUnicos.size > 0) {
+  const arr = Array.from(diasUnicos).sort();
+  refDate = new Date(arr[arr.length - 1] + 'T12:00:00');
+}
+const anoAtual = refDate.getFullYear();
+const mesAtual = refDate.getMonth() + 1;
+const nomeMes = MESES_PT[mesAtual - 1];
+const totalDiasMes = new Date(anoAtual, mesAtual, 0).getDate();
+const periodoStr = `${nomeMes} / ${anoAtual}`;
+const chaveMes = `${anoAtual}-${String(mesAtual).padStart(2, '0')}`;
+
+const diasRestantes = Math.max(0, totalDiasMes - diasOperacao);
 const mediaDiaria = diasOperacao > 0 ? (fatTotal / diasOperacao) : 0;
 const projecaoMes = mediaDiaria * totalDiasMes;
 const faltaBronze = Math.max(0, META_BRONZE - fatTotal);
 const mediaNecBronze = diasRestantes > 0 ? (faltaBronze / diasRestantes) : 0;
 
 console.log(`✅ ${rows.length} lançamentos processados sem perdas!`);
-console.log(`📊 DESEMPENHO OFICIAL POR TURNO (${diasOperacao} DIAS DE OPERAÇÃO):`);
+console.log(`📊 DESEMPENHO OFICIAL POR TURNO (${periodoStr} - ${diasOperacao} DIAS DE OPERAÇÃO):`);
 console.log(`🌅 Turno A (Manhã):     ${fmtBRL(turnosTotais.A.fat)} (${turnosTotais.A.malas} malas)`);
 console.log(`☀️ Turno B (Tarde):     ${fmtBRL(turnosTotais.B.fat)} (${turnosTotais.B.malas} malas)`);
 console.log(`🌙 Turno D (Madrugada): ${fmtBRL(turnosTotais.D.fat)} (${turnosTotais.D.malas} malas)`);
 console.log(`💰 Faturamento Geral:   ${fmtBRL(fatTotal)} (${malasTotal} malas)`);
-console.log(`🔮 Projeção (30 dias):  ${fmtBRL(projecaoMes)}`);
+console.log(`🔮 Projeção (${totalDiasMes} dias):  ${fmtBRL(projecaoMes)}`);
 
 // Atualizar index.html com dados consolidados
 const indexPath = path.join(REPO_DIR, 'index.html');
@@ -197,6 +220,11 @@ if (startIdx !== -1) {
     endIdx = indexHtml.indexOf('};', startIdx) + 2;
   }
   const novoBloco = 'let DADOS_ATUAIS = ' + JSON.stringify({
+    chaveMes,
+    mesNome: nomeMes,
+    ano: anoAtual,
+    periodo: periodoStr,
+    totalDiasMes,
     faturamentoTotal: Math.round(fatTotal),
     totalMalas: malasTotal,
     totalLinhas: rows.length,
