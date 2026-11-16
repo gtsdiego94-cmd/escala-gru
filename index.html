@@ -426,6 +426,26 @@
     fraca: {bg:"bg-blue-500/15",  border:"border-blue-500/40",   text:"text-blue-400",   label:"🧊 FRACA"},
   };
 
+  function trocarMesEscala(chave) {
+    if (!MESES_ESCALA[chave]) return;
+    activeEscalaKey = chave;
+    activeEscalaConfig = MESES_ESCALA[chave];
+    if (selectedDay > activeEscalaConfig.dias) {
+      selectedDay = 1;
+    }
+    const subEl = document.getElementById('escalaSubtitulo');
+    if (subEl) {
+      subEl.textContent = `${activeEscalaConfig.nome} • 15 Colaboradores • Rodízio Equilibrado`;
+    }
+    const topPeriodo = document.getElementById('nav-top-periodo');
+    if (topPeriodo) {
+      topPeriodo.textContent = activeEscalaConfig.nome;
+    }
+    render();
+    if (currentView === 'colab') renderColabView();
+    if (currentView === 'matriz') renderMatrizView();
+  }
+
   // Alternador de Visualização
   function switchView(view) {
     currentView = view;
@@ -449,9 +469,11 @@
   // 1. RENDER DA VISÃO DIÁRIA
   function renderGrid() {
     const grid = document.getElementById('dayGrid');
+    if (!grid) return;
     grid.innerHTML = '';
-    for (let d = 1; d <= NOV_DIAS; d++) {
-      const dow = getDowNov(d);
+    const totalDias = activeEscalaConfig.dias;
+    for (let d = 1; d <= totalDias; d++) {
+      const dow = getDowCurrent(d);
       const isWknd = dow === 5 || dow === 6;
       const sel = d === selectedDay;
       const btn = document.createElement('button');
@@ -467,13 +489,17 @@
 
   function render() {
     renderGrid();
-    const day = resNov.allDays[selectedDay - 1];
-    const dow = getDowNov(selectedDay);
+    const totalDias = activeEscalaConfig.dias;
+    if (selectedDay > totalDias) selectedDay = 1;
+    const currentRes = getActiveRes();
+    const day = currentRes.allDays[selectedDay - 1];
+    const dow = getDowCurrent(selectedDay);
     const gruCount = Object.values(day.postos).filter(v=>v).length;
     const rendCount = (day.r1?1:0)+(day.r2?1:0);
 
+    const mesNum = activeEscalaKey === '2026-12' ? '12' : '11';
     const badgeEl = document.getElementById('dia-selecionado-badge');
-    if(badgeEl) badgeEl.textContent = `Dia ${selectedDay}/11 • ${WEEKDAY_NAMES[dow]}`;
+    if(badgeEl) badgeEl.textContent = `Dia ${selectedDay}/${mesNum} • ${WEEKDAY_NAMES[dow]}`;
 
     document.getElementById('stats').innerHTML = `
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center card-hover">
@@ -490,7 +516,7 @@
         <div class="text-xs text-[var(--muted-foreground)]">Apoio</div></div>
       <div class="bg-[var(--card)] border border-purple-500/30 rounded-xl p-3 text-center card-hover">
         <div class="text-2xl font-bold text-purple-400">${WEEKDAY_NAMES[dow]}</div>
-        <div class="text-xs text-[var(--muted-foreground)]">Dia ${selectedDay}/11</div></div>`;
+        <div class="text-xs text-[var(--muted-foreground)]">Dia ${selectedDay}/${mesNum}</div></div>`;
 
     const gruOrder = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-13"];
     document.getElementById('postos').innerHTML = gruOrder.map(gru => {
@@ -503,8 +529,8 @@
         <span class="badge ${s.bg} ${s.text} text-xs">${s.label}</span></div>`;
     }).join('');
 
-    const folga  = TURNO_A_NOV.filter(e=>e.dias[selectedDay-1]==="F");
-    const ferias = TURNO_A_NOV.filter(e=>e.dias[selectedDay-1]==="FERIAS");
+    const folga  = activeEscalaConfig.dados.filter(e=>e.dias[selectedDay-1]==="F");
+    const ferias = activeEscalaConfig.dados.filter(e=>e.dias[selectedDay-1]==="FERIAS");
     document.getElementById('ausentes').innerHTML = `<div class="space-y-2">
       ${folga.length  ? `<div class="flex items-start gap-2 text-xs text-[var(--muted-foreground)]"><span>😴</span><div><span class="font-semibold opacity-70">Folga (${folga.length}):</span> <span class="opacity-60">${folga.map(e=>e.nome).join(', ')}</span></div></div>` : ''}
       ${ferias.length ? `<div class="flex items-start gap-2 text-xs text-[var(--muted-foreground)]"><span>🏖️</span><div><span class="font-semibold opacity-70">Férias (${ferias.length}):</span> <span class="opacity-60">${ferias.map(e=>e.nome).join(', ')}</span></div></div>` : ''}
@@ -526,7 +552,7 @@
       ? day.apoio.map(p=>`<span class="badge bg-green-500/15 text-green-400 py-1.5 px-3 mr-1.5 mb-1.5">${p}</span>`).join('')
       : '<p class="text-sm text-[var(--muted-foreground)] italic">Todos alocados — nenhum apoio hoje</p>';
 
-    const entries = Object.entries(resNov.score).sort((a,b)=>b[1]-a[1]);
+    const entries = Object.entries(currentRes.score).sort((a,b)=>b[1]-a[1]);
     const max = Math.max(...entries.map(e=>e[1]),1);
     const min = Math.min(...entries.map(e=>e[1]));
     const avg = entries.reduce((s,e)=>s+e[1],0)/entries.length;
@@ -549,7 +575,7 @@
       }).join('')}</div>`;
 
     // Frase do dia
-    const f = FRASES[selectedDay - 1];
+    const f = FRASES[(selectedDay - 1) % FRASES.length];
     if (f) {
       document.getElementById('frase-texto').textContent = '\u201c' + f.frase + '\u201d';
       document.getElementById('frase-autor').textContent = '— ' + f.autor;
@@ -561,7 +587,7 @@
   function initColabSelect() {
     const sel = document.getElementById('colabSelect');
     if(!sel) return;
-    sel.innerHTML = TURNO_A_NOV.map(c => 
+    sel.innerHTML = activeEscalaConfig.dados.map(c => 
       `<option value="${c.nome}" ${c.nome === selectedColab ? 'selected' : ''}>👤 ${c.nome}</option>`
     ).join('');
   }
@@ -573,8 +599,10 @@
 
   function renderColabDetail(nome) {
     selectedColab = nome;
-    const colab = TURNO_A_NOV.find(c => c.nome === nome);
+    const colab = activeEscalaConfig.dados.find(c => c.nome === nome);
     if(!colab) return;
+    const currentRes = getActiveRes();
+    const totalDias = activeEscalaConfig.dias;
 
     let trabCount = 0;
     let folgaCount = 0;
@@ -586,10 +614,10 @@
 
     const daysInfo = [];
 
-    for(let d=1; d<=NOV_DIAS; d++) {
-      const dow = getDowNov(d);
+    for(let d=1; d<=totalDias; d++) {
+      const dow = getDowCurrent(d);
       const isWork = colab.dias[d-1] === "1";
-      const dayRes = resNov.allDays[d-1];
+      const dayRes = currentRes.allDays[d-1];
 
       if(!isWork) {
         folgaCount++;
@@ -633,7 +661,7 @@
       }
     }
 
-    const totalPts = resNov.score[nome] || 0;
+    const totalPts = currentRes.score[nome] || 0;
 
     // Métricas do Colaborador
     document.getElementById('colab-metricas').innerHTML = `
@@ -678,19 +706,43 @@
   }
 
   // 3. RENDER DA MATRIZ COMPLETA
+  function renderMatrizHeader() {
+    const tr = document.getElementById('matriz-thead-tr');
+    if (!tr) return;
+    const totalDias = activeEscalaConfig.dias;
+    let ths = `
+      <th class="p-2.5 font-bold sticky-col min-w-[170px] border-r border-[var(--border)]">Colaborador</th>
+      <th class="p-2 text-center font-bold min-w-[50px] border-r border-[var(--border)]">Pts</th>
+    `;
+    for(let d=1; d<=totalDias; d++) {
+      const dow = getDowCurrent(d);
+      const isWknd = dow === 5 || dow === 6;
+      ths += `
+        <th class="p-1.5 text-center min-w-[42px] border-r border-[var(--border)]/50 ${isWknd ? 'bg-orange-500/10 text-orange-400 font-bold' : ''}">
+          <div>${d}</div>
+          <div class="text-[9px] font-normal opacity-70">${WEEKDAY_NAMES[dow]}</div>
+        </th>
+      `;
+    }
+    tr.innerHTML = ths;
+  }
+
   function renderMatrizView() {
+    renderMatrizHeader();
     const tbody = document.getElementById('matriz-tbody');
     if(!tbody) return;
+    const totalDias = activeEscalaConfig.dias;
+    const currentRes = getActiveRes();
 
-    tbody.innerHTML = TURNO_A_NOV.map(colab => {
+    tbody.innerHTML = activeEscalaConfig.dados.map(colab => {
       const nome = colab.nome;
-      const pts = resNov.score[nome] || 0;
+      const pts = currentRes.score[nome] || 0;
 
       const cells = [];
-      for(let d=1; d<=NOV_DIAS; d++) {
-        const dow = getDowNov(d);
+      for(let d=1; d<=totalDias; d++) {
+        const dow = getDowCurrent(d);
         const isWork = colab.dias[d-1] === "1";
-        const dayRes = resNov.allDays[d-1];
+        const dayRes = currentRes.allDays[d-1];
 
         if(!isWork) {
           cells.push(`<td class="p-1 text-center border-r border-[var(--border)]/30"><span class="badge bg-zinc-800/80 text-zinc-500 font-normal text-[9px] px-1">F</span></td>`);
@@ -819,21 +871,32 @@
           </h2>
         </div>
 
-        <!-- SIMULADOR / DIAS DE OPERAÇÃO -->
-        <div class="flex items-center gap-3 bg-[#18181b] border border-[#27272a] px-3.5 py-2 rounded-xl">
-          <div class="text-xs">
-            <span class="text-zinc-400 block font-medium">Dias de Operação:</span>
-            <div class="flex items-center gap-1.5 mt-0.5">
-              <input type="number" id="inputDiasOperacao" min="1" max="30" value="12" 
-                onchange="atualizarSimulacaoDias(this.value)" oninput="atualizarSimulacaoDias(this.value)"
-                class="w-14 bg-[#27272a] text-center font-bold text-white text-sm rounded-lg px-1 py-0.5 border border-zinc-700 focus:outline-none focus:border-amber-500">
-              <span class="text-[11px] text-zinc-400">/ 30 dias</span>
-            </div>
+        <!-- SELETOR DE MÊS & SIMULADOR DE DIAS -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <!-- SELETOR DE MÊS / HISTÓRICO -->
+          <div class="bg-[#18181b] border border-[#27272a] px-3 py-2 rounded-xl text-xs flex flex-col justify-center">
+            <span class="text-zinc-400 block font-medium mb-1">Mês de Referência:</span>
+            <select id="seletorMesVendas" onchange="trocarMesVendas(this.value)" class="bg-[#27272a] text-white text-xs font-bold rounded-lg px-2 py-1 border border-zinc-700 focus:outline-none focus:border-amber-500 cursor-pointer">
+              <!-- Preenchido dinamicamente via popularSeletorMesVendas() -->
+            </select>
           </div>
-          <div class="h-8 w-px bg-[#27272a]"></div>
-          <div class="text-xs">
-            <span class="text-zinc-400 block font-medium">Restam no Mês:</span>
-            <span class="font-bold text-amber-400 text-sm" id="badgeDiasRestantes">18 dias</span>
+
+          <!-- SIMULADOR / DIAS DE OPERAÇÃO -->
+          <div class="flex items-center gap-3 bg-[#18181b] border border-[#27272a] px-3.5 py-2 rounded-xl">
+            <div class="text-xs">
+              <span class="text-zinc-400 block font-medium">Dias de Operação:</span>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <input type="number" id="inputDiasOperacao" min="1" max="31" value="20" 
+                  onchange="atualizarSimulacaoDias(this.value)" oninput="atualizarSimulacaoDias(this.value)"
+                  class="w-14 bg-[#27272a] text-center font-bold text-white text-sm rounded-lg px-1 py-0.5 border border-zinc-700 focus:outline-none focus:border-amber-500">
+                <span class="text-[11px] text-zinc-400" id="labelTotalDiasMes">/ 30 dias</span>
+              </div>
+            </div>
+            <div class="h-8 w-px bg-[#27272a]"></div>
+            <div class="text-xs">
+              <span class="text-zinc-400 block font-medium">Restam no Mês:</span>
+              <span class="font-bold text-amber-400 text-sm" id="badgeDiasRestantes">10 dias</span>
+            </div>
           </div>
         </div>
       </div>
@@ -866,11 +929,11 @@
         <!-- 3. Projeção Final do Mês -->
         <div class="p-4 rounded-xl bg-purple-950/20 border border-purple-800/30">
           <div class="text-xs text-purple-300 font-semibold flex items-center justify-between">
-            <span>Projeção (30 dias)</span>
+            <span>Projeção (<span id="labelDiasProjecao">30</span> dias)</span>
             <span class="text-[10px] px-1.5 py-0.5 rounded font-bold" id="badgeStatusProjecao">Calculando</span>
           </div>
           <p class="text-2xl font-black text-purple-300 mt-1" id="execProjecaoMes">R$ 0,00</p>
-          <div class="text-[11px] text-zinc-400 mt-1" id="labelDiffBronze">Base: Média diária × 30</div>
+          <div class="text-[11px] text-zinc-400 mt-1" id="labelDiffBronze">Base: Média diária × dias</div>
         </div>
 
         <!-- 4. Ritmo Necessário p/ Meta Bronze -->
@@ -1140,20 +1203,368 @@
 
     <!-- SCRIPT DE PROCESSAMENTO DO ONEBOSS CSV -->
     <script>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    let HISTORICO_VENDAS = {
+  "2026-11": {
+    "chaveMes": "2026-11",
+    "mesNome": "Novembro",
+    "ano": 2026,
+    "periodo": "Novembro / 2026",
+    "faturamentoTotal": 932485,
+    "totalMalas": 5465,
+    "totalLinhas": 5986,
+    "diasOperacao": 20,
+    "totalDiasMes": 30,
+    "turnos": {
+      "A": {
+        "fat": 341402.0,
+        "malas": 1966
+      },
+      "B": {
+        "fat": 509888.0,
+        "malas": 3015
+      },
+      "D": {
+        "fat": 81195.0,
+        "malas": 484
+      }
+    },
+    "colabs": [
+      {
+        "pos": 1,
+        "nome": "rafael messias",
+        "turno": "B",
+        "fat": 63528,
+        "malas": 369,
+        "media": 172.16
+      },
+      {
+        "pos": 2,
+        "nome": "Davi Araujo",
+        "turno": "B",
+        "fat": 52706,
+        "malas": 293,
+        "media": 179.88
+      },
+      {
+        "pos": 3,
+        "nome": "Jose Carlos Guilherme",
+        "turno": "B",
+        "fat": 51244,
+        "malas": 308,
+        "media": 166.38
+      },
+      {
+        "pos": 4,
+        "nome": "gabriel goncalves",
+        "turno": "B",
+        "fat": 49580,
+        "malas": 286,
+        "media": 173.36
+      },
+      {
+        "pos": 5,
+        "nome": "kaique mendes",
+        "turno": "B",
+        "fat": 47149,
+        "malas": 260,
+        "media": 181.34
+      },
+      {
+        "pos": 6,
+        "nome": "jose macedo",
+        "turno": "B",
+        "fat": 45136,
+        "malas": 265,
+        "media": 170.32
+      },
+      {
+        "pos": 7,
+        "nome": "Henrique Pedro",
+        "turno": "B",
+        "fat": 42574,
+        "malas": 255,
+        "media": 166.96
+      },
+      {
+        "pos": 8,
+        "nome": "Dalton Duarte",
+        "turno": "A",
+        "fat": 39712,
+        "malas": 226,
+        "media": 175.72
+      },
+      {
+        "pos": 9,
+        "nome": "Wesley Matheus",
+        "turno": "B",
+        "fat": 34729,
+        "malas": 207,
+        "media": 167.77
+      },
+      {
+        "pos": 10,
+        "nome": "eduardo lima",
+        "turno": "A",
+        "fat": 32632,
+        "malas": 179,
+        "media": 182.3
+      },
+      {
+        "pos": 11,
+        "nome": "ricardo lima",
+        "turno": "A",
+        "fat": 30832,
+        "malas": 168,
+        "media": 183.52
+      },
+      {
+        "pos": 12,
+        "nome": "Victor Costa Domene dos Santos",
+        "turno": "A",
+        "fat": 30527,
+        "malas": 168,
+        "media": 181.71
+      },
+      {
+        "pos": 13,
+        "nome": "roni oliveira",
+        "turno": "B",
+        "fat": 30376,
+        "malas": 177,
+        "media": 171.62
+      },
+      {
+        "pos": 14,
+        "nome": "mihael henrique",
+        "turno": "B",
+        "fat": 28996,
+        "malas": 169,
+        "media": 171.57
+      },
+      {
+        "pos": 15,
+        "nome": "danilo pereira",
+        "turno": "A",
+        "fat": 27196,
+        "malas": 151,
+        "media": 180.11
+      },
+      {
+        "pos": 16,
+        "nome": "vitor viana",
+        "turno": "B",
+        "fat": 26771,
+        "malas": 171,
+        "media": 156.56
+      },
+      {
+        "pos": 17,
+        "nome": "wilson",
+        "turno": "A",
+        "fat": 24110,
+        "malas": 138,
+        "media": 174.71
+      },
+      {
+        "pos": 18,
+        "nome": "matheus senhorinho",
+        "turno": "A",
+        "fat": 22052,
+        "malas": 136,
+        "media": 162.15
+      },
+      {
+        "pos": 19,
+        "nome": "lucas trindade",
+        "turno": "A",
+        "fat": 21177,
+        "malas": 137,
+        "media": 154.58
+      },
+      {
+        "pos": 20,
+        "nome": "rodrigo silva",
+        "turno": "A",
+        "fat": 20816,
+        "malas": 124,
+        "media": 167.87
+      },
+      {
+        "pos": 21,
+        "nome": "eric vinicius",
+        "turno": "B",
+        "fat": 20315,
+        "malas": 132,
+        "media": 153.9
+      },
+      {
+        "pos": 22,
+        "nome": "kaue amorim",
+        "turno": "A",
+        "fat": 19577,
+        "malas": 103,
+        "media": 190.07
+      },
+      {
+        "pos": 23,
+        "nome": "jose ramos",
+        "turno": "A",
+        "fat": 19123,
+        "malas": 125,
+        "media": 152.98
+      },
+      {
+        "pos": 24,
+        "nome": "joao ferreira",
+        "turno": "A",
+        "fat": 18699,
+        "malas": 112,
+        "media": 166.96
+      },
+      {
+        "pos": 25,
+        "nome": "kauan geraldo",
+        "turno": "A",
+        "fat": 16184,
+        "malas": 96,
+        "media": 168.58
+      },
+      {
+        "pos": 26,
+        "nome": "Pedro Henrique da Silva Santos",
+        "turno": "A",
+        "fat": 15942,
+        "malas": 83,
+        "media": 192.07
+      },
+      {
+        "pos": 27,
+        "nome": "kauan miranda",
+        "turno": "A",
+        "fat": 11962,
+        "malas": 73,
+        "media": 163.86
+      },
+      {
+        "pos": 28,
+        "nome": "elton gimenesd2",
+        "turno": "D",
+        "fat": 11479,
+        "malas": 72,
+        "media": 159.43
+      },
+      {
+        "pos": 29,
+        "nome": "gabriel donadello",
+        "turno": "D",
+        "fat": 11073,
+        "malas": 66,
+        "media": 167.77
+      },
+      {
+        "pos": 30,
+        "nome": "Diego Pereira",
+        "turno": "B",
+        "fat": 10839,
+        "malas": 59,
+        "media": 183.71
+      },
+      {
+        "pos": 31,
+        "nome": "israel lucas",
+        "turno": "D",
+        "fat": 10306,
+        "malas": 62,
+        "media": 166.23
+      },
+      {
+        "pos": 32,
+        "nome": "elton gimenes",
+        "turno": "D",
+        "fat": 9461,
+        "malas": 51,
+        "media": 185.51
+      },
+      {
+        "pos": 33,
+        "nome": "wellington ferreira",
+        "turno": "B",
+        "fat": 7773,
+        "malas": 56,
+        "media": 138.8
+      },
+      {
+        "pos": 34,
+        "nome": "gabriel donadellod2",
+        "turno": "D",
+        "fat": 7581,
+        "malas": 41,
+        "media": 184.9
+      },
+      {
+        "pos": 35,
+        "nome": "israel lucasd2",
+        "turno": "D",
+        "fat": 7031,
+        "malas": 41,
+        "media": 171.49
+      },
+      {
+        "pos": 36,
+        "nome": "dylan casagrande",
+        "turno": "B",
+        "fat": 5647,
+        "malas": 52,
+        "media": 108.6
+      },
+      {
+        "pos": 37,
+        "nome": "wellington ferreirad2",
+        "turno": "D",
+        "fat": 5032,
+        "malas": 32,
+        "media": 157.25
+      },
+      {
+        "pos": 38,
+        "nome": "willy silva",
+        "turno": "D",
+        "fat": 1502,
+        "malas": 8,
+        "media": 187.75
+      },
+      {
+        "pos": 39,
+        "nome": "willy silvad2",
+        "turno": "D",
+        "fat": 1116,
+        "malas": 4,
+        "media": 279.0
+      },
+      {
+        "pos": 40,
+        "nome": "diego melo",
+        "turno": "A",
+        "fat": 0,
+        "malas": 7,
+        "media": 0.0
+      },
+      {
+        "pos": 41,
+        "nome": "Douglas Amorim",
+        "turno": "A",
+        "fat": 0,
+        "malas": 3,
+        "media": 0.0
+      }
+    ],
+    "dataTurno": "16/11/2026",
+    "arquivoNome": "RelatorioMovimentoCaixa 2026-11-16 07-35-24.xlsx",
+    "atualizadoEm": "16/11/2026 12:21"
+  }
+}; // __END_HISTORICO_VENDAS__
+    let DADOS_VISUALIZACAO = null;
+
     let DADOS_ATUAIS = {
   "chaveMes": "2026-11",
   "mesNome": "Novembro",
@@ -1823,25 +2234,86 @@
         turnosObj[t].malas += c.malas;
       });
 
+      const MESES_NOMES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+      let refDate = new Date();
+      if (setDiasUnicos.size > 0) {
+        const arr = Array.from(setDiasUnicos).sort();
+        const lastStr = arr[arr.length - 1];
+        const parsed = new Date(lastStr.includes('/') ? lastStr.split('/').reverse().join('-') : lastStr);
+        if (!isNaN(parsed.getTime())) refDate = parsed;
+      }
+      const mesNum = refDate.getMonth() + 1;
+      const anoNum = refDate.getFullYear();
+      const mesNome = MESES_NOMES[mesNum - 1];
+      const totalDiasMes = new Date(anoNum, mesNum, 0).getDate();
+      const periodoMes = `${mesNome} / ${anoNum}`;
+      const chaveMes = `${anoNum}-${String(mesNum).padStart(2, '0')}`;
+
       DADOS_ATUAIS = {
+        chaveMes,
+        mesNome,
+        ano: anoNum,
+        periodo: periodoMes,
+        totalDiasMes,
         faturamentoTotal: Math.round(fatTotal),
         totalMalas: malasTotal,
         totalLinhas: totalLctos,
-        diasOperacao: setDiasUnicos.size > 0 ? setDiasUnicos.size : 12,
+        diasOperacao: setDiasUnicos.size > 0 ? setDiasUnicos.size : 1,
         turnos: turnosObj,
         colabs: listaColabs,
         dataTurno: periodoTexto,
         arquivoNome: fileName
       };
 
+      DADOS_VISUALIZACAO = null;
+      window._diasInputInitialized = false;
       renderDashboardVendas();
     }
 
     function atualizarSimulacaoDias(val) {
+      const dadosAtivos = DADOS_VISUALIZACAO || DADOS_ATUAIS;
+      const maxDias = dadosAtivos.totalDiasMes || 30;
       let d = parseInt(val, 10);
       if (isNaN(d) || d < 1) d = 1;
-      if (d > 30) d = 30;
-      DADOS_ATUAIS.diasOperacao = d;
+      if (d > maxDias) d = maxDias;
+      dadosAtivos.diasOperacao = d;
+      renderDashboardVendas();
+    }
+
+    function popularSeletorMesVendas() {
+      const sel = document.getElementById('seletorMesVendas');
+      if (!sel) return;
+
+      const meses = new Map();
+      if (DADOS_ATUAIS && DADOS_ATUAIS.chaveMes) {
+        meses.set(DADOS_ATUAIS.chaveMes, { label: DADOS_ATUAIS.periodo || DADOS_ATUAIS.chaveMes, atual: true });
+      } else {
+        meses.set('2026-11', { label: 'Novembro / 2026', atual: true });
+      }
+
+      if (typeof HISTORICO_VENDAS !== 'undefined' && HISTORICO_VENDAS) {
+        Object.entries(HISTORICO_VENDAS).forEach(([k, v]) => {
+          if (!meses.has(k)) {
+            meses.set(k, { label: v.periodo || k, atual: false });
+          }
+        });
+      }
+
+      const activeKey = (DADOS_VISUALIZACAO && DADOS_VISUALIZACAO.chaveMes) || (DADOS_ATUAIS && DADOS_ATUAIS.chaveMes) || '2026-11';
+      sel.innerHTML = Array.from(meses.entries()).sort((a,b) => b[0].localeCompare(a[0])).map(([k, info]) => {
+        const isAtivo = (DADOS_ATUAIS && DADOS_ATUAIS.chaveMes === k);
+        const tag = isAtivo ? ' (Mês Atual)' : ' (Fechamento)';
+        return `<option value="${k}" ${k === activeKey ? 'selected' : ''}>📅 ${info.label}${tag}</option>`;
+      }).join('');
+    }
+
+    function trocarMesVendas(chave) {
+      if (DADOS_ATUAIS && DADOS_ATUAIS.chaveMes === chave) {
+        DADOS_VISUALIZACAO = null;
+      } else if (typeof HISTORICO_VENDAS !== 'undefined' && HISTORICO_VENDAS && HISTORICO_VENDAS[chave]) {
+        DADOS_VISUALIZACAO = HISTORICO_VENDAS[chave];
+      }
+      window._diasInputInitialized = false;
       renderDashboardVendas();
     }
 
@@ -1865,7 +2337,7 @@
         { cat: 'METAS', tag: badgePrata,  desc: '2ª Meta (Prata)',  val: fmtBRL(META_PRATA) },
         { cat: 'METAS', tag: badgeOuro,   desc: '3ª Meta (Ouro)',   val: fmtBRL(META_OURO) },
         { cat: 'REALIZADO', tag: badgeReal, desc: `Faturamento Total (${dados.diasOp} dias)`, val: `<span class="font-bold text-white">${fmtBRL(dados.fatTotal)}</span> (${dados.totalMalas.toLocaleString('pt-BR')} malas)` },
-        { cat: 'PROJEÇÃO', tag: badgeProj, desc: 'Final do Mês (30 dias)', val: `<span class="font-bold text-amber-300">${fmtBRL(dados.projecaoMes)}</span> (${fmtBRL(dados.mediaDiaria)}/dia - Média Diária Realizada)` },
+        { cat: 'PROJEÇÃO', tag: badgeProj, desc: `Final do Mês (${dados.totalDiasMes} dias)`, val: `<span class="font-bold text-amber-300">${fmtBRL(dados.projecaoMes)}</span> (${fmtBRL(dados.mediaDiaria)}/dia - Média Diária Realizada)` },
         { cat: 'MÉDIA', tag: badgeMedia, desc: 'Média Diária Necessária (Bronze)', val: `<span class="font-bold text-amber-400">${fmtBRL(dados.mediaNecB)}</span> (Para os ${dados.diasRestantes} dias restantes)` },
         { cat: 'MÉDIA', tag: badgeMedia, desc: 'Média Diária Necessária (Prata)', val: `<span class="font-bold text-slate-300">${fmtBRL(dados.mediaNecP)}</span> (Para os ${dados.diasRestantes} dias restantes)` },
         { cat: 'MÉDIA', tag: badgeMedia, desc: 'Média Diária Necessária (Ouro)', val: `<span class="font-bold text-yellow-400">${fmtBRL(dados.mediaNecO)}</span> (Para os ${dados.diasRestantes} dias restantes)` },
@@ -1893,27 +2365,37 @@
     }
 
     function renderDashboardVendas() {
+      popularSeletorMesVendas();
+      const dadosAtivos = DADOS_VISUALIZACAO || DADOS_ATUAIS;
+
       // 0. Dias de Operação (com suporte a simulação em tempo real)
       const inputDias = document.getElementById('inputDiasOperacao');
-      let diasOp = DADOS_ATUAIS.diasOperacao || 12;
+      const totalDiasMes = dadosAtivos.totalDiasMes || 30;
+
+      let diasOp = dadosAtivos.diasOperacao || 1;
       if (inputDias) {
-        // Na primeira renderização, sincronizar input com dados reais
+        inputDias.max = totalDiasMes;
+        // Na primeira renderização ou troca de mês, sincronizar input com dados reais
         if (!window._diasInputInitialized) {
           inputDias.value = diasOp;
           window._diasInputInitialized = true;
         } else {
           diasOp = parseInt(inputDias.value, 10) || diasOp;
         }
-      }
-      diasOp = Math.max(1, Math.min(30, diasOp));
-      if (inputDias && inputDias.value != diasOp) {
+        if (diasOp > totalDiasMes) diasOp = totalDiasMes;
+        if (diasOp < 1) diasOp = 1;
         inputDias.value = diasOp;
       }
 
-      const totalDiasMes = 30;
-      const diasRestantes = Math.max(1, totalDiasMes - diasOp);
-      const fatTotal = DADOS_ATUAIS.faturamentoTotal || 0;
-      const totalMalas = DADOS_ATUAIS.totalMalas || 0;
+      const lblTotalDias = document.getElementById('labelTotalDiasMes');
+      if (lblTotalDias) lblTotalDias.innerText = `/ ${totalDiasMes} dias`;
+
+      const lblDiasProj = document.getElementById('labelDiasProjecao');
+      if (lblDiasProj) lblDiasProj.innerText = totalDiasMes;
+
+      const diasRestantes = Math.max(0, totalDiasMes - diasOp);
+      const fatTotal = dadosAtivos.faturamentoTotal || 0;
+      const totalMalas = dadosAtivos.totalMalas || 0;
 
       // Cálculos Executivos
       const mediaDiaria = diasOp > 0 ? (fatTotal / diasOp) : 0;
@@ -1937,11 +2419,13 @@
 
       const tktMedio = totalMalas > 0 ? (fatTotal / totalMalas) : 0;
       if (document.getElementById('cardTicketMedio')) document.getElementById('cardTicketMedio').innerText = fmtBRL(tktMedio);
-      if (document.getElementById('cardTotalTransacoes')) document.getElementById('cardTotalTransacoes').innerText = (DADOS_ATUAIS.totalLinhas || 0).toLocaleString('pt-BR');
-      if (document.getElementById('cardTotalColabs')) document.getElementById('cardTotalColabs').innerText = (DADOS_ATUAIS.colabs || []).length;
+      if (document.getElementById('cardTotalTransacoes')) document.getElementById('cardTotalTransacoes').innerText = (dadosAtivos.totalLinhas || 0).toLocaleString('pt-BR');
+      if (document.getElementById('cardTotalColabs')) document.getElementById('cardTotalColabs').innerText = (dadosAtivos.colabs || []).length;
 
       if (document.getElementById('periodoVendasLabel')) {
-        document.getElementById('periodoVendasLabel').innerText = 'Data: ' + DADOS_ATUAIS.dataTurno + ' • ' + (DADOS_ATUAIS.arquivoNome || 'OneBoss');
+        const periodoNome = dadosAtivos.periodo || 'OneBoss';
+        const tagStatus = DADOS_VISUALIZACAO ? ' [Arquivo Histórico]' : ' [Atualizado]';
+        document.getElementById('periodoVendasLabel').innerText = periodoNome + ' • Data: ' + (dadosAtivos.dataTurno || '') + tagStatus;
       }
 
       if (document.getElementById('execMediaDiaria')) document.getElementById('execMediaDiaria').innerText = fmtBRL(mediaDiaria);
@@ -2051,13 +2535,14 @@
     }
 
     function copiarRelatorioDiretoria() {
+      const dadosAtivos = DADOS_VISUALIZACAO || DADOS_ATUAIS;
       const inputDias = document.getElementById('inputDiasOperacao');
-      const diasOp = (inputDias && parseInt(inputDias.value, 10)) || DADOS_ATUAIS.diasOperacao || 12;
-      const totalDiasMes = 30;
-      const diasRestantes = Math.max(1, totalDiasMes - diasOp);
+      const totalDiasMes = dadosAtivos.totalDiasMes || 30;
+      const diasOp = (inputDias && parseInt(inputDias.value, 10)) || dadosAtivos.diasOperacao || 12;
+      const diasRestantes = Math.max(0, totalDiasMes - diasOp);
 
-      const fatTotal = DADOS_ATUAIS.faturamentoTotal || 0;
-      const totalMalas = DADOS_ATUAIS.totalMalas || 0;
+      const fatTotal = dadosAtivos.faturamentoTotal || 0;
+      const totalMalas = dadosAtivos.totalMalas || 0;
       const mediaDiaria = diasOp > 0 ? (fatTotal / diasOp) : 0;
       const projecao = mediaDiaria * totalDiasMes;
 
@@ -2068,7 +2553,7 @@
       const faltaO = Math.max(0, META_OURO - fatTotal);
       const mediaNecO = diasRestantes > 0 ? (faltaO / diasRestantes) : 0;
 
-      const turnos = (DADOS_ATUAIS.turnos) || { A: { fat: 0, malas: 0 }, B: { fat: 0, malas: 0 }, D: { fat: 0, malas: 0 } };
+      const turnos = (dadosAtivos.turnos) || { A: { fat: 0, malas: 0 }, B: { fat: 0, malas: 0 }, D: { fat: 0, malas: 0 } };
       const fatA = turnos.A?.fat || 0, malasA = turnos.A?.malas || 0;
       const fatB = turnos.B?.fat || 0, malasB = turnos.B?.malas || 0;
       const fatD = turnos.D?.fat || 0, malasD = turnos.D?.malas || 0;
@@ -2193,7 +2678,8 @@
 
     function filtrarRanking(query) {
       const q = (query || '').toLowerCase().trim();
-      let lista = DADOS_ATUAIS.colabs || [];
+      const dadosAtivos = DADOS_VISUALIZACAO || DADOS_ATUAIS;
+      let lista = dadosAtivos.colabs || [];
       if (turnoAtivo !== 'TODOS') {
         lista = lista.filter(c => c.turno === turnoAtivo);
       }
@@ -2204,13 +2690,14 @@
     }
 
     function copiarResumoWhatsApp() {
-      if (!DADOS_ATUAIS.colabs || DADOS_ATUAIS.colabs.length === 0) {
+      const dadosAtivos = DADOS_VISUALIZACAO || DADOS_ATUAIS;
+      if (!dadosAtivos.colabs || dadosAtivos.colabs.length === 0) {
         alert('Carregue primeiro um relatório do OneBoss para gerar o resumo do WhatsApp!');
         return;
       }
 
       let msg = '📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*\n';
-      msg += '📅 *Data:* ' + DADOS_ATUAIS.dataTurno + '\n';
+      msg += '📅 *Data:* ' + (dadosAtivos.dataTurno || '') + '\n';
       msg += '━━━━━━━━━━━━━━━━━━━━━\n';
 
       const turnosConfig = [
@@ -2220,8 +2707,8 @@
       ];
 
       turnosConfig.forEach(t => {
-        const tDados = (DADOS_ATUAIS.turnos && DADOS_ATUAIS.turnos[t.id]) || { fat: 0, malas: 0 };
-        const colabsTurno = DADOS_ATUAIS.colabs.filter(c => c.turno === t.id);
+        const tDados = (dadosAtivos.turnos && dadosAtivos.turnos[t.id]) || { fat: 0, malas: 0 };
+        const colabsTurno = dadosAtivos.colabs.filter(c => c.turno === t.id);
 
         msg += `\n*${t.nome}*\n`;
         msg += `💰 Fat: ${fmtBRL(tDados.fat)} | 🧳 Malas: ${tDados.malas}\n`;
@@ -2238,9 +2725,9 @@
 
       msg += '\n━━━━━━━━━━━━━━━━━━━━━\n';
       msg += '🎯 *TOTAL GERAL DO DIA*\n';
-      msg += '💵 *Faturamento Total:* ' + fmtBRL(DADOS_ATUAIS.faturamentoTotal) + '\n';
-      msg += '🧳 *Total de Malas:* ' + DADOS_ATUAIS.totalMalas + '\n';
-      msg += '💳 *Lançamentos:* ' + DADOS_ATUAIS.totalLinhas + '\n\n';
+      msg += '💵 *Faturamento Total:* ' + fmtBRL(dadosAtivos.faturamentoTotal) + '\n';
+      msg += '🧳 *Total de Malas:* ' + dadosAtivos.totalMalas + '\n';
+      msg += '💳 *Lançamentos:* ' + (dadosAtivos.totalLinhas || 0) + '\n\n';
       msg += '🚀 *Equipe Protecbag GRU*';
 
       navigator.clipboard.writeText(msg).then(() => {
