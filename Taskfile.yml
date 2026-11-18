@@ -1,0 +1,42 @@
+# ============================================================
+# Taskfile.yml — Central de Controle Escala GRU & Sentinela
+# Uso: task <comando>
+# ============================================================
+
+version: '3'
+
+tasks:
+  default:
+    desc: 'Lista todos os comandos disponíveis para a Escala e Sentinela'
+    cmds:
+      - task --list
+
+  sentinela:
+    desc: '🛡️  Inicia o Sentinela OneBoss (vigia C:\Relatorios em tempo real)'
+    cmds:
+      - python sentinela_oneboss.py
+
+  atualizar:
+    desc: '⚡ Força a atualização de vendas e publica na página do GitHub agora'
+    cmds:
+      - python atualizar_vendas_python.py
+
+  escala:
+    desc: '📅 Executa o importador da escala de Dezembro'
+    cmds:
+      - python importar_escala_dezembro.py
+
+  status:
+    desc: '📊 Mostra status da sincronização com o GitHub'
+    cmds:
+      - git status -sb
+
+  log:
+    desc: '📄 Exibe o último relatório processado com cores'
+    cmds:
+      - bat ultimo_relatorio_hora.txt
+
+  web:
+    desc: '🌐 Abre a página da Escala no navegador'
+    cmds:
+      - start https://gtsdiego94-cmd.github.io/escala-gru/
