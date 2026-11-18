@@ -3,74 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🛡️ Fechamento de Caixa — Protecbag GRU</title>
+  <title>🛡️ Fechamento de Caixa Oficial — Protecbag GRU</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
+      --bg: #0b132b;
+      --card-bg: #1c2541;
+      --card-border: #3a506b;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
+      --primary: #4895ef;
+      --primary-hover: #3f37c9;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --accent: #8b5cf6;
+      --accent: #4cc9f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 20px; min-height: 100vh; }
-    .container { max-width: 1400px; margin: 0 auto; }
+    body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh; }
+    .container { max-width: 1300px; margin: 0 auto; }
     
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
-    h1 { font-size: 24px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
-    .badge { background: #1e3a8a; color: #93c5fd; padding: 4px 10px; border-radius: 9999px; font-size: 13px; font-weight: 600; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); }
+    h1 { font-size: 22px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
     
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 20px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .badge { background: #1e3a8a; color: #93c5fd; padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: 600; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .tab-btn:hover:not(.active) { background: #334155; color: #fff; }
-
-    .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; }
-    .card-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-    .card-value { font-size: 24px; font-weight: 700; color: #fff; }
-    .card-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-    .card.highlight { border-color: var(--primary); background: linear-gradient(135deg, #1e293b, #1e3a8a); }
+    
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; }
+    .card-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+    .card-val { font-size: 22px; font-weight: 700; color: #fff; }
+    .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .card.highlight { border-color: var(--primary); background: linear-gradient(135deg, #1c2541, #1e3a8a); }
     .card.green { border-color: var(--success); }
+    .card.val-status { border-color: var(--warning); }
     
-    .panel { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .panel-title { font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-    th { background: #0f172a; padding: 10px 8px; color: var(--text-muted); font-weight: 600; text-align: center; border: 1px solid var(--card-border); }
-    td { padding: 6px 4px; border: 1px solid var(--card-border); text-align: center; }
-    tr:hover td { background: rgba(255, 255, 255, 0.02); }
-    .machine-col { font-weight: 700; color: #60a5fa; background: #0f172a; min-width: 50px; }
+    .section-title { font-size: 16px; font-weight: 700; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     
-    input[type="number"], input[type="text"] {
-      width: 100%; background: #0f172a; border: 1px solid var(--card-border); color: #fff;
-      padding: 6px 4px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 500;
-      outline: none; transition: border-color 0.15s;
-    }
-    input[type="number"]:focus, input[type="text"]:focus { border-color: var(--primary); background: #1e293b; }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .machines-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .machine-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px; transition: border-color 0.2s; }
+    .machine-card.has-data { border-color: var(--primary); }
+    .machine-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .machine-badge { font-weight: 800; font-size: 15px; color: #60a5fa; background: #0b132b; padding: 2px 8px; border-radius: 6px; }
+    .operator-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 600; width: 60%; }
     
-    .calc-val { font-weight: 700; color: #38bdf8; }
-    .calc-total { font-weight: 700; color: #34d399; }
+    .lacre-row { display: grid; grid-template-columns: 1fr 1fr 65px; gap: 6px; margin-bottom: 6px; align-items: center; }
+    .lacre-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 6px; font-size: 12px; text-align: center; font-weight: 600; width: 100%; }
+    .lacre-input:focus { border-color: var(--primary); outline: none; }
+    .bag-count { background: #0b132b; border: 1px solid var(--card-border); padding: 6px; border-radius: 6px; font-size: 12px; font-weight: 800; text-align: center; color: var(--accent); }
     
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-    .product-box { background: #0f172a; border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .product-box label { font-size: 13px; font-weight: 600; color: #e2e8f0; display: flex; justify-content: space-between; }
-    .product-box span.price { color: #10b981; font-weight: 700; }
-    .product-row { display: flex; gap: 8px; align-items: center; }
-    .product-row input { text-align: right; }
+    .prod-inputs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--card-border); }
+    .prod-field { display: flex; flex-direction: column; gap: 2px; }
+    .prod-field label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-align: center; }
+    .prod-field input { background: #0b132b; border: 1px solid var(--card-border); color: #34d399; padding: 4px; border-radius: 4px; font-size: 12px; text-align: center; font-weight: 700; width: 100%; }
     
-    .actions-bar { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; justify-content: flex-end; }
-    .btn { padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+    .split-panel { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; }
+    
+    .price-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .price-table th { background: #0b132b; padding: 8px; color: var(--text-muted); text-align: left; }
+    .price-table td { padding: 6px 8px; border-bottom: 1px solid var(--card-border); }
+    .price-table input { width: 70px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 4px; border-radius: 4px; text-align: center; font-weight: 700; }
+    
+    .actions-bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+    .btn { padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-success { background: #059669; color: #fff; }
@@ -78,9 +77,13 @@
     .btn-outline { background: transparent; border: 1px solid var(--card-border); color: #cbd5e1; }
     .btn-outline:hover { background: #334155; }
     .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; }
-    .btn-danger:hover { background: var(--danger); color: #fff; }
     
-    .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 600; display: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); z-index: 1000; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 700; display: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); z-index: 1000; }
+    
+    /* Modal de Importar Texto */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; width: 90%; max-width: 600px; padding: 20px; }
+    .modal-content textarea { width: 100%; height: 260px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical; margin: 12px 0; }
   </style>
 </head>
 <body>
@@ -89,10 +92,11 @@
     <header>
       <div>
         <h1>🛡️ Fechamento de Caixa — Protecbag GRU</h1>
-        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Controle Diário de Lacres, Máquinas, Acessórios e Valores</p>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Sistema Oficial de Controle de Lacres, Máquinas e Fechamento de Turno</p>
       </div>
-      <div>
-        <span class="badge" id="currentDateBadge">18/11/2026</span>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="date" id="dateInput" style="background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 600;" onchange="saveData()">
+        <button class="btn btn-outline" onclick="openImportModal()">📥 Colar Texto do WhatsApp</button>
       </div>
     </header>
 
@@ -103,364 +107,398 @@
       <button class="tab-btn" onclick="switchShift('C')">🌙 TURNO C (Madrugada)</button>
     </div>
 
-    <!-- CARDS RESUMO -->
-    <div class="summary-cards">
+    <!-- CARDS DE TOTAIS -->
+    <div class="summary-grid">
       <div class="card highlight">
         <div class="card-title">Total Geral Bruto</div>
-        <div class="card-value" id="cardTotalGeral">R$ 0,00</div>
-        <div class="card-sub" id="cardTotalMalas">0 Malas plastificadas</div>
+        <div class="card-val" id="cardTotalGeral">R$ 0,00</div>
+        <div class="card-sub" id="cardBagsSub">0 Malas + 0 Produtos</div>
+      </div>
+      <div class="card" id="cardBagsCheck">
+        <div class="card-title">Bags (Lacres vs Venda)</div>
+        <div class="card-val" id="cardTotalBags">0 BAG</div>
+        <div class="card-sub" id="cardBagsStatus">Batendo certinho!</div>
       </div>
       <div class="card">
-        <div class="card-title">Total em Malas</div>
-        <div class="card-value" id="cardValorMalas">R$ 0,00</div>
-        <div class="card-sub">Serviços de proteção</div>
-      </div>
-      <div class="card">
-        <div class="card-title">Total Acessórios</div>
-        <div class="card-value" id="cardValorProdutos">R$ 0,00</div>
-        <div class="card-sub">Cadeados, Tags, Cintas</div>
+        <div class="card-title">Total Produtos</div>
+        <div class="card-val" id="cardTotalProdutos">0 un</div>
+        <div class="card-sub" id="cardProdutosSub">R$ 0,00</div>
       </div>
       <div class="card green">
-        <div class="card-title">Dinheiro Físico</div>
-        <div class="card-value" id="cardDinheiro">R$ 0,00</div>
+        <div class="card-title">Dinheiro vs Cartão</div>
+        <div class="card-val" id="cardDinheiro">R$ 0,00</div>
         <div class="card-sub" id="cardCartao">Cartão/PIX: R$ 0,00</div>
       </div>
     </div>
 
-    <!-- TABELA DE MÁQUINAS -->
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span>📦 Máquinas de Plastificação & Lacres (GRU)</span>
-        </div>
-        <div>
-          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="puxarTurnoAnterior()">
-            🔄 Puxar Lacres do Turno Anterior
-          </button>
-        </div>
-      </div>
+    <!-- GRID DAS MÁQUINAS -->
+    <div class="section-title">
+      <span>🧳 Máquinas, Operadores e Lacres</span>
+      <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">*Preencha Lacre 2 apenas se trocou de rolo</span>
+    </div>
 
-      <div class="table-container">
-        <table id="machinesTable">
+    <div class="machines-grid" id="machinesGrid">
+      <!-- Gerado via JS -->
+    </div>
+
+    <!-- PAINEL DIVIDIDO: BAGS POR VALOR & PRODUTOS/FINANCEIRO -->
+    <div class="split-panel">
+      <!-- BAGS VENDIDAS POR VALOR -->
+      <div class="box">
+        <div class="section-title">
+          <span>💰 Bags Vendidas por Preço</span>
+          <span id="badgeBagsSum" style="font-size: 12px; color: var(--accent); font-weight: 700;">Total: 0 Bags</span>
+        </div>
+        <table class="price-table">
           <thead>
             <tr>
-              <th>GRU</th>
-              <th style="min-width: 75px;">INICIAL</th>
-              <th style="min-width: 75px;">FINAL</th>
-              <th style="min-width: 60px;">BAG</th>
-              <th>R$ 99</th>
-              <th>R$ 199</th>
-              <th>R$ 149</th>
-              <th>R$ 129</th>
-              <th>R$ 90</th>
-              <th>R$ 179</th>
-              <th>R$ 109</th>
-              <th>R$ 259</th>
-              <th>R$ 268</th>
-              <th>R$ 60</th>
-              <th>Cort.</th>
-              <th style="min-width: 90px;">VALOR MÁQ.</th>
+              <th>Preço Unitário</th>
+              <th style="text-align: center;">Quantidade</th>
+              <th style="text-align: right;">Subtotal</th>
             </tr>
           </thead>
-          <tbody id="machinesTbody">
-            <!-- Gerado via JavaScript -->
+          <tbody id="priceTableBody">
+            <!-- Gerado via JS -->
           </tbody>
           <tfoot>
-            <tr style="background: #0f172a; font-weight: 700;">
-              <td>TOTAIS</td>
-              <td colspan="2">-</td>
-              <td id="totBags" class="calc-val">0</td>
-              <td id="tot99">0</td>
-              <td id="tot199">0</td>
-              <td id="tot149">0</td>
-              <td id="tot129">0</td>
-              <td id="tot90">0</td>
-              <td id="tot179">0</td>
-              <td id="tot109">0</td>
-              <td id="tot259">0</td>
-              <td id="tot268">0</td>
-              <td id="tot60">0</td>
-              <td id="totCort">0</td>
-              <td id="totValorMaquinas" class="calc-total">R$ 0,00</td>
+            <tr style="font-weight: 700;">
+              <td>TOTAL MALAS:</td>
+              <td style="text-align: center; color: var(--accent);" id="totMalasQty">0</td>
+              <td style="text-align: right; color: #34d399;" id="totMalasValor">R$ 0,00</td>
             </tr>
           </tfoot>
         </table>
       </div>
-    </div>
 
-    <!-- PAINEL DE PRODUTOS & FORMAS DE RECEBIMENTO -->
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
-      <!-- ACESSÓRIOS -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">🏷️ Venda de Acessórios & Produtos</div>
+      <!-- FECHAMENTO FINANCEIRO & TOTAIS -->
+      <div class="box" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div class="section-title">
+            <span>💵 Fechamento de Caixa</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">DINHEIRO EM ESPÉCIE NA GAVETA (R$)</label>
+              <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #10b981; padding: 10px; font-size: 20px; font-weight: 700; border-radius: 6px; outline: none;" oninput="recalc()">
+            </div>
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">VALOR EM CARTÕES / PIX (CALCULADO)</label>
+              <input type="text" id="inputCartao" readonly style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #38bdf8; padding: 8px; font-size: 16px; font-weight: 700; border-radius: 6px;" value="R$ 0,00">
+            </div>
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">VALOR TOTAL FATURADO EM PRODUTOS (R$)</label>
+              <input type="number" id="inputValorProdutos" placeholder="Ex: 780,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #fbbf24; padding: 8px; font-size: 16px; font-weight: 700; border-radius: 6px;" oninput="recalc()">
+            </div>
+          </div>
         </div>
-        <div class="products-grid" id="productsGrid">
-          <!-- Gerado via JS -->
-        </div>
-      </div>
 
-      <!-- FECHAMENTO FINANCEIRO -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">💵 Fechamento Financeiro</div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          <div>
-            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">DINHEIRO EM ESPÉCIE (R$)</label>
-            <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="font-size: 18px; padding: 10px; font-weight: 700; color: #10b981;" oninput="recalc()">
+        <!-- RESUMO FINAL -->
+        <div style="background: #0b132b; border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Total de Malas:</span>
+            <strong id="resumoMalas">0 bags — R$ 0,00</strong>
           </div>
-          <div>
-            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">CARTÕES / PIX (CALCULADO)</label>
-            <input type="text" id="inputCartao" readonly style="font-size: 18px; padding: 10px; font-weight: 700; color: #38bdf8;" value="R$ 0,00">
+          <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Total de Produtos:</span>
+            <strong id="resumoProdutos">0 itens — R$ 0,00</strong>
           </div>
-          <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border);">
-            <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
-              <span style="color: var(--text-muted);">Total Malas:</span>
-              <strong id="sideTotalMalas">R$ 0,00</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
-              <span style="color: var(--text-muted);">Total Produtos:</span>
-              <strong id="sideTotalProdutos">R$ 0,00</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; color: #34d399; border-top: 1px solid var(--card-border); padding-top: 8px;">
-              <span>TOTAL DO CAIXA:</span>
-              <span id="sideTotalGeral">R$ 0,00</span>
-            </div>
+          <div style="display: flex; justify-content: space-between; font-size: 17px; font-weight: 800; color: #34d399; border-top: 1px solid var(--card-border); padding-top: 8px;">
+            <span>TOTAL GERAL:</span>
+            <span id="resumoTotalGeral">R$ 0,00</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- BARRA DE AÇÕES -->
+    <!-- BOTÕES DE AÇÃO -->
     <div class="actions-bar">
-      <button class="btn btn-danger" onclick="limparTurnoAtual()">🗑️ Limpar Turno</button>
-      <button class="btn btn-outline" onclick="exportarExcel()">📊 Exportar Excel (.xlsx)</button>
-      <button class="btn btn-success" onclick="copiarWhatsApp()">📱 Copiar Resumo para WhatsApp</button>
+      <button class="btn btn-danger" onclick="limparTurno()">🗑️ Limpar Turno</button>
+      <button class="btn btn-outline" onclick="exportarExcel()">📊 Baixar Excel (.xlsx)</button>
+      <button class="btn btn-success" style="font-size: 15px; padding: 12px 24px;" onclick="copiarWhatsAppOficial()">
+        📱 Copiar para WhatsApp (Modelo Oficial)
+      </button>
     </div>
   </div>
 
-  <div id="toast" class="toast">Mensagem copiada para o WhatsApp!</div>
+  <!-- MODAL PARA IMPORTAR TEXTO DO WHATSAPP -->
+  <div class="modal" id="importModal">
+    <div class="modal-content">
+      <h3 style="color: #fff; margin-bottom: 6px;">📥 Importar Resumo do WhatsApp</h3>
+      <p style="color: var(--text-muted); font-size: 13px;">Cole o texto do relatório do WhatsApp aqui para preencher a tela inteira automaticamente:</p>
+      <textarea id="importText" placeholder="Cole o texto aqui... Ex: G1 - senhorinho 8 BAG 111296311 - 111296318..."></textarea>
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-outline" onclick="closeImportModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="processarImportacao()">Processar e Preencher</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Texto copiado para o WhatsApp com sucesso!</div>
 
   <script>
     const MACHINES = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G8', 'G10', 'G11', 'G12', 'G13'];
-    const BAG_PRICES = [
-      { key: '99', label: '99', price: 99 },
-      { key: '199', label: '199', price: 199 },
-      { key: '149', label: '149', price: 149 },
-      { key: '129', label: '129', price: 129 },
-      { key: '90', label: '90', price: 90 },
-      { key: '179', label: '179', price: 179 },
-      { key: '109', label: '109', price: 109 },
-      { key: '259', label: '259', price: 259 },
-      { key: '268', label: '268', price: 268 },
-      { key: '60', label: '60', price: 60 },
-      { key: 'cort', label: 'Cort.', price: 0 }
-    ];
-
-    const ACCESSORIES = [
-      { id: 'latao', name: 'Cadeado Latão', price: 40 },
-      { id: 'tsa', name: 'Cadeado TSA', price: 70 },
-      { id: 'segredo', name: 'Cadeado Segredo', price: 50 },
-      { id: 'cabo', name: 'Cabo de Aço', price: 30 },
-      { id: 'tag', name: 'Tag Mala', price: 25 },
-      { id: 'adapt', name: 'Adaptador Tomada', price: 35 },
-      { id: 'cinta', name: 'Cinta de Mala', price: 50 },
-      { id: 'ziplock', name: 'Ziplock', price: 15 },
-      { id: 'ts', name: 'Tag Seguro (T.S)', price: 30 },
-      { id: 'tl', name: 'Tag Localização (T.L)', price: 50 }
+    const PRICES = [
+      { key: '199', label: 'BAG R$ 199,00', price: 199 },
+      { key: '149', label: 'BAG R$ 149,00', price: 149 },
+      { key: '129', label: 'BAG R$ 129,00', price: 129 },
+      { key: '90',  label: 'BAG R$ 90,00',  price: 90 },
+      { key: '179', label: 'BAG R$ 179,00', price: 179 },
+      { key: '99',  label: 'BAG R$ 99,00',  price: 99 },
+      { key: '109', label: 'BAG R$ 109,00', price: 109 },
+      { key: '259', label: 'BAG R$ 259,00', price: 259 },
+      { key: 'cort', label: 'CORTESIA',      price: 0 }
     ];
 
     let currentShift = 'A';
-    let dataStore = JSON.parse(localStorage.getItem('fechamento_caixa_data')) || {
-      'A': { machines: {}, accessories: {}, dinheiro: 0 },
-      'B': { machines: {}, accessories: {}, dinheiro: 0 },
-      'C': { machines: {}, accessories: {}, dinheiro: 0 }
+    let defaultShifts = {
+      'A': {
+        machines: {
+          'G1': { op: 'senhorinho', ini1: '111296311', fim1: '111296318', aero: '4' },
+          'G2': { op: 'eduardo l',  ini1: '111296754', fim1: '111296758', aero: '4' },
+          'G5': { op: 'kaue',       ini1: '111301226', fim1: '111301233', aero: '3', latao: '2', segredo: '1' },
+          'G6': { op: 'ricardo l',  ini1: '111305489', fim1: '111305500', ini2: '111306501', fim2: '111306505', aero: '12', outros: '1' },
+          'G8': { op: 'rodrigo s',  ini1: '111307522', fim1: '111307536', aero: '4', latao: '1', segredo: '1', outros: '1' },
+          'G10': { op: 'victor',    ini1: '111298772', fim1: '111298778', aero: '1', outros: '1' },
+          'G13': { op: 'lucas t',   ini1: '111306004', fim1: '111306005', aero: '1' }
+        },
+        prices: {
+          '199': '29',
+          '149': '23',
+          '129': '1',
+          '90':  '1',
+          '179': '5',
+          'cort': '3'
+        },
+        dinheiro: '',
+        valorProdutos: '780.00'
+      },
+      'B': { machines: {}, prices: {}, dinheiro: '', valorProdutos: '' },
+      'C': { machines: {}, prices: {}, dinheiro: '', valorProdutos: '' }
     };
 
+    let rawStored = localStorage.getItem('fechamento_oficial_data');
+    let appData = rawStored ? JSON.parse(rawStored) : null;
+    if (!appData || !appData.shifts || !appData.shifts.A || Object.keys(appData.shifts.A.machines).length === 0) {
+      appData = {
+        date: '2026-11-17',
+        shifts: defaultShifts
+      };
+    }
+
     function init() {
-      document.getElementById('currentDateBadge').innerText = new Date().toLocaleDateString('pt-BR');
-      renderMachinesTable();
-      renderProductsGrid();
-      loadShiftData(currentShift);
+      document.getElementById('dateInput').value = appData.date || new Date().toISOString().split('T')[0];
+      renderMachines();
+      renderPriceTable();
+      loadShift(currentShift);
     }
 
     function switchShift(shift) {
-      saveCurrentShiftData();
+      saveData();
       currentShift = shift;
       document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
         btn.classList.toggle('active', (idx === 0 && shift === 'A') || (idx === 1 && shift === 'B') || (idx === 2 && shift === 'C'));
       });
-      loadShiftData(shift);
+      loadShift(shift);
     }
 
-    function renderMachinesTable() {
-      const tbody = document.getElementById('machinesTbody');
-      tbody.innerHTML = '';
+    function renderMachines() {
+      const container = document.getElementById('machinesGrid');
+      container.innerHTML = '';
       MACHINES.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'machine-card';
+        div.id = `card_${m}`;
+        div.innerHTML = `
+          <div class="machine-head">
+            <span class="machine-badge">${m}</span>
+            <input type="text" class="operator-input" id="op_${m}" placeholder="Nome do Colaborador" oninput="recalc()">
+          </div>
+          <!-- Lacre 1 -->
+          <div class="lacre-row">
+            <input type="number" class="lacre-input" id="ini1_${m}" placeholder="Inicial 1" oninput="recalc()">
+            <input type="number" class="lacre-input" id="fim1_${m}" placeholder="Final 1" oninput="recalc()">
+            <div class="bag-count" id="bags1_${m}">0</div>
+          </div>
+          <!-- Lacre 2 (Rolo extra) -->
+          <div class="lacre-row">
+            <input type="number" class="lacre-input" id="ini2_${m}" placeholder="Inicial 2 (rolo 2)" oninput="recalc()">
+            <input type="number" class="lacre-input" id="fim2_${m}" placeholder="Final 2" oninput="recalc()">
+            <div class="bag-count" id="bags2_${m}">0</div>
+          </div>
+          <!-- Produtos vendidos na máquina -->
+          <div class="prod-inputs">
+            <div class="prod-field">
+              <label>AEROBAG</label>
+              <input type="number" id="p_aero_${m}" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="prod-field">
+              <label>LATÃO</label>
+              <input type="number" id="p_latao_${m}" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="prod-field">
+              <label>SEGREDO</label>
+              <input type="number" id="p_segredo_${m}" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="prod-field">
+              <label>TAG / TSA</label>
+              <input type="number" id="p_outros_${m}" placeholder="0" oninput="recalc()">
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderPriceTable() {
+      const tbody = document.getElementById('priceTableBody');
+      tbody.innerHTML = '';
+      PRICES.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="machine-col">${m}</td>
-          <td><input type="number" id="ini_${m}" oninput="recalc()"></td>
-          <td><input type="number" id="fim_${m}" oninput="recalc()"></td>
-          <td class="calc-val" id="bag_${m}">0</td>
-          ${BAG_PRICES.map(p => `<td><input type="number" id="${p.key}_${m}" oninput="recalc()"></td>`).join('')}
-          <td class="calc-total" id="val_${m}">R$ 0,00</td>
+          <td><strong>${p.label}</strong></td>
+          <td style="text-align: center;"><input type="number" id="pr_${p.key}" min="0" placeholder="0" oninput="recalc()"></td>
+          <td style="text-align: right; font-weight: 700; color: #38bdf8;" id="sub_${p.key}">R$ 0,00</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function renderProductsGrid() {
-      const grid = document.getElementById('productsGrid');
-      grid.innerHTML = '';
-      ACCESSORIES.forEach(acc => {
-        const box = document.createElement('div');
-        box.className = 'product-box';
-        box.innerHTML = `
-          <label>
-            <span>${acc.name}</span>
-            <span class="price">R$ ${acc.price.toFixed(2)}</span>
-          </label>
-          <div class="product-row">
-            <input type="number" id="acc_qtd_${acc.id}" placeholder="Qtd" min="0" oninput="recalc()">
-            <input type="text" id="acc_tot_${acc.id}" placeholder="R$ 0,00" readonly style="color: #38bdf8; font-weight: 700;">
-          </div>
-        `;
-        grid.appendChild(box);
-      });
-    }
-
     function recalc() {
-      let grandTotalMalas = 0;
-      let grandBagsCount = 0;
-      let bagsTotals = {};
-      BAG_PRICES.forEach(p => bagsTotals[p.key] = 0);
+      let totalBagsMachines = 0;
+      let totalProdutosCount = 0;
 
+      // Cálculo por máquina
       MACHINES.forEach(m => {
-        const ini = parseInt(document.getElementById(`ini_${m}`).value) || 0;
-        const fim = parseInt(document.getElementById(`fim_${m}`).value) || 0;
-        let bags = 0;
-        if (fim >= ini && ini > 0) {
-          bags = (fim - ini) + 1;
+        const ini1 = parseInt(document.getElementById(`ini1_${m}`).value) || 0;
+        const fim1 = parseInt(document.getElementById(`fim1_${m}`).value) || 0;
+        let b1 = (fim1 >= ini1 && ini1 > 0) ? (fim1 - ini1 + 1) : 0;
+        document.getElementById(`bags1_${m}`).innerText = b1;
+
+        const ini2 = parseInt(document.getElementById(`ini2_${m}`).value) || 0;
+        const fim2 = parseInt(document.getElementById(`fim2_${m}`).value) || 0;
+        let b2 = (fim2 >= ini2 && ini2 > 0) ? (fim2 - ini2 + 1) : 0;
+        document.getElementById(`bags2_${m}`).innerText = b2;
+
+        const totalM = b1 + b2;
+        totalBagsMachines += totalM;
+
+        // Produtos da máquina
+        const aero = parseInt(document.getElementById(`p_aero_${m}`).value) || 0;
+        const latao = parseInt(document.getElementById(`p_latao_${m}`).value) || 0;
+        const segredo = parseInt(document.getElementById(`p_segredo_${m}`).value) || 0;
+        const outros = parseInt(document.getElementById(`p_outros_${m}`).value) || 0;
+        totalProdutosCount += (latao + segredo + outros);
+
+        const card = document.getElementById(`card_${m}`);
+        if (totalM > 0 || document.getElementById(`op_${m}`).value.trim() !== '') {
+          card.classList.add('has-data');
+        } else {
+          card.classList.remove('has-data');
         }
-        document.getElementById(`bag_${m}`).innerText = bags;
-        grandBagsCount += bags;
-
-        let machineVal = 0;
-        BAG_PRICES.forEach(p => {
-          const qty = parseInt(document.getElementById(`${p.key}_${m}`).value) || 0;
-          machineVal += qty * p.price;
-          bagsTotals[p.key] += qty;
-        });
-
-        document.getElementById(`val_${m}`).innerText = formatBRL(machineVal);
-        grandTotalMalas += machineVal;
       });
 
-      // Atualiza totais da tabela
-      document.getElementById('totBags').innerText = grandBagsCount;
-      BAG_PRICES.forEach(p => {
-        document.getElementById(`tot${p.key.charAt(0).toUpperCase() + p.key.slice(1)}`).innerText = bagsTotals[p.key];
-      });
-      document.getElementById('totValorMaquinas').innerText = formatBRL(grandTotalMalas);
-
-      // Acessórios
-      let grandTotalProdutos = 0;
-      ACCESSORIES.forEach(acc => {
-        const qty = parseInt(document.getElementById(`acc_qtd_${acc.id}`).value) || 0;
-        const subtotal = qty * acc.price;
-        document.getElementById(`acc_tot_${acc.id}`).value = formatBRL(subtotal);
-        grandTotalProdutos += subtotal;
+      // Cálculo de Bags por Preço
+      let totalBagsVenda = 0;
+      let totalMalasReais = 0;
+      PRICES.forEach(p => {
+        const qty = parseInt(document.getElementById(`pr_${p.key}`).value) || 0;
+        const sub = qty * p.price;
+        document.getElementById(`sub_${p.key}`).innerText = formatBRL(sub);
+        totalBagsVenda += qty;
+        totalMalasReais += sub;
       });
 
-      const totalGeral = grandTotalMalas + grandTotalProdutos;
+      document.getElementById('totMalasQty').innerText = totalBagsVenda;
+      document.getElementById('totMalasValor').innerText = formatBRL(totalMalasReais);
+      document.getElementById('badgeBagsSum').innerText = `Total: ${totalBagsVenda} Bags`;
+
+      // Validação: Lacres vs Bags Vendidas
+      const cardCheck = document.getElementById('cardBagsCheck');
+      const cardStatus = document.getElementById('cardBagsStatus');
+      document.getElementById('cardTotalBags').innerText = `${totalBagsMachines} BAG`;
+
+      if (totalBagsMachines === totalBagsVenda) {
+        cardCheck.style.borderColor = 'var(--success)';
+        cardStatus.innerText = '✅ Batendo certinho com a venda!';
+        cardStatus.style.color = '#34d399';
+      } else {
+        cardCheck.style.borderColor = 'var(--warning)';
+        cardStatus.innerText = `⚠️ Diferença: ${totalBagsMachines - totalBagsVenda} bags`;
+        cardStatus.style.color = '#fbbf24';
+      }
+
+      // Financeiro
+      const valorProdutos = parseFloat(document.getElementById('inputValorProdutos').value) || 0;
+      const totalGeral = totalMalasReais + valorProdutos;
       const dinheiro = parseFloat(document.getElementById('inputDinheiro').value) || 0;
       const cartao = Math.max(0, totalGeral - dinheiro);
 
-      // Atualiza cards
       document.getElementById('cardTotalGeral').innerText = formatBRL(totalGeral);
-      document.getElementById('cardTotalMalas').innerText = `${grandBagsCount} Malas plastificadas`;
-      document.getElementById('cardValorMalas').innerText = formatBRL(grandTotalMalas);
-      document.getElementById('cardValorProdutos').innerText = formatBRL(grandTotalProdutos);
+      document.getElementById('cardBagsSub').innerText = `${totalBagsMachines} Malas + ${totalProdutosCount} Produtos`;
+      document.getElementById('cardTotalProdutos').innerText = `${totalProdutosCount} un`;
+      document.getElementById('cardProdutosSub').innerText = formatBRL(valorProdutos);
       document.getElementById('cardDinheiro').innerText = formatBRL(dinheiro);
       document.getElementById('cardCartao').innerText = `Cartão/PIX: ${formatBRL(cartao)}`;
       document.getElementById('inputCartao').value = formatBRL(cartao);
 
-      document.getElementById('sideTotalMalas').innerText = formatBRL(grandTotalMalas);
-      document.getElementById('sideTotalProdutos').innerText = formatBRL(grandTotalProdutos);
-      document.getElementById('sideTotalGeral').innerText = formatBRL(totalGeral);
+      document.getElementById('resumoMalas').innerText = `${totalBagsVenda} bags — ${formatBRL(totalMalasReais)}`;
+      document.getElementById('resumoProdutos').innerText = `${totalProdutosCount} itens — ${formatBRL(valorProdutos)}`;
+      document.getElementById('resumoTotalGeral').innerText = formatBRL(totalGeral);
 
-      saveCurrentShiftData();
+      saveData();
     }
 
-    function saveCurrentShiftData() {
-      const shiftData = { machines: {}, accessories: {}, dinheiro: parseFloat(document.getElementById('inputDinheiro').value) || 0 };
+    function saveData() {
+      appData.date = document.getElementById('dateInput').value;
+      const s = appData.shifts[currentShift] || { machines: {}, prices: {}, dinheiro: 0, valorProdutos: 0 };
+      
       MACHINES.forEach(m => {
-        shiftData.machines[m] = {
-          ini: document.getElementById(`ini_${m}`).value,
-          fim: document.getElementById(`fim_${m}`).value
+        s.machines[m] = {
+          op: document.getElementById(`op_${m}`).value,
+          ini1: document.getElementById(`ini1_${m}`).value,
+          fim1: document.getElementById(`fim1_${m}`).value,
+          ini2: document.getElementById(`ini2_${m}`).value,
+          fim2: document.getElementById(`fim2_${m}`).value,
+          aero: document.getElementById(`p_aero_${m}`).value,
+          latao: document.getElementById(`p_latao_${m}`).value,
+          segredo: document.getElementById(`p_segredo_${m}`).value,
+          outros: document.getElementById(`p_outros_${m}`).value
         };
-        BAG_PRICES.forEach(p => {
-          shiftData.machines[m][p.key] = document.getElementById(`${p.key}_${m}`).value;
-        });
       });
 
-      ACCESSORIES.forEach(acc => {
-        shiftData.accessories[acc.id] = document.getElementById(`acc_qtd_${acc.id}`).value;
+      PRICES.forEach(p => {
+        s.prices[p.key] = document.getElementById(`pr_${p.key}`).value;
       });
 
-      dataStore[currentShift] = shiftData;
-      localStorage.setItem('fechamento_caixa_data', JSON.stringify(dataStore));
+      s.dinheiro = document.getElementById('inputDinheiro').value;
+      s.valorProdutos = document.getElementById('inputValorProdutos').value;
+
+      appData.shifts[currentShift] = s;
+      localStorage.setItem('fechamento_oficial_data', JSON.stringify(appData));
     }
 
-    function loadShiftData(shift) {
-      const data = dataStore[shift] || { machines: {}, accessories: {}, dinheiro: 0 };
+    function loadShift(shift) {
+      const s = appData.shifts[shift] || { machines: {}, prices: {}, dinheiro: 0, valorProdutos: 0 };
       MACHINES.forEach(m => {
-        const mData = data.machines[m] || {};
-        document.getElementById(`ini_${m}`).value = mData.ini || '';
-        document.getElementById(`fim_${m}`).value = mData.fim || '';
-        BAG_PRICES.forEach(p => {
-          document.getElementById(`${p.key}_${m}`).value = mData[p.key] || '';
-        });
+        const mData = s.machines[m] || {};
+        document.getElementById(`op_${m}`).value = mData.op || '';
+        document.getElementById(`ini1_${m}`).value = mData.ini1 || '';
+        document.getElementById(`fim1_${m}`).value = mData.fim1 || '';
+        document.getElementById(`ini2_${m}`).value = mData.ini2 || '';
+        document.getElementById(`fim2_${m}`).value = mData.fim2 || '';
+        document.getElementById(`p_aero_${m}`).value = mData.aero || '';
+        document.getElementById(`p_latao_${m}`).value = mData.latao || '';
+        document.getElementById(`p_segredo_${m}`).value = mData.segredo || '';
+        document.getElementById(`p_outros_${m}`).value = mData.outros || '';
       });
 
-      ACCESSORIES.forEach(acc => {
-        document.getElementById(`acc_qtd_${acc.id}`).value = (data.accessories && data.accessories[acc.id]) || '';
+      PRICES.forEach(p => {
+        document.getElementById(`pr_${p.key}`).value = (s.prices && s.prices[p.key]) || '';
       });
 
-      document.getElementById('inputDinheiro').value = data.dinheiro || '';
+      document.getElementById('inputDinheiro').value = s.dinheiro || '';
+      document.getElementById('inputValorProdutos').value = s.valorProdutos || '';
       recalc();
-    }
-
-    function puxarTurnoAnterior() {
-      let prevShift = currentShift === 'B' ? 'A' : (currentShift === 'C' ? 'B' : null);
-      if (!prevShift) {
-        alert('Turno A é o primeiro turno do dia!');
-        return;
-      }
-      const prevData = dataStore[prevShift];
-      if (!prevData || !prevData.machines) {
-        alert(`Nenhum dado encontrado no Turno ${prevShift}!`);
-        return;
-      }
-
-      MACHINES.forEach(m => {
-        const fimAnterior = parseInt(prevData.machines[m]?.fim);
-        if (fimAnterior > 0) {
-          document.getElementById(`ini_${m}`).value = fimAnterior + 1;
-        }
-      });
-      recalc();
-      showToast(`Lacres finais do Turno ${prevShift} importados como iniciais!`);
-    }
-
-    function limparTurnoAtual() {
-      if (confirm(`Tem certeza que deseja zerar os dados do TURNO ${currentShift}?`)) {
-        dataStore[currentShift] = { machines: {}, accessories: {}, dinheiro: 0 };
-        loadShiftData(currentShift);
-        showToast('Turno limpo com sucesso.');
-      }
     }
 
     function formatBRL(val) {
@@ -474,101 +512,264 @@
       setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
-    function copiarWhatsApp() {
-      const date = new Date().toLocaleDateString('pt-BR');
-      const totalGeral = document.getElementById('cardTotalGeral').innerText;
-      const totalMalas = document.getElementById('cardValorMalas').innerText;
-      const totalBags = document.getElementById('totBags').innerText;
-      const totalProdutos = document.getElementById('cardValorProdutos').innerText;
-      const dinheiro = document.getElementById('cardDinheiro').innerText;
-      const cartao = document.getElementById('inputCartao').value;
+    function copiarWhatsAppOficial() {
+      const rawDate = document.getElementById('dateInput').value;
+      const parts = rawDate.split('-');
+      const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : new Date().toLocaleDateString('pt-BR');
 
-      let msg = `*🛡️ FECHAMENTO DE CAIXA — PROTECBAG GRU*\n`;
-      msg += `📅 *Data:* ${date} | *Turno:* ${currentShift}\n`;
-      msg += `--------------------------------------\n`;
-      msg += `🧳 *Malas Plastificadas:* ${totalBags} bags (${totalMalas})\n`;
-      msg += `🏷️ *Acessórios / Produtos:* ${totalProdutos}\n`;
-      msg += `💰 *TOTAL BRUTO DO TURNO:* ${totalGeral}\n`;
-      msg += `--------------------------------------\n`;
-      msg += `💵 *Dinheiro:* ${dinheiro}\n`;
-      msg += `💳 *Cartão / PIX:* ${cartao}\n\n`;
-      msg += `*Máquinas Ativas:*\n`;
+      let txt = `*TURNO ${currentShift}  ${formattedDate}*\n\n`;
+
+      let totalBags = 0;
+      let totalProdutos = 0;
 
       MACHINES.forEach(m => {
-        const ini = document.getElementById(`ini_${m}`).value;
-        const fim = document.getElementById(`fim_${m}`).value;
-        const bags = document.getElementById(`bag_${m}`).innerText;
-        const val = document.getElementById(`val_${m}`).innerText;
-        if (parseInt(bags) > 0) {
-          msg += `• ${m}: Lacre ${ini} ao ${fim} = ${bags} malas (${val})\n`;
+        const op = document.getElementById(`op_${m}`).value.trim();
+        const ini1 = parseInt(document.getElementById(`ini1_${m}`).value) || 0;
+        const fim1 = parseInt(document.getElementById(`fim1_${m}`).value) || 0;
+        const ini2 = parseInt(document.getElementById(`ini2_${m}`).value) || 0;
+        const fim2 = parseInt(document.getElementById(`fim2_${m}`).value) || 0;
+
+        const b1 = (fim1 >= ini1 && ini1 > 0) ? (fim1 - ini1 + 1) : 0;
+        const b2 = (fim2 >= ini2 && ini2 > 0) ? (fim2 - ini2 + 1) : 0;
+        const bTot = b1 + b2;
+
+        const aero = parseInt(document.getElementById(`p_aero_${m}`).value) || 0;
+        const latao = parseInt(document.getElementById(`p_latao_${m}`).value) || 0;
+        const segredo = parseInt(document.getElementById(`p_segredo_${m}`).value) || 0;
+        const outros = parseInt(document.getElementById(`p_outros_${m}`).value) || 0;
+
+        if (bTot > 0 || op !== '') {
+          txt += `${m}${op ? ' - ' + op : ''}\n`;
+          if (bTot > 0) {
+            txt += `${bTot} BAG ${ini1} - ${fim1}\n`;
+            if (b2 > 0) {
+              txt += `             ${ini2} - ${fim2}\n`;
+            }
+          }
+          if (aero > 0) txt += `${aero} AEROBAG\n`;
+          if (latao > 0) txt += `${latao} LATAO\n`;
+          if (segredo > 0) txt += `${segredo} SEGREDO\n`;
+          if (outros > 0) txt += `${outros} TAG / TSA\n`;
+          txt += `\n`;
+
+          totalBags += bTot;
+          totalProdutos += (latao + segredo + outros);
         }
       });
 
-      navigator.clipboard.writeText(msg).then(() => {
-        showToast('📋 Resumo formatado copiado para o WhatsApp!');
+      txt += `BAGS VENDIDAS\n\n`;
+      let totalMalasValor = 0;
+      PRICES.forEach(p => {
+        const q = parseInt(document.getElementById(`pr_${p.key}`).value) || 0;
+        if (q > 0) {
+          if (p.price > 0) {
+            txt += `BAG R$ ${p.price.toFixed(2).replace('.', ',')} - ${q}\n`;
+          } else {
+            txt += `CORTESIA - ${q}\n`;
+          }
+          totalMalasValor += q * p.price;
+        }
+      });
+
+      const valorProd = parseFloat(document.getElementById('inputValorProdutos').value) || 0;
+      const totalFinal = totalMalasValor + valorProd;
+
+      txt += `\nTOTAIS\n\n`;
+      txt += `BAG - *${totalBags}*\n`;
+      txt += `PRODUTO - *${totalProdutos}*\n`;
+      txt += `TOTAL - *${formatBRL(totalFinal)}*\n`;
+
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('📱 Resumo copiado exatamente no modelo oficial do WhatsApp!');
       }).catch(err => {
         alert('Erro ao copiar: ' + err);
       });
     }
 
-    function exportarExcel() {
-      const wb = XLSX.utils.book_new();
-      const dateStr = new Date().toISOString().split('T')[0];
+    function openImportModal() {
+      document.getElementById('importModal').style.display = 'flex';
+      document.getElementById('importText').focus();
+    }
 
-      ['A', 'B', 'C'].forEach(s => {
-        const sData = dataStore[s] || { machines: {}, accessories: {}, dinheiro: 0 };
-        const rows = [
-          ['FECHAMENTO DE CAIXA PROTECBAG GRU - TURNO ' + s],
-          ['Data:', new Date().toLocaleDateString('pt-BR')],
-          [],
-          ['MÁQUINA', 'INICIAL', 'FINAL', 'BAGS', 'R$ 99', 'R$ 199', 'R$ 149', 'R$ 129', 'R$ 90', 'R$ 179', 'R$ 109', 'R$ 259', 'R$ 268', 'R$ 60', 'Cort.', 'VALOR']
-        ];
+    function closeImportModal() {
+      document.getElementById('importModal').style.display = 'none';
+    }
 
-        let totBags = 0, totVal = 0;
-        MACHINES.forEach(m => {
-          const mData = sData.machines[m] || {};
-          const ini = parseInt(mData.ini) || 0;
-          const fim = parseInt(mData.fim) || 0;
-          const bags = (fim >= ini && ini > 0) ? (fim - ini + 1) : 0;
-          totBags += bags;
+    function processarImportacao() {
+      const text = document.getElementById('importText').value;
+      if (!text.trim()) return;
 
-          let val = 0;
-          const priceVals = BAG_PRICES.map(p => {
-            const q = parseInt(mData[p.key]) || 0;
-            val += q * p.price;
-            return q;
-          });
-          totVal += val;
+      // Detecta turno
+      if (text.includes('TURNO A')) currentShift = 'A';
+      else if (text.includes('TURNO B')) currentShift = 'B';
+      else if (text.includes('TURNO C')) currentShift = 'C';
 
-          rows.push([m, ini || '', fim || '', bags, ...priceVals, val]);
-        });
+      // Detecta data se houver (dd/mm/yyyy)
+      const dateMatch = text.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (dateMatch) {
+        document.getElementById('dateInput').value = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
+      }
 
-        rows.push(['TOTAIS', '', '', totBags, '', '', '', '', '', '', '', '', '', '', '', totVal]);
-        rows.push([]);
-        rows.push(['PRODUTOS / ACESSÓRIOS', 'QUANTIDADE', 'VALOR UNIT.', 'TOTAL']);
+      // Limpa dados anteriores do turno
+      limparTurnoSilencioso();
 
-        let totProd = 0;
-        ACCESSORIES.forEach(acc => {
-          const q = parseInt((sData.accessories && sData.accessories[acc.id])) || 0;
-          const sub = q * acc.price;
-          totProd += sub;
-          if (q > 0) {
-            rows.push([acc.name, q, acc.price, sub]);
+      const lines = text.split('\n');
+      let currentMachine = null;
+
+      lines.forEach(line => {
+        const l = line.trim();
+        if (!l) return;
+
+        // Detecta máquina (ex: G1 - senhorinho)
+        const machMatch = l.match(/^(G\d+)\s*-\s*(.+)/i);
+        if (machMatch) {
+          currentMachine = machMatch[1].toUpperCase();
+          if (document.getElementById(`op_${currentMachine}`)) {
+            document.getElementById(`op_${currentMachine}`).value = machMatch[2].trim();
           }
-        });
-        rows.push(['TOTAL PRODUTOS', '', '', totProd]);
-        rows.push([]);
-        rows.push(['FECHAMENTO FINANCEIRO']);
-        rows.push(['TOTAL GERAL:', totVal + totProd]);
-        rows.push(['DINHEIRO:', sData.dinheiro || 0]);
-        rows.push(['CARTÃO / PIX:', Math.max(0, (totVal + totProd) - (sData.dinheiro || 0))]);
+          return;
+        }
 
-        const ws = XLSX.utils.aoa_to_sheet(rows);
-        XLSX.utils.book_append_sheet(wb, ws, 'TURNO ' + s);
+        // Detecta lacres (ex: 8 BAG 111296311 - 111296318)
+        const lacreMatch = l.match(/(\d+)\s*BAG\s*(\d+)\s*-\s*(\d+)/i);
+        if (lacreMatch && currentMachine) {
+          document.getElementById(`ini1_${currentMachine}`).value = lacreMatch[2];
+          document.getElementById(`fim1_${currentMachine}`).value = lacreMatch[3];
+          return;
+        }
+
+        // Detecta segundo rolo (ex: 111306501 - 111306505)
+        const lacre2Match = l.match(/^(\d{8,})\s*-\s*(\d{8,})/);
+        if (lacre2Match && currentMachine) {
+          document.getElementById(`ini2_${currentMachine}`).value = lacre2Match[1];
+          document.getElementById(`fim2_${currentMachine}`).value = lacre2Match[2];
+          return;
+        }
+
+        // Detecta produtos
+        if (currentMachine) {
+          const aeroM = l.match(/(\d+)\s*AEROBAG/i);
+          if (aeroM) document.getElementById(`p_aero_${currentMachine}`).value = aeroM[1];
+
+          const lataoM = l.match(/(\d+)\s*LATAO/i);
+          if (lataoM) document.getElementById(`p_latao_${currentMachine}`).value = lataoM[1];
+
+          const segM = l.match(/(\d+)\s*SEGREDO/i);
+          if (segM) document.getElementById(`p_segredo_${currentMachine}`).value = segM[1];
+
+          const outrosM = l.match(/(\d+)\s*(TAG|TSA)/i);
+          if (outrosM) document.getElementById(`p_outros_${currentMachine}`).value = outrosM[1];
+        }
+
+        // Detecta Bags por preço
+        const priceMatch = l.match(/BAG\s*R\$\s*([\d,\.]+)\s*-\s*(\d+)/i);
+        if (priceMatch) {
+          const pVal = parseInt(priceMatch[1].replace(',00', '').replace('.', ''));
+          const qty = parseInt(priceMatch[2]);
+          const found = PRICES.find(p => p.price === pVal);
+          if (found) {
+            document.getElementById(`pr_${found.key}`).value = qty;
+          }
+          return;
+        }
+
+        const cortMatch = l.match(/CORTESIA\s*-\s*(\d+)/i);
+        if (cortMatch) {
+          document.getElementById('pr_cort').value = cortMatch[1];
+          return;
+        }
+
+        // Detecta Total
+        const totMatch = l.match(/TOTAL\s*-\s*\*?R\$\s*([\d\.,]+)\*?/i);
+        if (totMatch) {
+          // Ajusta produtos baseado no total
+          const totNum = parseFloat(totMatch[1].replace('.', '').replace(',', '.'));
+          recalc();
+          const malasVal = parseFloat(document.getElementById('totMalasValor').innerText.replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
+          if (totNum > malasVal) {
+            document.getElementById('inputValorProdutos').value = (totNum - malasVal).toFixed(2);
+          }
+        }
       });
 
-      XLSX.writeFile(wb, `CAIXA_PROTECBAG_GRU_${dateStr}.xlsx`);
-      showToast('📥 Planilha Excel gerada com sucesso!');
+      recalc();
+      closeImportModal();
+      showToast('✅ Dados do WhatsApp importados com sucesso!');
+    }
+
+    function limparTurnoSilencioso() {
+      MACHINES.forEach(m => {
+        ['op', 'ini1', 'fim1', 'ini2', 'fim2', 'p_aero', 'p_latao', 'p_segredo', 'p_outros'].forEach(f => {
+          const el = document.getElementById(`${f}_${m}`);
+          if (el) el.value = '';
+        });
+      });
+      PRICES.forEach(p => {
+        document.getElementById(`pr_${p.key}`).value = '';
+      });
+      document.getElementById('inputDinheiro').value = '';
+      document.getElementById('inputValorProdutos').value = '';
+    }
+
+    function limparTurno() {
+      if (confirm(`Limpar todos os campos do TURNO ${currentShift}?`)) {
+        limparTurnoSilencioso();
+        recalc();
+        showToast('Turno limpo.');
+      }
+    }
+
+    function exportarExcel() {
+      const wb = XLSX.utils.book_new();
+      const rawDate = document.getElementById('dateInput').value;
+      const s = appData.shifts[currentShift] || {};
+
+      const rows = [
+        ['FECHAMENTO DE CAIXA PROTECBAG GRU - TURNO ' + currentShift],
+        ['Data:', rawDate],
+        [],
+        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG', 'LATÃO', 'SEGREDO', 'OUTROS']
+      ];
+
+      MACHINES.forEach(m => {
+        const op = document.getElementById(`op_${m}`).value;
+        const ini1 = document.getElementById(`ini1_${m}`).value;
+        const fim1 = document.getElementById(`fim1_${m}`).value;
+        const b1 = document.getElementById(`bags1_${m}`).innerText;
+        const ini2 = document.getElementById(`ini2_${m}`).value;
+        const fim2 = document.getElementById(`fim2_${m}`).value;
+        const b2 = document.getElementById(`bags2_${m}`).innerText;
+        const bTot = (parseInt(b1) || 0) + (parseInt(b2) || 0);
+
+        const aero = document.getElementById(`p_aero_${m}`).value;
+        const latao = document.getElementById(`p_latao_${m}`).value;
+        const seg = document.getElementById(`p_segredo_${m}`).value;
+        const out = document.getElementById(`p_outros_${m}`).value;
+
+        if (bTot > 0 || op) {
+          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, aero, latao, seg, out]);
+        }
+      });
+
+      rows.push([]);
+      rows.push(['DISTRIBUIÇÃO DE BAGS POR PREÇO']);
+      PRICES.forEach(p => {
+        const q = document.getElementById(`pr_${p.key}`).value || 0;
+        rows.push([p.label, q, p.price, q * p.price]);
+      });
+
+      rows.push([]);
+      rows.push(['TOTAIS FINAIS']);
+      rows.push(['TOTAL MALAS:', document.getElementById('totMalasValor').innerText]);
+      rows.push(['TOTAL PRODUTOS:', document.getElementById('cardProdutosSub').innerText]);
+      rows.push(['TOTAL GERAL:', document.getElementById('cardTotalGeral').innerText]);
+      rows.push(['DINHEIRO:', document.getElementById('cardDinheiro').innerText]);
+      rows.push(['CARTÃO / PIX:', document.getElementById('inputCartao').value]);
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      XLSX.utils.book_append_sheet(wb, ws, 'TURNO_' + currentShift);
+      XLSX.writeFile(wb, `FECHAMENTO_CAIXA_TURNO_${currentShift}_${rawDate}.xlsx`);
+      showToast('📊 Planilha Excel exportada!');
     }
 
     window.onload = init;
