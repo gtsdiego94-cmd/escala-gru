@@ -3,179 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🛡️ Fechamento de Caixa Oficial — Protecbag GRU</title>
+  <title>Fechamento de Caixa Protecbag GRU - Sistema Oficial</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg: #0b132b;
       --card-bg: #1c2541;
       --card-border: #3a506b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary: #4895ef;
-      --primary-hover: #3f37c9;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --accent: #4cc9f0;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #60a5fa;
       --wa-bg: #0b2518;
-      --wa-bubble: #123d28;
+      --wa-bubble: #123524;
+      --wa-border: #1b4d35;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh; }
-    .container { max-width: 1400px; margin: 0 auto; }
+    .container { max-width: 1440px; margin: 0 auto; }
     
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); flex-wrap: wrap; gap: 12px; }
     h1 { font-size: 22px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
     
     .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-    .tab-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .tab-btn { background: #111a2e; border: 1px solid var(--card-border); color: var(--text-muted); padding: 8px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 14px; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     
-    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
-    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; }
-    .card-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-    .card-val { font-size: 22px; font-weight: 700; color: #fff; }
-    .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .top-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 16px; }
+    .card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .card-val { font-size: 22px; font-weight: 800; color: #fff; }
+    .card-sub { font-size: 12px; color: var(--accent); margin-top: 4px; font-weight: 600; }
     .card.highlight { border-color: var(--primary); background: linear-gradient(135deg, #1c2541, #1e3a8a); }
     .card.green { border-color: var(--success); }
     
-    .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-    @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
+    .main-layout { display: grid; grid-template-columns: 2.1fr 1fr; gap: 20px; }
+    @media (max-width: 1100px) { .main-layout { grid-template-columns: 1fr; } }
 
-    .section-title { font-size: 16px; font-weight: 700; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .section-title { font-size: 15px; font-weight: 700; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     
     /* MÁQUINAS */
-    .machines-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
-    .machine-row { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; transition: border-color 0.2s; }
-    .machine-row.has-data { border-color: var(--primary); background: #18233c; }
+    .machines-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .machine-row { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; transition: border-color 0.2s; }
+    .machine-row.has-data { border-color: var(--primary); background: #162035; }
     
-    .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+    .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px; }
     .machine-tag { font-weight: 800; font-size: 16px; color: #60a5fa; background: #0b132b; padding: 4px 12px; border-radius: 6px; }
     .operator-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; width: 280px; }
     
-    .lacre-grid { display: grid; grid-template-columns: 1fr 1fr 90px; gap: 8px; margin-bottom: 10px; align-items: center; }
+    .lacre-grid { display: grid; grid-template-columns: 1fr 1fr 90px; gap: 8px; margin-bottom: 8px; align-items: center; }
     .lacre-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 7px; border-radius: 6px; font-size: 13px; text-align: center; font-weight: 600; width: 100%; }
     .lacre-input:focus { border-color: var(--primary); outline: none; }
     .bag-badge { background: #0b132b; border: 1px solid var(--primary); padding: 7px; border-radius: 6px; font-size: 13px; font-weight: 800; text-align: center; color: #38bdf8; }
     
-    /* LINHA DE PRODUTOS DA MÁQUINA (PARECIDO COM O EXEMPLO) */
+    /* LINHA DE PRODUTOS DA MÁQUINA */
     .machine-prods-row {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #0b132b;
-      padding: 8px 12px; border-radius: 8px; border: 1px dashed var(--card-border);
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: #0b132b;
+      padding: 8px 10px; border-radius: 8px; border: 1px dashed var(--card-border);
     }
-    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #e2e8f0; }
-    .prod-pill input { width: 50px; background: #1c2541; border: 1px solid var(--card-border); color: #34d399; padding: 4px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 800; }
-    .prod-pill input:focus { border-color: var(--success); outline: none; }
-    
-    .machine-preview-tag {
-      margin-top: 8px; font-size: 12px; font-family: monospace; color: #a7f3d0; background: rgba(16, 185, 129, 0.1);
-      padding: 6px 10px; border-radius: 6px; border-left: 3px solid #10b981; display: none;
-    }
-    .machine-row.has-data .machine-preview-tag { display: block; }
+    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; background: #111a2e; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--card-border); }
+    .prod-pill label { cursor: pointer; user-select: none; }
+    .prod-pill input { width: 44px; background: #1c2541; border: 1px solid var(--card-border); color: #34d399; padding: 3px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 800; }
+    .prod-pill input:focus { border-color: var(--primary); outline: none; }
+    .prod-pill .p-price { font-size: 10px; color: #60a5fa; margin-left: 2px; }
 
-    /* WHATSAPP LIVE PREVIEW */
-    .wa-preview-box { background: var(--wa-bg); border: 1px solid #1f4e38; border-radius: 12px; padding: 16px; position: sticky; top: 16px; }
-    .wa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #1f4e38; }
-    .wa-bubble-chat { background: var(--wa-bubble); border-radius: 8px; padding: 14px; font-family: "SF Pro Text", -apple-system, "Segoe UI", Roboto, monospace; font-size: 13px; line-height: 1.5; color: #e9edef; white-space: pre-wrap; word-break: break-word; max-height: 600px; overflow-y: auto; }
+    .more-prods-box { margin-top: 6px; width: 100%; display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; border-top: 1px dashed #1e293b; }
+
+    .machine-preview-tag {
+      margin-top: 8px; font-family: monospace; font-size: 11px; color: #38bdf8; background: #060b17;
+      padding: 6px 10px; border-radius: 6px; border-left: 3px solid var(--primary); white-space: pre-wrap;
+    }
     
-    .price-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
-    .price-table th { background: #0b132b; padding: 8px; color: var(--text-muted); text-align: left; }
-    .price-table td { padding: 6px 8px; border-bottom: 1px solid var(--card-border); }
-    .price-table input { width: 70px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 4px; border-radius: 4px; text-align: center; font-weight: 700; }
+    /* TABELA DE BAGS POR PREÇO */
+    .price-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
+    .price-table th, .price-table td { padding: 7px 8px; border-bottom: 1px solid var(--card-border); }
+    .price-table th { text-align: left; color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
+    .price-table input { width: 65px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 5px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 13px; }
     
-    .actions-bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-    .btn { padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    /* PREVIEW DO WHATSAPP */
+    .wa-preview-box { background: var(--wa-bg); border: 1px solid var(--wa-border); border-radius: 12px; padding: 14px; position: sticky; top: 16px; }
+    .wa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--wa-border); }
+    .wa-bubble-chat {
+      background: var(--wa-bubble); border-radius: 8px; padding: 12px 14px;
+      font-family: "SF Pro Text", -apple-system, "Segoe UI", Roboto, monospace;
+      font-size: 12.5px; line-height: 1.45; color: #e9edef; white-space: pre-wrap; word-break: break-word;
+      max-height: 520px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
-    .btn-success { background: #059669; color: #fff; }
-    .btn-success:hover { background: #047857; }
-    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: #cbd5e1; }
-    .btn-outline:hover { background: #334155; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #059669; }
+    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--text); }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-muted); }
     .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
     
-    .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 700; display: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); z-index: 1000; }
+    .actions-bar { display: flex; gap: 10px; margin-top: 16px; }
     
-    /* MODAL */
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 700; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); display: none; z-index: 1000; }
+    
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
-    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; width: 90%; max-width: 600px; padding: 20px; }
-    .modal-content textarea { width: 100%; height: 260px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical; margin: 12px 0; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; width: 90%; max-width: 600px; }
+    .modal textarea { width: 100%; height: 250px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin: 12px 0; resize: vertical; }
+
+    /* EDITÁVEL DE PREÇOS */
+    .price-edit-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 5px 0; }
+    .price-edit-row input { width: 70px; background: #0b132b; border: 1px solid var(--card-border); color: #60a5fa; padding: 3px 6px; border-radius: 4px; text-align: right; font-weight: 700; font-size: 12px; }
   </style>
 </head>
 <body>
-
   <div class="container">
+    <!-- TOPO -->
     <header>
       <div>
-        <h1>🛡️ Fechamento de Caixa — Protecbag GRU</h1>
-        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Sistema com Produtos e Lacres por Máquina em Tempo Real</p>
+        <h1>🛡️ Protecbag GRU - Fechamento de Caixa Oficial</h1>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Controle diário de lacres por máquina, produtos e fechamento de turno em tempo real</p>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="date" id="dateInput" style="background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 600;" onchange="saveData()">
-        <button class="btn btn-outline" onclick="openImportModal()">📥 Colar Texto do WhatsApp</button>
+        <label style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Data:</label>
+        <input type="date" id="dateInput" style="background: #1c2541; border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 700;" onchange="recalc()">
+        <button class="btn btn-primary" onclick="openImportModal()">📥 Colar Texto do WhatsApp</button>
       </div>
     </header>
 
-    <!-- TABS DE TURNO -->
+    <!-- ABAS DOS TURNOS -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchShift('A')">☀️ TURNO A (Manhã)</button>
-      <button class="tab-btn" onclick="switchShift('B')">⛅ TURNO B (Tarde/Noite)</button>
-      <button class="tab-btn" onclick="switchShift('C')">🌙 TURNO C (Madrugada)</button>
+      <button class="tab-btn active" onclick="switchShift('A')">TURNO A (Manhã)</button>
+      <button class="tab-btn" onclick="switchShift('B')">TURNO B (Tarde/Noite)</button>
+      <button class="tab-btn" onclick="switchShift('C')">TURNO C (Madrugada)</button>
     </div>
 
-    <!-- CARDS DE TOTAIS -->
-    <div class="summary-grid">
-      <div class="card highlight">
-        <div class="card-title">Total Geral Bruto</div>
-        <div class="card-val" id="cardTotalGeral">R$ 0,00</div>
-        <div class="card-sub" id="cardBagsSub">0 Malas + 0 Produtos</div>
-      </div>
-      <div class="card" id="cardBagsCheck">
-        <div class="card-title">Bags (Lacres vs Venda)</div>
+    <!-- CARDS RESUMO DO TURNO -->
+    <div class="top-cards">
+      <div class="card highlight" id="cardBagsCheck">
+        <div class="card-label">Total Bags (Máquinas)</div>
         <div class="card-val" id="cardTotalBags">0 BAG</div>
-        <div class="card-sub" id="cardBagsStatus">Batendo certinho!</div>
-      </div>
-      <div class="card">
-        <div class="card-title">Total Produtos</div>
-        <div class="card-val" id="cardTotalProdutos">0 un</div>
-        <div class="card-sub" id="cardProdutosSub">R$ 0,00</div>
+        <div class="card-sub" id="cardBagsStatus">Aguardando dados</div>
       </div>
       <div class="card green">
-        <div class="card-title">Dinheiro vs Cartão</div>
-        <div class="card-val" id="cardDinheiro">R$ 0,00</div>
+        <div class="card-label">Total Geral Faturado</div>
+        <div class="card-val" style="color: #34d399;" id="cardTotalGeral">R$ 0,00</div>
+        <div class="card-sub" id="cardBagsSub">0 Malas + 0 Produtos</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Total Produtos Vendidos</div>
+        <div class="card-val" id="cardTotalProdutos">0 un</div>
+        <div class="card-sub" style="color: #60a5fa;" id="cardProdutosSub">R$ 0,00 (Automático)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Dinheiro em Espécie</div>
+        <div class="card-val" style="color: #10b981;" id="cardDinheiro">R$ 0,00</div>
         <div class="card-sub" id="cardCartao">Cartão/PIX: R$ 0,00</div>
       </div>
     </div>
 
-    <!-- LAYOUT PRINCIPAL DIVIDIDO -->
+    <!-- LAYOUT PRINCIPAL -->
     <div class="main-layout">
-      <!-- COLUNA DA ESQUERDA: MÁQUINAS COM PRODUTOS NA MESMA LINHA -->
+      
+      <!-- COLUNA DA ESQUERDA: MÁQUINAS E TABELA DE BAGS -->
       <div>
+        <!-- LISTA DE MÁQUINAS -->
         <div class="section-title">
-          <span>🧳 Máquinas, Lacres e Produtos (Mesma Linha)</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Lacre 2 apenas para troca de rolo</span>
+          <span>⚙️ Máquinas em Operação & Lacres (G1 a G13)</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;">Total: 11 máquinas cadastradas</span>
         </div>
-
         <div class="machines-list" id="machinesList">
           <!-- Gerado via JavaScript -->
         </div>
 
-        <!-- TABELA DE BAGS POR PREÇO -->
-        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-top: 20px;">
+        <!-- TABELA DE VENDAS POR VALOR (BAGS) -->
+        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px;">
           <div class="section-title">
-            <span>💰 Bags Vendidas por Preço</span>
-            <span id="badgeBagsSum" style="font-size: 12px; color: var(--accent); font-weight: 700;">Total: 0 Bags</span>
+            <span>💰 Bags Vendidas por Preço (Conferência de Caixa)</span>
+            <span id="badgeBagsSum" style="font-size: 12px; background: #0b132b; padding: 3px 8px; border-radius: 4px; color: #38bdf8; font-weight: 700;">Total: 0 Bags</span>
           </div>
           <table class="price-table">
             <thead>
               <tr>
-                <th>Preço Unitário</th>
-                <th style="text-align: center;">Quantidade</th>
-                <th style="text-align: right;">Subtotal</th>
+                <th>Tipo de Venda</th>
+                <th style="text-align: center;">Qtd Vendida</th>
+                <th style="text-align: right;">Subtotal (R$)</th>
               </tr>
             </thead>
             <tbody id="priceTableBody">
-              <!-- Gerado via JS -->
+              <!-- Gerado via JavaScript -->
             </tbody>
             <tfoot>
               <tr style="font-weight: 700;">
@@ -193,7 +210,7 @@
         <div class="wa-preview-box">
           <div class="wa-header">
             <span style="font-size: 13px; font-weight: 700; color: #25d366; display: flex; align-items: center; gap: 6px;">
-              📱 WhatsApp ao Vivo (Atualiza conforme digita)
+              📱 WhatsApp ao Vivo (Atualiza na hora)
             </span>
             <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="copiarWhatsAppOficial()">
               📋 Copiar
@@ -201,6 +218,17 @@
           </div>
           <div class="wa-bubble-chat" id="waLivePreview">
             <!-- Texto montado ao vivo -->
+          </div>
+        </div>
+
+        <!-- RESUMO & TABELA EDITÁVEL DE PREÇOS DOS PRODUTOS -->
+        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-top: 20px;">
+          <div class="section-title">
+            <span>🏷️ Tabela de Preços dos Produtos (Editável)</span>
+            <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="resetarPrecosPadrao()">Resetar</button>
+          </div>
+          <div id="prodPricesEditor" style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
+            <!-- Gerado via JavaScript -->
           </div>
         </div>
 
@@ -215,11 +243,7 @@
               <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #10b981; padding: 8px; font-size: 18px; font-weight: 700; border-radius: 6px;" oninput="recalc()">
             </div>
             <div>
-              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">VALOR TOTAL DE PRODUTOS (R$)</label>
-              <input type="number" id="inputValorProdutos" placeholder="Ex: 780,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #fbbf24; padding: 8px; font-size: 16px; font-weight: 700; border-radius: 6px;" oninput="recalc()">
-            </div>
-            <div>
-              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">CARTÃO / PIX (CALCULADO)</label>
+              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">VALOR EM CARTÕES / PIX (CALCULADO)</label>
               <input type="text" id="inputCartao" readonly style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #38bdf8; padding: 8px; font-size: 16px; font-weight: 700; border-radius: 6px;" value="R$ 0,00">
             </div>
           </div>
@@ -251,6 +275,58 @@
 
   <script>
     const MACHINES = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G8', 'G10', 'G11', 'G12', 'G13'];
+
+    // DEFINIÇÃO COMPLETA DOS PRODUTOS OFICIAIS PROTECBAG
+    const PROD_DEFINITIONS = [
+      { id: 'latao',   name: 'TSA Chave (Latão)', waName: 'LATAO',            defaultPrice: 80.00, primary: true },
+      { id: 'segredo', name: 'Cadeado Segredo',   waName: 'SEGREDO',          defaultPrice: 90.00, primary: true },
+      { id: 'tsa',     name: 'Cadeado TSA',       waName: 'TSA',              defaultPrice: 110.00, primary: true },
+      { id: 'tag',     name: 'Tag Mala',          waName: 'TAG',              defaultPrice: 65.00, primary: true },
+      { id: 'tagloc',  name: 'Tag Localização',   waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00, primary: true },
+      { id: 'adapt',   name: 'Adaptador Tomada',  waName: 'ADAPTADOR',        defaultPrice: 85.00, primary: true },
+      { id: 'cabo',    name: 'Cabo de Aço',       waName: 'CABO DE ACO',      defaultPrice: 130.00, primary: false },
+      { id: 'cinta',   name: 'Cinta Bag',         waName: 'CINTA',            defaultPrice: 70.00, primary: false },
+      { id: 'ziplock', name: 'Ziplock',           waName: 'ZIPLOCK',          defaultPrice: 10.00, primary: false },
+      { id: 'tagseg',  name: 'Tag Seguro',        waName: 'TAG SEGURO',       defaultPrice: 100.00, primary: false },
+      { id: 'aero',    name: 'Aerobag',           waName: 'AEROBAG',          defaultPrice: 0.00, primary: true }
+    ];
+
+    // CARREGAR PREÇOS SALVOS OU PADRÃO
+    let PROD_PRICES = {};
+    function initPrices() {
+      const savedPrices = localStorage.getItem('protecbag_prod_prices_v2');
+      if (savedPrices) {
+        try {
+          PROD_PRICES = JSON.parse(savedPrices);
+        } catch(e) {
+          PROD_PRICES = {};
+        }
+      }
+      PROD_DEFINITIONS.forEach(p => {
+        if (PROD_PRICES[p.id] === undefined) {
+          PROD_PRICES[p.id] = p.defaultPrice;
+        }
+      });
+    }
+    initPrices();
+
+    function savePrices() {
+      localStorage.setItem('protecbag_prod_prices_v2', JSON.stringify(PROD_PRICES));
+    }
+
+    function resetarPrecosPadrao() {
+      if (confirm('Restaurar todos os preços para os valores oficiais padrão?')) {
+        PROD_DEFINITIONS.forEach(p => {
+          PROD_PRICES[p.id] = p.defaultPrice;
+        });
+        savePrices();
+        renderPricesEditor();
+        renderMachinesList();
+        recalc();
+        showToast('Preços restaurados!');
+      }
+    }
+
     const PRICES = [
       { key: '199', label: 'BAG R$ 199,00', price: 199 },
       { key: '149', label: 'BAG R$ 149,00', price: 149 },
@@ -278,19 +354,18 @@
           '199': '29',
           '149': '23',
           '129': '1',
-          '90':  '1',
+          '90': '1',
           '179': '5',
           'cort': '3'
         },
-        dinheiro: '',
-        valorProdutos: '780.00'
+        dinheiro: ''
       },
-      'B': { machines: {}, prices: {}, dinheiro: '', valorProdutos: '' },
-      'C': { machines: {}, prices: {}, dinheiro: '', valorProdutos: '' }
+      'B': { machines: {}, prices: {}, dinheiro: '' },
+      'C': { machines: {}, prices: {}, dinheiro: '' }
     };
 
     let currentShift = 'A';
-    let rawStored = localStorage.getItem('fechamento_oficial_data');
+    let rawStored = localStorage.getItem('fechamento_oficial_data_v3');
     let appData = rawStored ? JSON.parse(rawStored) : null;
     if (!appData || !appData.shifts || !appData.shifts.A || Object.keys(appData.shifts.A.machines).length === 0) {
       appData = {
@@ -301,6 +376,7 @@
 
     function init() {
       document.getElementById('dateInput').value = appData.date || '2026-11-17';
+      renderPricesEditor();
       renderMachinesList();
       renderPriceTable();
       loadShift(currentShift);
@@ -315,6 +391,33 @@
       loadShift(shift);
     }
 
+    function renderPricesEditor() {
+      const container = document.getElementById('prodPricesEditor');
+      container.innerHTML = '';
+      PROD_DEFINITIONS.forEach(p => {
+        if (p.id === 'aero') return; // Aerobag sem preço
+        const div = document.createElement('div');
+        div.className = 'price-edit-row';
+        div.innerHTML = `
+          <span>${p.name}:</span>
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <span style="color: var(--text-muted); font-size: 11px;">R$</span>
+            <input type="number" step="0.50" id="price_edit_${p.id}" value="${PROD_PRICES[p.id]}" onchange="updateSinglePrice('${p.id}')">
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function updateSinglePrice(id) {
+      const val = parseFloat(document.getElementById(`price_edit_${id}`).value) || 0;
+      PROD_PRICES[id] = val;
+      savePrices();
+      renderMachinesList();
+      loadShift(currentShift);
+      showToast('Preço atualizado!');
+    }
+
     function renderMachinesList() {
       const container = document.getElementById('machinesList');
       container.innerHTML = '';
@@ -322,6 +425,63 @@
         const div = document.createElement('div');
         div.className = 'machine-row';
         div.id = `card_${m}`;
+
+        // Montar pills primárias
+        let pillsHtml = `
+          <span style="font-size: 11px; font-weight: 800; color: #94a3b8; margin-right: 2px;">PRODUTOS:</span>
+          <div class="prod-pill">
+            <label>AEROBAG</label>
+            <input type="number" id="p_aero_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.latao}">TSA CHAVE <span class="p-price">${PROD_PRICES.latao}</span></label>
+            <input type="number" id="p_latao_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.segredo}">SEGREDO <span class="p-price">${PROD_PRICES.segredo}</span></label>
+            <input type="number" id="p_segredo_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.tsa}">TSA <span class="p-price">${PROD_PRICES.tsa}</span></label>
+            <input type="number" id="p_tsa_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.tag}">TAG MALA <span class="p-price">${PROD_PRICES.tag}</span></label>
+            <input type="number" id="p_tag_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.tagloc}">TAG LOC. <span class="p-price">${PROD_PRICES.tagloc}</span></label>
+            <input type="number" id="p_tagloc_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.adapt}">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
+            <input type="number" id="p_adapt_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <button class="btn btn-outline" style="padding: 2px 6px; font-size: 10px; border-radius: 4px;" onclick="toggleMoreProds('${m}')">+ Outros</button>
+        `;
+
+        // Caixa expansível para outros produtos
+        let moreHtml = `
+          <div class="more-prods-box" id="more_box_${m}" style="display: none;">
+            <div class="prod-pill">
+              <label title="R$ ${PROD_PRICES.cabo}">CABO AÇO <span class="p-price">${PROD_PRICES.cabo}</span></label>
+              <input type="number" id="p_cabo_${m}" placeholder="0" min="0" oninput="recalc()">
+            </div>
+            <div class="prod-pill">
+              <label title="R$ ${PROD_PRICES.cinta}">CINTA <span class="p-price">${PROD_PRICES.cinta}</span></label>
+              <input type="number" id="p_cinta_${m}" placeholder="0" min="0" oninput="recalc()">
+            </div>
+            <div class="prod-pill">
+              <label title="R$ ${PROD_PRICES.ziplock}">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
+              <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()">
+            </div>
+            <div class="prod-pill">
+              <label title="R$ ${PROD_PRICES.tagseg}">TAG SEGURO <span class="p-price">${PROD_PRICES.tagseg}</span></label>
+              <input type="number" id="p_tagseg_${m}" placeholder="0" min="0" oninput="recalc()">
+            </div>
+          </div>
+        `;
+
         div.innerHTML = `
           <!-- LINHA 1: MÁQUINA + OPERADOR -->
           <div class="row-top">
@@ -346,29 +506,10 @@
             </div>
           </div>
 
-          <!-- LINHA 3: PRODUTOS VENDIDOS NA MESMA LINHA DA MÁQUINA (EXATAMENTE COMO O EXEMPLO) -->
+          <!-- LINHA 3: PRODUTOS NA MESMA LINHA DA MÁQUINA -->
           <div class="machine-prods-row">
-            <span style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-right: 4px;">PRODUTOS:</span>
-            <div class="prod-pill">
-              <label>AEROBAG</label>
-              <input type="number" id="p_aero_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label>LATÃO</label>
-              <input type="number" id="p_latao_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label>SEGREDO</label>
-              <input type="number" id="p_segredo_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label>TAG</label>
-              <input type="number" id="p_tag_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label>TSA</label>
-              <input type="number" id="p_tsa_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
+            ${pillsHtml}
+            ${moreHtml}
           </div>
 
           <!-- PREVIEW EM TEXTO DA MÁQUINA -->
@@ -381,6 +522,11 @@
     function toggleRolo2(m) {
       const box = document.getElementById(`rolo2_box_${m}`);
       box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleMoreProds(m) {
+      const box = document.getElementById(`more_box_${m}`);
+      box.style.display = box.style.display === 'none' ? 'flex' : 'none';
     }
 
     function renderPriceTable() {
@@ -400,39 +546,74 @@
     function recalc() {
       let totalBagsMachines = 0;
       let totalProdutosCount = 0;
+      let totalProdutosValor = 0;
       let waMachinesText = '';
 
       // Máquinas
       MACHINES.forEach(m => {
-        const op = document.getElementById(`op_${m}`).value.trim();
-        const ini1 = parseInt(document.getElementById(`ini1_${m}`).value) || 0;
-        const fim1 = parseInt(document.getElementById(`fim1_${m}`).value) || 0;
+        const op = (document.getElementById(`op_${m}`)?.value || '').trim();
+        const ini1 = parseInt(document.getElementById(`ini1_${m}`)?.value) || 0;
+        const fim1 = parseInt(document.getElementById(`fim1_${m}`)?.value) || 0;
         let b1 = (fim1 >= ini1 && ini1 > 0) ? (fim1 - ini1 + 1) : 0;
 
-        const ini2 = parseInt(document.getElementById(`ini2_${m}`).value) || 0;
-        const fim2 = parseInt(document.getElementById(`fim2_${m}`).value) || 0;
+        const ini2 = parseInt(document.getElementById(`ini2_${m}`)?.value) || 0;
+        const fim2 = parseInt(document.getElementById(`fim2_${m}`)?.value) || 0;
         let b2 = (fim2 >= ini2 && ini2 > 0) ? (fim2 - ini2 + 1) : 0;
         if (b2 > 0 || ini2 > 0) {
-          document.getElementById(`rolo2_box_${m}`).style.display = 'block';
+          const rBox = document.getElementById(`rolo2_box_${m}`);
+          if (rBox) rBox.style.display = 'block';
         }
-        document.getElementById(`bags2_${m}`).innerText = `${b2} BAG`;
+        if (document.getElementById(`bags2_${m}`)) {
+          document.getElementById(`bags2_${m}`).innerText = `${b2} BAG`;
+        }
 
         const bTot = b1 + b2;
-        document.getElementById(`bags_${m}`).innerText = `${bTot} BAG`;
+        if (document.getElementById(`bags_${m}`)) {
+          document.getElementById(`bags_${m}`).innerText = `${bTot} BAG`;
+        }
         totalBagsMachines += bTot;
 
-        const aero = parseInt(document.getElementById(`p_aero_${m}`).value) || 0;
-        const latao = parseInt(document.getElementById(`p_latao_${m}`).value) || 0;
-        const segredo = parseInt(document.getElementById(`p_segredo_${m}`).value) || 0;
-        const tag = parseInt(document.getElementById(`p_tag_${m}`).value) || 0;
-        const tsa = parseInt(document.getElementById(`p_tsa_${m}`).value) || 0;
-        totalProdutosCount += (latao + segredo + tag + tsa);
+        // Produtos
+        const getProdQty = (id) => parseInt(document.getElementById(`p_${id}_${m}`)?.value) || 0;
+        
+        const aero = getProdQty('aero');
+        const latao = getProdQty('latao');
+        const segredo = getProdQty('segredo');
+        const tsa = getProdQty('tsa');
+        const tag = getProdQty('tag');
+        const tagloc = getProdQty('tagloc');
+        const adapt = getProdQty('adapt');
+        const cabo = getProdQty('cabo');
+        const cinta = getProdQty('cinta');
+        const ziplock = getProdQty('ziplock');
+        const tagseg = getProdQty('tagseg');
+
+        // Se houver algum dos produtos secundários preenchidos, abrir o box
+        if (cabo > 0 || cinta > 0 || ziplock > 0 || tagseg > 0) {
+          const mBox = document.getElementById(`more_box_${m}`);
+          if (mBox) mBox.style.display = 'flex';
+        }
+
+        const pCount = latao + segredo + tsa + tag + tagloc + adapt + cabo + cinta + ziplock + tagseg;
+        totalProdutosCount += pCount;
+
+        const pVal = (latao * (PROD_PRICES.latao || 0)) +
+                     (segredo * (PROD_PRICES.segredo || 0)) +
+                     (tsa * (PROD_PRICES.tsa || 0)) +
+                     (tag * (PROD_PRICES.tag || 0)) +
+                     (tagloc * (PROD_PRICES.tagloc || 0)) +
+                     (adapt * (PROD_PRICES.adapt || 0)) +
+                     (cabo * (PROD_PRICES.cabo || 0)) +
+                     (cinta * (PROD_PRICES.cinta || 0)) +
+                     (ziplock * (PROD_PRICES.ziplock || 0)) +
+                     (tagseg * (PROD_PRICES.tagseg || 0));
+        totalProdutosValor += pVal;
 
         const card = document.getElementById(`card_${m}`);
         const previewEl = document.getElementById(`preview_text_${m}`);
 
-        if (bTot > 0 || op !== '' || aero > 0 || latao > 0 || segredo > 0 || tag > 0 || tsa > 0) {
-          card.classList.add('has-data');
+        if (bTot > 0 || op !== '' || aero > 0 || pCount > 0) {
+          card?.classList.add('has-data');
           
           let mText = `${m}${op ? ' - ' + op : ''}\n`;
           if (bTot > 0) {
@@ -444,14 +625,20 @@
           if (aero > 0) mText += `${aero} AEROBAG\n`;
           if (latao > 0) mText += `${latao} LATAO\n`;
           if (segredo > 0) mText += `${segredo} SEGREDO\n`;
-          if (tag > 0) mText += `${tag} TAG\n`;
           if (tsa > 0) mText += `${tsa} TSA\n`;
+          if (tag > 0) mText += `${tag} TAG\n`;
+          if (tagloc > 0) mText += `${tagloc} TAG LOCALIZACAO\n`;
+          if (adapt > 0) mText += `${adapt} ADAPTADOR\n`;
+          if (cabo > 0) mText += `${cabo} CABO DE ACO\n`;
+          if (cinta > 0) mText += `${cinta} CINTA\n`;
+          if (ziplock > 0) mText += `${ziplock} ZIPLOCK\n`;
+          if (tagseg > 0) mText += `${tagseg} TAG SEGURO\n`;
 
-          previewEl.innerText = mText.trim();
+          if (previewEl) previewEl.innerText = mText.trim();
           waMachinesText += mText + '\n';
         } else {
-          card.classList.remove('has-data');
-          previewEl.innerText = '';
+          card?.classList.remove('has-data');
+          if (previewEl) previewEl.innerText = '';
         }
       });
 
@@ -461,9 +648,11 @@
       let waBagsPriceText = 'BAGS VENDIDAS\n\n';
 
       PRICES.forEach(p => {
-        const qty = parseInt(document.getElementById(`pr_${p.key}`).value) || 0;
+        const qty = parseInt(document.getElementById(`pr_${p.key}`)?.value) || 0;
         const sub = qty * p.price;
-        document.getElementById(`sub_${p.key}`).innerText = formatBRL(sub);
+        if (document.getElementById(`sub_${p.key}`)) {
+          document.getElementById(`sub_${p.key}`).innerText = formatBRL(sub);
+        }
         totalBagsVenda += qty;
         totalMalasReais += sub;
 
@@ -495,21 +684,20 @@
         cardStatus.style.color = '#fbbf24';
       }
 
-      // Financeiro
-      const valorProdutos = parseFloat(document.getElementById('inputValorProdutos').value) || 0;
-      const totalGeral = totalMalasReais + valorProdutos;
+      // Financeiro Total 100% Automático
+      const totalGeral = totalMalasReais + totalProdutosValor;
       const dinheiro = parseFloat(document.getElementById('inputDinheiro').value) || 0;
       const cartao = Math.max(0, totalGeral - dinheiro);
 
       document.getElementById('cardTotalGeral').innerText = formatBRL(totalGeral);
       document.getElementById('cardBagsSub').innerText = `${totalBagsMachines} Malas + ${totalProdutosCount} Produtos`;
       document.getElementById('cardTotalProdutos').innerText = `${totalProdutosCount} un`;
-      document.getElementById('cardProdutosSub').innerText = formatBRL(valorProdutos);
+      document.getElementById('cardProdutosSub').innerText = `${formatBRL(totalProdutosValor)} (Automático)`;
       document.getElementById('cardDinheiro').innerText = formatBRL(dinheiro);
       document.getElementById('cardCartao').innerText = `Cartão/PIX: ${formatBRL(cartao)}`;
       document.getElementById('inputCartao').value = formatBRL(cartao);
 
-      // Monta WhatsApp Live Preview
+      // WhatsApp Live Preview
       const rawDate = document.getElementById('dateInput').value;
       const parts = rawDate.split('-');
       const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : new Date().toLocaleDateString('pt-BR');
@@ -529,60 +717,68 @@
 
     function saveData() {
       appData.date = document.getElementById('dateInput').value;
-      const s = appData.shifts[currentShift] || { machines: {}, prices: {}, dinheiro: 0, valorProdutos: 0 };
+      const s = appData.shifts[currentShift] || { machines: {}, prices: {}, dinheiro: 0 };
       
+      const prodKeys = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'cabo', 'cinta', 'ziplock', 'tagseg'];
+
       MACHINES.forEach(m => {
-        s.machines[m] = {
-          op: document.getElementById(`op_${m}`).value,
-          ini1: document.getElementById(`ini1_${m}`).value,
-          fim1: document.getElementById(`fim1_${m}`).value,
-          ini2: document.getElementById(`ini2_${m}`).value,
-          fim2: document.getElementById(`fim2_${m}`).value,
-          aero: document.getElementById(`p_aero_${m}`).value,
-          latao: document.getElementById(`p_latao_${m}`).value,
-          segredo: document.getElementById(`p_segredo_${m}`).value,
-          tag: document.getElementById(`p_tag_${m}`).value,
-          tsa: document.getElementById(`p_tsa_${m}`).value
+        const mM = {
+          op: document.getElementById(`op_${m}`)?.value || '',
+          ini1: document.getElementById(`ini1_${m}`)?.value || '',
+          fim1: document.getElementById(`fim1_${m}`)?.value || '',
+          ini2: document.getElementById(`ini2_${m}`)?.value || '',
+          fim2: document.getElementById(`fim2_${m}`)?.value || ''
         };
+        prodKeys.forEach(k => {
+          mM[k] = document.getElementById(`p_${k}_${m}`)?.value || '';
+        });
+        s.machines[m] = mM;
       });
 
       PRICES.forEach(p => {
-        s.prices[p.key] = document.getElementById(`pr_${p.key}`).value;
+        s.prices[p.key] = document.getElementById(`pr_${p.key}`)?.value || '';
       });
 
       s.dinheiro = document.getElementById('inputDinheiro').value;
-      s.valorProdutos = document.getElementById('inputValorProdutos').value;
 
       appData.shifts[currentShift] = s;
-      localStorage.setItem('fechamento_oficial_data', JSON.stringify(appData));
+      localStorage.setItem('fechamento_oficial_data_v3', JSON.stringify(appData));
     }
 
     function loadShift(shift) {
-      const s = appData.shifts[shift] || { machines: {}, prices: {}, dinheiro: '', valorProdutos: '' };
+      const s = appData.shifts[shift] || { machines: {}, prices: {}, dinheiro: '' };
+      const prodKeys = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'cabo', 'cinta', 'ziplock', 'tagseg'];
+
       MACHINES.forEach(m => {
         const mData = s.machines[m] || {};
-        document.getElementById(`op_${m}`).value = mData.op || '';
-        document.getElementById(`ini1_${m}`).value = mData.ini1 || '';
-        document.getElementById(`fim1_${m}`).value = mData.fim1 || '';
-        document.getElementById(`ini2_${m}`).value = mData.ini2 || '';
-        document.getElementById(`fim2_${m}`).value = mData.fim2 || '';
-        document.getElementById(`p_aero_${m}`).value = mData.aero || '';
-        document.getElementById(`p_latao_${m}`).value = mData.latao || '';
-        document.getElementById(`p_segredo_${m}`).value = mData.segredo || '';
-        document.getElementById(`p_tag_${m}`).value = mData.tag || '';
-        document.getElementById(`p_tsa_${m}`).value = mData.tsa || '';
+        if (document.getElementById(`op_${m}`)) document.getElementById(`op_${m}`).value = mData.op || '';
+        if (document.getElementById(`ini1_${m}`)) document.getElementById(`ini1_${m}`).value = mData.ini1 || '';
+        if (document.getElementById(`fim1_${m}`)) document.getElementById(`fim1_${m}`).value = mData.fim1 || '';
+        if (document.getElementById(`ini2_${m}`)) document.getElementById(`ini2_${m}`).value = mData.ini2 || '';
+        if (document.getElementById(`fim2_${m}`)) document.getElementById(`fim2_${m}`).value = mData.fim2 || '';
+
+        prodKeys.forEach(k => {
+          const el = document.getElementById(`p_${k}_${m}`);
+          if (el) el.value = mData[k] || '';
+        });
 
         if (mData.ini2 || mData.fim2) {
-          document.getElementById(`rolo2_box_${m}`).style.display = 'block';
+          const rBox = document.getElementById(`rolo2_box_${m}`);
+          if (rBox) rBox.style.display = 'block';
+        }
+        if (mData.cabo || mData.cinta || mData.ziplock || mData.tagseg) {
+          const mBox = document.getElementById(`more_box_${m}`);
+          if (mBox) mBox.style.display = 'flex';
         }
       });
 
       PRICES.forEach(p => {
-        document.getElementById(`pr_${p.key}`).value = (s.prices && s.prices[p.key]) || '';
+        if (document.getElementById(`pr_${p.key}`)) {
+          document.getElementById(`pr_${p.key}`).value = (s.prices && s.prices[p.key]) || '';
+        }
       });
 
       document.getElementById('inputDinheiro').value = s.dinheiro || '';
-      document.getElementById('inputValorProdutos').value = s.valorProdutos || '';
       recalc();
     }
 
@@ -665,17 +861,35 @@
           const aeroM = l.match(/(\d+)\s*AEROBAG/i);
           if (aeroM) document.getElementById(`p_aero_${currentMachine}`).value = aeroM[1];
 
-          const lataoM = l.match(/(\d+)\s*LATAO/i);
+          const lataoM = l.match(/(\d+)\s*(LATAO|TSA CHAVE)/i);
           if (lataoM) document.getElementById(`p_latao_${currentMachine}`).value = lataoM[1];
 
           const segM = l.match(/(\d+)\s*SEGREDO/i);
           if (segM) document.getElementById(`p_segredo_${currentMachine}`).value = segM[1];
 
-          const tagM = l.match(/(\d+)\s*TAG/i);
+          const tsaM = l.match(/(\d+)\s*TSA(?!\s*CHAVE)/i);
+          if (tsaM) document.getElementById(`p_tsa_${currentMachine}`).value = tsaM[1];
+
+          const tagLocM = l.match(/(\d+)\s*TAG\s*LOCALIZA/i);
+          if (tagLocM) document.getElementById(`p_tagloc_${currentMachine}`).value = tagLocM[1];
+
+          const tagM = l.match(/(\d+)\s*TAG(?!\s*LOCALIZA|\s*SEGURO)/i);
           if (tagM) document.getElementById(`p_tag_${currentMachine}`).value = tagM[1];
 
-          const tsaM = l.match(/(\d+)\s*TSA/i);
-          if (tsaM) document.getElementById(`p_tsa_${currentMachine}`).value = tsaM[1];
+          const adaptM = l.match(/(\d+)\s*ADAPT/i);
+          if (adaptM) document.getElementById(`p_adapt_${currentMachine}`).value = adaptM[1];
+
+          const caboM = l.match(/(\d+)\s*CABO/i);
+          if (caboM) document.getElementById(`p_cabo_${currentMachine}`).value = caboM[1];
+
+          const cintaM = l.match(/(\d+)\s*CINTA/i);
+          if (cintaM) document.getElementById(`p_cinta_${currentMachine}`).value = cintaM[1];
+
+          const zipM = l.match(/(\d+)\s*ZIP/i);
+          if (zipM) document.getElementById(`p_ziplock_${currentMachine}`).value = zipM[1];
+
+          const tagSegM = l.match(/(\d+)\s*TAG\s*SEGURO/i);
+          if (tagSegM) document.getElementById(`p_tagseg_${currentMachine}`).value = tagSegM[1];
         }
 
         const priceMatch = l.match(/BAG\s*R\$\s*([\d,\.]+)\s*-\s*(\d+)/i);
@@ -694,16 +908,6 @@
           document.getElementById('pr_cort').value = cortMatch[1];
           return;
         }
-
-        const totMatch = l.match(/TOTAL\s*-\s*\*?R\$\s*([\d\.,]+)\*?/i);
-        if (totMatch) {
-          const totNum = parseFloat(totMatch[1].replace('.', '').replace(',', '.'));
-          recalc();
-          const malasVal = parseFloat(document.getElementById('totMalasValor').innerText.replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
-          if (totNum > malasVal) {
-            document.getElementById('inputValorProdutos').value = (totNum - malasVal).toFixed(2);
-          }
-        }
       });
 
       recalc();
@@ -712,18 +916,21 @@
     }
 
     function limparTurnoSilencioso() {
+      const prodKeys = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'cabo', 'cinta', 'ziplock', 'tagseg'];
       MACHINES.forEach(m => {
-        ['op', 'ini1', 'fim1', 'ini2', 'fim2', 'p_aero', 'p_latao', 'p_segredo', 'p_tag', 'p_tsa'].forEach(f => {
+        ['op', 'ini1', 'fim1', 'ini2', 'fim2'].forEach(f => {
           const el = document.getElementById(`${f}_${m}`);
           if (el) el.value = '';
         });
-        document.getElementById(`rolo2_box_${m}`).style.display = 'none';
+        prodKeys.forEach(k => {
+          const el = document.getElementById(`p_${k}_${m}`);
+          if (el) el.value = '';
+        });
       });
       PRICES.forEach(p => {
         document.getElementById(`pr_${p.key}`).value = '';
       });
       document.getElementById('inputDinheiro').value = '';
-      document.getElementById('inputValorProdutos').value = '';
     }
 
     function limparTurno() {
@@ -742,34 +949,30 @@
         ['FECHAMENTO DE CAIXA PROTECBAG GRU - TURNO ' + currentShift],
         ['Data:', rawDate],
         [],
-        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG', 'LATÃO', 'SEGREDO', 'TAG', 'TSA']
+        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG', 'TSA CHAVE', 'SEGREDO', 'TSA', 'TAG MALA', 'TAG LOC', 'ADAPTADOR', 'CABO AÇO', 'CINTA', 'ZIPLOCK', 'TAG SEGURO']
       ];
 
       MACHINES.forEach(m => {
-        const op = document.getElementById(`op_${m}`).value;
-        const ini1 = document.getElementById(`ini1_${m}`).value;
-        const fim1 = document.getElementById(`fim1_${m}`).value;
-        const b1 = document.getElementById(`bags_${m}`).innerText;
-        const ini2 = document.getElementById(`ini2_${m}`).value;
-        const fim2 = document.getElementById(`fim2_${m}`).value;
-        const b2 = document.getElementById(`bags2_${m}`).innerText;
+        const op = document.getElementById(`op_${m}`)?.value || '';
+        const ini1 = document.getElementById(`ini1_${m}`)?.value || '';
+        const fim1 = document.getElementById(`fim1_${m}`)?.value || '';
+        const b1 = document.getElementById(`bags_${m}`)?.innerText || '';
+        const ini2 = document.getElementById(`ini2_${m}`)?.value || '';
+        const fim2 = document.getElementById(`fim2_${m}`)?.value || '';
+        const b2 = document.getElementById(`bags2_${m}`)?.innerText || '';
         const bTot = (parseInt(b1) || 0) + (parseInt(b2) || 0);
 
-        const aero = document.getElementById(`p_aero_${m}`).value;
-        const latao = document.getElementById(`p_latao_${m}`).value;
-        const seg = document.getElementById(`p_segredo_${m}`).value;
-        const tag = document.getElementById(`p_tag_${m}`).value;
-        const tsa = document.getElementById(`p_tsa_${m}`).value;
+        const getP = id => document.getElementById(`p_${id}_${m}`)?.value || '';
 
         if (bTot > 0 || op) {
-          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, aero, latao, seg, tag, tsa]);
+          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, getP('aero'), getP('latao'), getP('segredo'), getP('tsa'), getP('tag'), getP('tagloc'), getP('adapt'), getP('cabo'), getP('cinta'), getP('ziplock'), getP('tagseg')]);
         }
       });
 
       rows.push([]);
       rows.push(['DISTRIBUIÇÃO DE BAGS POR PREÇO']);
       PRICES.forEach(p => {
-        const q = document.getElementById(`pr_${p.key}`).value || 0;
+        const q = document.getElementById(`pr_${p.key}`)?.value || 0;
         rows.push([p.label, q, p.price, q * p.price]);
       });
 
