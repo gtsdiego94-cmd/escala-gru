@@ -3,394 +3,305 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fechamento de Caixa Protecbag GRU - OneBoss Oficial</title>
+  <title>Fechamento de Caixa - Protecbag GRU</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
-      --bg: #0b132b;
-      --card-bg: #1c2541;
-      --card-border: #3a506b;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --service-bg: #112240;
-      --service-border: #1e3a8a;
-      --service-text: #60a5fa;
-      --prod-bg: #1e1b4b;
-      --prod-border: #4338ca;
-      --prod-text: #a5b4fc;
+      --bg: #090e17;
+      --card-bg: #111927;
+      --border: #1f2c42;
+      --primary: #2563eb;
+      --accent: #38bdf8;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --text: #f8fafc;
+      --text: #f1f5f9;
       --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --wa-bg: #0b2518;
-      --wa-bubble: #123524;
+      --wa-bg: #0a1f14;
+      --wa-bubble: #113322;
       --wa-border: #1b4d35;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh; }
-    .container { max-width: 1480px; margin: 0 auto; }
+    body { background: var(--bg); color: var(--text); padding: 12px; font-size: 13px; }
+    .container { max-width: 1600px; margin: 0 auto; }
+
+    /* TOPO COMPACTO */
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+    .logo-area { display: flex; align-items: center; gap: 8px; }
+    h1 { font-size: 18px; font-weight: 800; color: #fff; }
+    .badge-sub { font-size: 11px; color: var(--accent); background: rgba(56, 189, 248, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
+
+    .header-controls { display: flex; align-items: center; gap: 8px; }
+    .date-input { background: #1a2436; border: 1px solid var(--border); color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; }
     
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); flex-wrap: wrap; gap: 12px; }
-    h1 { font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
-    
-    .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-    .tab-btn { background: #111a2e; border: 1px solid var(--card-border); color: var(--text-muted); padding: 8px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+    .tabs { display: flex; gap: 4px; }
+    .tab-btn { background: #1a2436; border: 1px solid var(--border); color: var(--text-muted); padding: 5px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    
-    /* CARDS DO TOPO SEPARADOS POR CATEGORIA */
-    .top-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 16px; }
-    .card-label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-    .card-val { font-size: 22px; font-weight: 800; color: #fff; }
-    .card-sub { font-size: 12px; margin-top: 4px; font-weight: 600; }
-    
-    .card.service-card { border-color: #3b82f6; background: linear-gradient(135deg, #112240, #172554); }
-    .card.prod-card { border-color: #8b5cf6; background: linear-gradient(135deg, #1e1b4b, #2e1065); }
-    .card.total-card { border-color: #10b981; background: linear-gradient(135deg, #064e3b, #065f46); }
-    .card.finance-card { border-color: #0284c7; background: linear-gradient(135deg, #0c4a6e, #075985); }
-    
-    .main-layout { display: grid; grid-template-columns: 2.15fr 1fr; gap: 20px; }
-    @media (max-width: 1150px) { .main-layout { grid-template-columns: 1fr; } }
 
-    .section-title { font-size: 15px; font-weight: 800; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-    
-    /* MÁQUINAS */
-    .machines-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-    .machine-row { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; transition: all 0.2s; }
-    .machine-row.has-data { border-color: var(--primary); background: #131d33; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-    
-    .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-    .machine-tag { font-weight: 800; font-size: 16px; color: #60a5fa; background: #0b132b; padding: 4px 12px; border-radius: 6px; border: 1px solid #1e3a8a; }
-    .operator-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; width: 280px; }
-    .operator-input:focus { border-color: var(--primary); outline: none; background: #162035; }
-    
-    /* BLOCO 1: SERVIÇOS DA MÁQUINA (AZUL) */
-    .machine-service-box {
-      background: var(--service-bg); border: 1px solid var(--service-border); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px;
-    }
-    .service-box-header { font-size: 11px; font-weight: 800; color: var(--service-text); text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-    .service-grid { display: grid; grid-template-columns: 1fr 1fr 90px 110px; gap: 8px; align-items: center; }
-    @media (max-width: 768px) { .service-grid { grid-template-columns: 1fr 1fr; } }
-    
-    .input-field { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 7px; border-radius: 6px; font-size: 13px; text-align: center; font-weight: 700; width: 100%; }
-    .input-field:focus { border-color: var(--primary); outline: none; background: #162035; }
-    .input-field.has-val { border-color: var(--primary); color: #38bdf8; background: #0f172a; }
-    .bag-badge { background: #0b132b; border: 1px solid var(--primary); padding: 7px; border-radius: 6px; font-size: 13px; font-weight: 800; text-align: center; color: #38bdf8; }
-    
-    /* BLOCO 2: PRODUTOS DA MÁQUINA (ROXO / ESMERALDA) */
-    .machine-prod-box {
-      background: var(--prod-bg); border: 1px solid var(--prod-border); border-radius: 8px; padding: 8px 10px;
-    }
-    .prod-box-header { font-size: 11px; font-weight: 800; color: var(--prod-text); text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-    .prods-grid { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    
-    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; background: #0f1124; padding: 4px 7px; border-radius: 6px; border: 1px solid #3730a3; }
-    .prod-pill label { cursor: pointer; user-select: none; }
-    .prod-pill input { width: 44px; background: #1e1b4b; border: 1px solid #4338ca; color: #a5b4fc; padding: 3px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 800; }
-    .prod-pill input:focus { border-color: #818cf8; outline: none; background: #312e81; color: #fff; }
-    .prod-pill input.has-val { background: #312e81; border-color: #a78bfa; color: #34d399; font-weight: 800; }
-    .prod-pill .p-price { font-size: 10px; color: #818cf8; margin-left: 2px; }
+    /* CARDS OBJETIVOS DO TOPO (LINHA ÚNICA) */
+    .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 900px) { .summary-strip { grid-template-columns: repeat(2, 1fr); } }
+    .sum-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; }
+    .sum-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+    .sum-val { font-size: 20px; font-weight: 800; margin-top: 2px; }
+    .sum-sub { font-size: 11px; margin-top: 2px; }
 
-    .machine-preview-tag {
-      margin-top: 8px; font-family: monospace; font-size: 11.5px; color: #38bdf8; background: #060b17;
-      padding: 6px 10px; border-radius: 6px; border-left: 3px solid var(--primary); white-space: pre-wrap;
-    }
-    
-    /* TABELAS LATERAIS */
-    .conferencia-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
-    .price-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
-    .price-table th, .price-table td { padding: 6px 8px; border-bottom: 1px solid var(--card-border); }
-    .price-table th { text-align: left; color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
-    .price-table input { width: 65px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 4px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 13px; }
-    .price-table input:focus { border-color: var(--primary); outline: none; }
-    
-    /* PREVIEW DO WHATSAPP */
-    .wa-preview-box { background: var(--wa-bg); border: 1px solid var(--wa-border); border-radius: 12px; padding: 14px; position: sticky; top: 16px; margin-bottom: 16px; }
-    .wa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--wa-border); }
-    .wa-bubble-chat {
-      background: var(--wa-bubble); border-radius: 8px; padding: 12px 14px;
-      font-family: "SF Pro Text", -apple-system, "Segoe UI", Roboto, monospace;
-      font-size: 12px; line-height: 1.45; color: #e9edef; white-space: pre-wrap; word-break: break-word;
-      max-height: 480px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s; }
+    /* LAYOUT: TABELA DE MÁQUINAS À ESQUERDA + PAINEL OBJETIVO À DIREITA */
+    .layout-grid { display: grid; grid-template-columns: 2.3fr 1fr; gap: 14px; }
+    @media (max-width: 1200px) { .layout-grid { grid-template-columns: 1fr; } }
+
+    /* TABELA DE MÁQUINAS RÁPIDA (LINHA ÚNICA POR MÁQUINA) */
+    .table-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
+    .mach-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+    .mach-table th { background: #162032; padding: 8px 6px; font-size: 10.5px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .mach-table td { padding: 5px 6px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .mach-table tr.active-row { background: rgba(37, 99, 235, 0.08); }
+
+    .tag-cell { font-weight: 800; color: #60a5fa; background: #0b132b; padding: 3px 6px; border-radius: 4px; text-align: center; border: 1px solid #1e3a8a; }
+    .t-input { background: #0b132b; border: 1px solid var(--border); color: #fff; padding: 5px; border-radius: 4px; font-size: 12px; text-align: center; font-weight: 600; }
+    .t-input:focus { border-color: var(--primary); outline: none; background: #162035; }
+    .t-input.has-val { border-color: var(--accent); color: #34d399; font-weight: 800; }
+    .t-input-op { width: 130px; text-align: left; padding-left: 8px; }
+    .t-input-lacre { width: 95px; }
+    .t-input-num { width: 44px; }
+
+    .badge-bags { background: #0b132b; border: 1px solid var(--primary); padding: 4px 6px; border-radius: 4px; font-size: 11.5px; font-weight: 800; text-align: center; color: #38bdf8; min-width: 50px; display: inline-block; }
+    .btn-mini { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .btn-mini:hover { border-color: var(--accent); color: #fff; }
+
+    /* PAINEL DIREITO */
+    .right-pane { display: flex; flex-direction: column; gap: 12px; }
+    .box-pane { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .box-title { font-size: 12px; font-weight: 800; color: #e2e8f0; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* GRADE DE BAGS VENDIDAS */
+    .bags-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .bag-item { background: #090e17; border: 1px solid var(--border); border-radius: 6px; padding: 6px; text-align: center; }
+    .bag-item-label { font-size: 10px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 2px; }
+    .bag-item-input { width: 100%; background: #111927; border: 1px solid var(--border); color: #fff; padding: 4px; border-radius: 4px; text-align: center; font-size: 13px; font-weight: 800; }
+    .bag-item-input:focus { border-color: var(--primary); outline: none; }
+    .bag-item-input.has-val { border-color: #38bdf8; color: #38bdf8; }
+
+    /* WHATSAPP BUBBLE */
+    .wa-bubble { background: var(--wa-bubble); border: 1px solid var(--wa-border); border-radius: 8px; padding: 10px 12px; font-family: monospace; font-size: 11.5px; line-height: 1.45; color: #e9edef; white-space: pre-wrap; word-break: break-word; max-height: 280px; overflow-y: auto; }
+
+    /* BOTÕES */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; border: none; transition: 0.15s; }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:hover { background: #1d4ed8; }
     .btn-success { background: var(--success); color: #fff; }
     .btn-success:hover { background: #059669; }
-    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--text); }
-    .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-muted); }
-    .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; }
-    .btn-danger:hover { background: var(--danger); color: #fff; }
-    
-    .actions-bar { display: flex; gap: 10px; margin-top: 14px; }
-    
-    .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 700; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); display: none; z-index: 1000; }
-    
-    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
-    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; width: 90%; max-width: 600px; }
-    .modal textarea { width: 100%; height: 250px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin: 12px 0; resize: vertical; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
 
-    /* EDITÁVEL DE PREÇOS */
-    .price-edit-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 5px 0; }
-    .price-edit-row input { width: 70px; background: #0b132b; border: 1px solid var(--card-border); color: #60a5fa; padding: 3px 6px; border-radius: 4px; text-align: right; font-weight: 700; font-size: 12px; }
+    /* MODAL */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; width: 90%; max-width: 500px; }
+    .modal textarea { width: 100%; height: 200px; background: #090e17; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px; margin: 10px 0; }
+
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 10px 16px; border-radius: 6px; font-weight: 700; font-size: 12px; display: none; z-index: 1000; }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- TOPO -->
+    <!-- TOPO OBJETIVO -->
     <header>
-      <div>
-        <h1>🛡️ Protecbag GRU - Fechamento Oficial OneBoss</h1>
-        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Separado por <strong>🧳 Serviços</strong> e <strong>🛍️ Produtos</strong> para preenchimento rápido e conferência de caixa</p>
+      <div class="logo-area">
+        <h1>🛡️ Protecbag GRU</h1>
+        <span class="badge-sub">Fechamento Objetivo OneBoss</span>
       </div>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <label style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Data:</label>
-        <input type="date" id="dateInput" style="background: #1c2541; border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 700;" onchange="recalc()">
-        <button class="btn btn-primary" onclick="openImportModal()">📥 Colar Texto do WhatsApp</button>
+      
+      <div class="header-controls">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchShift('A')">Turno A</button>
+          <button class="tab-btn" onclick="switchShift('B')">Turno B</button>
+          <button class="tab-btn" onclick="switchShift('C')">Turno C</button>
+        </div>
+        <input type="date" id="dateInput" class="date-input" onchange="recalc()">
+        <button class="btn btn-outline" style="padding: 5px 10px;" onclick="openImportModal()">📥 Colar WhatsApp</button>
       </div>
     </header>
 
-    <!-- ABAS DOS TURNOS -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchShift('A')">TURNO A (Manhã)</button>
-      <button class="tab-btn" onclick="switchShift('B')">TURNO B (Tarde/Noite)</button>
-      <button class="tab-btn" onclick="switchShift('C')">TURNO C (Madrugada)</button>
-    </div>
-
-    <!-- CARDS DO TOPO COM SEPARAÇÃO EXPLÍCITA: SERVIÇOS VS PRODUTOS -->
-    <div class="top-cards">
-      <!-- CARD 1: SERVIÇOS -->
-      <div class="card service-card" id="cardBagsCheck">
-        <div class="card-label" style="color: #93c5fd;">🧳 1. SERVIÇOS (MALAS)</div>
-        <div class="card-val" id="cardTotalBags">0 BAG</div>
-        <div class="card-sub" id="cardServicosValor" style="color: #60a5fa;">R$ 0,00 faturado</div>
+    <!-- FAIXA DE RESUMO OBJETIVO -->
+    <div class="summary-strip">
+      <div class="sum-box" style="border-left: 3px solid #3b82f6;">
+        <span class="sum-label" style="color: #60a5fa;">🧳 Malas (Lacres)</span>
+        <span class="sum-val" id="cardTotalBags">0 BAG</span>
+        <span class="sum-sub" id="cardServicosValor" style="color: #93c5fd;">R$ 0,00</span>
       </div>
 
-      <!-- CARD 2: PRODUTOS -->
-      <div class="card prod-card">
-        <div class="card-label" style="color: #c4b5fd;">🛍️ 2. PRODUTOS (ACESSÓRIOS)</div>
-        <div class="card-val" id="cardTotalProdutos">0 un</div>
-        <div class="card-sub" id="cardProdutosValor" style="color: #a78bfa;">R$ 0,00 faturado</div>
+      <div class="sum-box" style="border-left: 3px solid #a855f7;">
+        <span class="sum-label" style="color: #c084fc;">🛍️ Produtos OneBoss</span>
+        <span class="sum-val" id="cardTotalProdutos">0 un</span>
+        <span class="sum-sub" id="cardProdutosValor" style="color: #d8b4fe;">R$ 0,00</span>
       </div>
 
-      <!-- CARD 3: TOTAL GERAL -->
-      <div class="card total-card">
-        <div class="card-label" style="color: #a7f3d0;">💰 TOTAL GERAL DO TURNO</div>
-        <div class="card-val" style="color: #34d399;" id="cardTotalGeral">R$ 0,00</div>
-        <div class="card-sub" id="cardBagsSub" style="color: #6ee7b7;">Serviços + Produtos</div>
+      <div class="sum-box" style="border-left: 3px solid #10b981;">
+        <span class="sum-label" style="color: #34d399;">💰 Total Faturado</span>
+        <span class="sum-val" id="cardTotalGeral" style="color: #34d399;">R$ 0,00</span>
+        <span class="sum-sub" id="cardBagsSub" style="color: var(--text-muted);">Serviços + Produtos</span>
       </div>
 
-      <!-- CARD 4: FORMAS DE PAGAMENTO -->
-      <div class="card finance-card">
-        <div class="card-label" style="color: #bae6fd;">💵 GAVETA & CARTÕES</div>
-        <div class="card-val" style="color: #38bdf8;" id="cardDinheiro">R$ 0,00</div>
-        <div class="card-sub" id="cardCartao" style="color: #7dd3fc;">Cartão/PIX: R$ 0,00</div>
+      <div class="sum-box" style="border-left: 3px solid #0284c7;">
+        <span class="sum-label" style="color: #38bdf8;">💵 Gaveta & Cartão</span>
+        <span class="sum-val" id="cardDinheiro" style="color: #38bdf8;">R$ 0,00</span>
+        <span class="sum-sub" id="cardCartao" style="color: #7dd3fc;">Cartão/PIX: R$ 0,00</span>
       </div>
     </div>
 
-    <!-- LAYOUT PRINCIPAL -->
-    <div class="main-layout">
+    <!-- ÁREA PRINCIPAL -->
+    <div class="layout-grid">
       
-      <!-- COLUNA DA ESQUERDA: MÁQUINAS (COM SEPARAÇÃO VISUAL CLARA) -->
-      <div>
-        <div class="section-title">
-          <span>⚙️ Máquinas em Operação & Lançamentos (G1 a G13)</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Preenchimento ultra-rápido (Tab seleciona o próximo campo)</span>
-        </div>
-        <div class="machines-list" id="machinesList">
-          <!-- Gerado via JavaScript -->
-        </div>
+      <!-- ESQUERDA: TABELA RÁPIDA DE TODAS AS MÁQUINAS -->
+      <div class="table-container">
+        <table class="mach-table">
+          <thead>
+            <tr>
+              <th style="width: 45px; text-align: center;">Máq.</th>
+              <th>Colaborador</th>
+              <th>Lacre Inicial</th>
+              <th>Lacre Final</th>
+              <th style="text-align: center;">Bags</th>
+              <th style="text-align: center; color: #38bdf8;" title="Contagem de Aerobag">Aero</th>
+              <th style="text-align: center; color: #a5b4fc;" title="025 - TSA Chave (80)">Chave (80)</th>
+              <th style="text-align: center; color: #a5b4fc;" title="2031 - Segredo (90)">Segr (90)</th>
+              <th style="text-align: center; color: #a5b4fc;" title="036 - TSA (110)">TSA (110)</th>
+              <th style="text-align: center; color: #a5b4fc;" title="016 - Tag Mala (65)">Tag (65)</th>
+              <th style="text-align: center; color: #a5b4fc;" title="5202 - Tag Loc Digital (60)">Loc (60)</th>
+              <th style="text-align: center; color: #a5b4fc;" title="100 - Adaptador (85)">Adapt (85)</th>
+              <th style="text-align: center; color: #a5b4fc;" title="400 - Zip Lock (10)">Zip (10)</th>
+              <th style="text-align: center;">2º Rolo</th>
+            </tr>
+          </thead>
+          <tbody id="machinesTableBody">
+            <!-- Gerado via JavaScript -->
+          </tbody>
+        </table>
       </div>
 
-      <!-- COLUNA DA DIREITA: PREVIEW DO WHATSAPP & CONFERÊNCIAS SEPARADAS -->
-      <div>
-        <!-- PREVIEW DO WHATSAPP -->
-        <div class="wa-preview-box">
-          <div class="wa-header">
-            <span style="font-size: 13px; font-weight: 800; color: #25d366; display: flex; align-items: center; gap: 6px;">
-              📱 WhatsApp ao Vivo (Atualiza na hora)
-            </span>
-            <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="copiarWhatsAppOficial()">
-              📋 Copiar
-            </button>
+      <!-- DIREITA: PAINEL DE CONFERÊNCIA & WHATSAPP -->
+      <div class="right-pane">
+        
+        <!-- 1. VENDAS DE BAGS POR PREÇO -->
+        <div class="box-pane">
+          <div class="box-title">
+            <span>🧳 Bags Vendidas por Preço</span>
+            <span id="badgeBagsSum" style="color: #38bdf8; font-size: 11px;">0 Bags</span>
           </div>
-          <div class="wa-bubble-chat" id="waLivePreview">
-            <!-- Texto montado ao vivo -->
-          </div>
-        </div>
-
-        <!-- 1. CONFERÊNCIA DE SERVIÇOS (BAGS VENDIDAS) -->
-        <div class="conferencia-card" style="border-color: #1e3a8a;">
-          <div class="section-title" style="color: #60a5fa;">
-            <span>🧳 Serviços: Venda de Bags por Valor</span>
-            <span id="badgeBagsSum" style="font-size: 11px; background: #0b132b; padding: 2px 6px; border-radius: 4px; color: #38bdf8; font-weight: 700;">0 Bags</span>
-          </div>
-          <table class="price-table">
-            <thead>
-              <tr>
-                <th>Tipo de Venda</th>
-                <th style="text-align: center;">Qtd</th>
-                <th style="text-align: right;">Subtotal (R$)</th>
-              </tr>
-            </thead>
-            <tbody id="priceTableBody">
-              <!-- Gerado via JavaScript -->
-            </tbody>
-            <tfoot>
-              <tr style="font-weight: 800;">
-                <td style="color: #93c5fd;">SUBTOTAL SERVIÇOS:</td>
-                <td style="text-align: center; color: var(--accent);" id="totMalasQty">0</td>
-                <td style="text-align: right; color: #38bdf8;" id="totMalasValor">R$ 0,00</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <!-- 2. CONFERÊNCIA DE PRODUTOS VENDIDOS NO TURNO -->
-        <div class="conferencia-card" style="border-color: #4338ca;">
-          <div class="section-title" style="color: #a5b4fc;">
-            <span>🛍️ Produtos: Resumo Consolidado do Turno</span>
-            <span id="badgeProdsSum" style="font-size: 11px; background: #0b132b; padding: 2px 6px; border-radius: 4px; color: #a78bfa; font-weight: 700;">0 un</span>
-          </div>
-          <table class="price-table">
-            <thead>
-              <tr>
-                <th>Produto (OneBoss)</th>
-                <th style="text-align: center;">Qtd</th>
-                <th style="text-align: right;">Subtotal (R$)</th>
-              </tr>
-            </thead>
-            <tbody id="prodsSummaryBody">
-              <!-- Gerado via JavaScript -->
-            </tbody>
-            <tfoot>
-              <tr style="font-weight: 800;">
-                <td style="color: #c4b5fd;">SUBTOTAL PRODUTOS:</td>
-                <td style="text-align: center; color: #a78bfa;" id="totProdsQty">0</td>
-                <td style="text-align: right; color: #34d399;" id="totProdsValor">R$ 0,00</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <!-- TABELA EDITÁVEL DE PREÇOS DOS PRODUTOS DO ONEBOSS -->
-        <div class="conferencia-card">
-          <div class="section-title">
-            <span>🏷️ Tabela OneBoss (Preços Unitários)</span>
-            <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="resetarPrecosPadrao()">Resetar</button>
-          </div>
-          <div id="prodPricesEditor" style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
-            <!-- Gerado via JavaScript -->
-          </div>
-        </div>
-
-        <!-- FECHAMENTO FINANCEIRO -->
-        <div class="conferencia-card">
-          <div class="section-title">
-            <span>💵 Fechamento de Caixa (Gaveta)</span>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
-            <div>
-              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">DINHEIRO EM ESPÉCIE NA GAVETA (R$)</label>
-              <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #10b981; padding: 8px; font-size: 18px; font-weight: 800; border-radius: 6px;" oninput="recalc()" onfocus="this.select()">
+          <div class="bags-grid">
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 199</span>
+              <input type="number" id="pr_199" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
             </div>
-            <div>
-              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">CARTÃO / PIX CALCULADO (FATURAMENTO - DINHEIRO)</label>
-              <input type="text" id="inputCartao" readonly style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #38bdf8; padding: 8px; font-size: 16px; font-weight: 800; border-radius: 6px;" value="R$ 0,00">
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 179</span>
+              <input type="number" id="pr_179" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
+            </div>
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 149</span>
+              <input type="number" id="pr_149" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
+            </div>
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 129</span>
+              <input type="number" id="pr_129" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
+            </div>
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 109</span>
+              <input type="number" id="pr_109" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
+            </div>
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 90</span>
+              <input type="number" id="pr_90" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
+            </div>
+            <div class="bag-item">
+              <span class="bag-item-label">R$ 60</span>
+              <input type="number" id="pr_60" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
+            </div>
+            <div class="bag-item">
+              <span class="bag-item-label">Cortesia</span>
+              <input type="number" id="pr_cort" class="bag-item-input" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()">
             </div>
           </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 8px; font-weight: 700; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 6px;">
+            <span>Subtotal Malas:</span>
+            <span id="totMalasValor" style="color: #38bdf8;">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- 2. DINHEIRO NA GAVETA -->
+        <div class="box-pane">
+          <div class="box-title">
+            <span>💵 Dinheiro na Gaveta (R$)</span>
+          </div>
+          <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="width: 100%; background: #090e17; border: 1px solid var(--border); color: #10b981; padding: 8px; font-size: 16px; font-weight: 800; border-radius: 6px; text-align: center;" oninput="recalc()" onfocus="this.select()">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 6px; font-weight: 700; color: #94a3b8;">
+            <span>Cartão / PIX calculado:</span>
+            <span id="labelCartaoCalculado" style="color: #38bdf8;">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- 3. PREVIEW WHATSAPP OFICIAL -->
+        <div class="box-pane" style="background: var(--wa-bg); border-color: var(--wa-border);">
+          <div class="box-title" style="color: #25d366;">
+            <span>📱 Resumo WhatsApp</span>
+            <button class="btn btn-success" style="padding: 4px 10px; font-size: 11px;" onclick="copiarWhatsAppOficial()">📋 Copiar</button>
+          </div>
+          <div class="wa-bubble" id="waLivePreview"></div>
         </div>
 
         <!-- AÇÕES -->
-        <div class="actions-bar" style="justify-content: stretch; flex-direction: column;">
-          <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportarExcel()">📊 Baixar Excel Separado (.xlsx)</button>
-          <button class="btn btn-danger" style="width: 100%; justify-content: center;" onclick="limparTurno()">🗑️ Limpar Turno</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-outline" style="flex: 1;" onclick="exportarExcel()">📊 Baixar Excel</button>
+          <button class="btn btn-danger" onclick="limparTurno()">🗑️ Limpar</button>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- MODAL PARA IMPORTAR TEXTO DO WHATSAPP -->
+  <!-- MODAL DE IMPORTAÇÃO -->
   <div class="modal" id="importModal">
     <div class="modal-content">
-      <h3 style="color: #fff; margin-bottom: 6px;">📥 Importar Resumo do WhatsApp</h3>
-      <p style="color: var(--text-muted); font-size: 13px;">Cole o texto do relatório do WhatsApp aqui para preencher tudo automaticamente:</p>
-      <textarea id="importText" placeholder="Cole o texto aqui... Ex: G1 - senhorinho 8 BAG 111296311 - 111296318..."></textarea>
-      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+      <h3 style="color: #fff; font-size: 14px; margin-bottom: 6px;">📥 Colar Texto do WhatsApp</h3>
+      <p style="color: var(--text-muted); font-size: 12px;">Cole o relatório do WhatsApp para preencher o turno instantaneamente:</p>
+      <textarea id="importText" placeholder="Ex: G1 - dalton 6 BAG 111296322 - 111296327..."></textarea>
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
         <button class="btn btn-outline" onclick="closeImportModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="processarImportacao()">Processar e Preencher</button>
+        <button class="btn btn-primary" onclick="processarImportacao()">Processar</button>
       </div>
     </div>
   </div>
 
-  <div id="toast" class="toast">Texto copiado para o WhatsApp com sucesso!</div>
+  <div id="toast" class="toast">Copiado com sucesso!</div>
 
   <script>
     const MACHINES = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G8', 'G10', 'G11', 'G12', 'G13'];
 
-    // DEFINIÇÃO OFICIAL ONEBOSS (APENAS PRODUTOS ATIVOS)
-    const PROD_DEFINITIONS = [
-      { id: 'latao',   code: '025',  name: '025 - TSA Chave (Latão)',       waName: 'LATAO',            defaultPrice: 80.00 },
-      { id: 'segredo', code: '2031', name: '2031 - Cadeado Segredo',         waName: 'SEGREDO',          defaultPrice: 90.00 },
-      { id: 'tsa',     code: '036',  name: '036 - Cadeado TSA',             waName: 'TSA',              defaultPrice: 110.00 },
-      { id: 'tag',     code: '016',  name: '016 - Tag Mala (Identificador)', waName: 'TAG',              defaultPrice: 65.00 },
-      { id: 'tagloc',  code: '5202', name: '5202 - Tag Localização Digital', waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00 },
-      { id: 'adapt',   code: '100',  name: '100 - Adaptador Internacional',  waName: 'ADAPTADOR',        defaultPrice: 85.00 },
-      { id: 'ziplock', code: '400',  name: '400 - Zip Lock',                 waName: 'ZIPLOCK',          defaultPrice: 10.00 }
-    ];
+    // PRODUTOS ATIVOS DO ONEBOSS COM PREÇOS OFICIAIS
+    const PROD_PRICES = {
+      latao:   80.00,  // 025 - TSA Chave
+      segredo: 90.00,  // 2031 - Segredo
+      tsa:     110.00, // 036 - TSA
+      tag:     65.00,  // 016 - Tag Mala
+      tagloc:  60.00,  // 5202 - Tag Localização
+      adapt:   85.00,  // 100 - Adaptador
+      ziplock: 10.00,  // 400 - Zip Lock
+      aero:    0.00
+    };
 
-    // PREÇOS SALVOS OU PADRÃO
-    let PROD_PRICES = {};
-    function initPrices() {
-      const savedPrices = localStorage.getItem('protecbag_oneboss_prices_v2');
-      if (savedPrices) {
-        try {
-          PROD_PRICES = JSON.parse(savedPrices);
-        } catch(e) {
-          PROD_PRICES = {};
-        }
-      }
-      PROD_DEFINITIONS.forEach(p => {
-        if (PROD_PRICES[p.id] === undefined) {
-          PROD_PRICES[p.id] = p.defaultPrice;
-        }
-      });
-    }
-    initPrices();
-
-    function savePrices() {
-      localStorage.setItem('protecbag_oneboss_prices_v2', JSON.stringify(PROD_PRICES));
-    }
-
-    function resetarPrecosPadrao() {
-      if (confirm('Restaurar todos os preços para a tabela oficial do OneBoss?')) {
-        PROD_DEFINITIONS.forEach(p => {
-          PROD_PRICES[p.id] = p.defaultPrice;
-        });
-        savePrices();
-        renderPricesEditor();
-        renderMachinesList();
-        recalc();
-        showToast('Preços OneBoss restaurados!');
-      }
-    }
-
-    // SERVIÇOS DE MALAS NO ONEBOSS (BAGS VENDIDAS)
     const PRICES = [
-      { key: '199', label: 'BAG R$ 199,00 (Aerobag)',       price: 199 },
-      { key: '179', label: 'BAG R$ 179,00 (Aerobag Desc.)', price: 179 },
-      { key: '149', label: 'BAG R$ 149,00 (Premium)',       price: 149 },
-      { key: '129', label: 'BAG R$ 129,00 (Premium Desc.)', price: 129 },
-      { key: '109', label: 'BAG R$ 109,00 (Desconto Líder)',price: 109 },
-      { key: '90',  label: 'BAG R$ 90,00  (Lacre Líder)',   price: 90 },
-      { key: '60',  label: 'BAG R$ 60,00  (Lacre Plástico)',price: 60 },
-      { key: 'cort',label: 'CORTESIA (Apoio / Reembalar)',  price: 0 }
+      { key: '199', label: '199', price: 199 },
+      { key: '179', label: '179', price: 179 },
+      { key: '149', label: '149', price: 149 },
+      { key: '129', label: '129', price: 129 },
+      { key: '109', label: '109', price: 109 },
+      { key: '90',  label: '90',  price: 90 },
+      { key: '60',  label: '60',  price: 60 },
+      { key: 'cort', label: 'Cort.', price: 0 }
     ];
 
+    // DADOS REAIS DO TURNO A 18/11/2026
     let defaultShifts = {
       'A': {
         machines: {
@@ -404,9 +315,9 @@
         },
         prices: {
           '199': '22',
+          '179': '10',
           '149': '12',
-          '129': '5',
-          '179': '10'
+          '129': '5'
         },
         dinheiro: ''
       },
@@ -415,7 +326,7 @@
     };
 
     let currentShift = 'A';
-    let rawStored = localStorage.getItem('fechamento_oneboss_split_v2');
+    let rawStored = localStorage.getItem('fechamento_direto_v1');
     let appData = rawStored ? JSON.parse(rawStored) : null;
     if (!appData || !appData.shifts || !appData.shifts.A || Object.keys(appData.shifts.A.machines).length === 0) {
       appData = {
@@ -426,9 +337,7 @@
 
     function init() {
       document.getElementById('dateInput').value = appData.date || '2026-11-18';
-      renderPricesEditor();
-      renderMachinesList();
-      renderPriceTable();
+      renderMachinesTable();
       loadShift(currentShift);
     }
 
@@ -441,151 +350,51 @@
       loadShift(shift);
     }
 
-    function renderPricesEditor() {
-      const container = document.getElementById('prodPricesEditor');
-      container.innerHTML = '';
-      PROD_DEFINITIONS.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'price-edit-row';
-        div.innerHTML = `
-          <span>${p.name}:</span>
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <span style="color: var(--text-muted); font-size: 11px;">R$</span>
-            <input type="number" step="0.50" id="price_edit_${p.id}" value="${PROD_PRICES[p.id]}" onchange="updateSinglePrice('${p.id}')" onfocus="this.select()">
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
+    function renderMachinesTable() {
+      const tbody = document.getElementById('machinesTableBody');
+      tbody.innerHTML = '';
 
-    function updateSinglePrice(id) {
-      const val = parseFloat(document.getElementById(`price_edit_${id}`).value) || 0;
-      PROD_PRICES[id] = val;
-      savePrices();
-      renderMachinesList();
-      loadShift(currentShift);
-      showToast('Preço atualizado!');
-    }
-
-    function renderMachinesList() {
-      const container = document.getElementById('machinesList');
-      container.innerHTML = '';
       MACHINES.forEach(m => {
-        const div = document.createElement('div');
-        div.className = 'machine-row';
-        div.id = `card_${m}`;
-
-        div.innerHTML = `
-          <!-- LINHA TOPO: MÁQUINA + OPERADOR -->
-          <div class="row-top">
-            <span class="machine-tag">${m}</span>
-            <input type="text" class="operator-input" id="op_${m}" placeholder="Nome do Colaborador (ex: senhorinho)" oninput="recalc()">
-            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;" onclick="toggleRolo2('${m}')">+ 2º Rolo Lacre</button>
-          </div>
-
-          <!-- BLOCO 1: SERVIÇOS (LACRES & MALAS) - FUNDO AZUL -->
-          <div class="machine-service-box">
-            <div class="service-box-header">
-              <span>🧳 Serviços de Proteção / Lacres</span>
-              <span style="font-size: 10px; color: #93c5fd;">Automático</span>
-            </div>
-            <div class="service-grid">
-              <div>
-                <label style="font-size: 10px; color: var(--service-text); font-weight: 700; display: block; margin-bottom: 2px;">LACRE INICIAL</label>
-                <input type="number" class="input-field" id="ini1_${m}" placeholder="Ex: 111296311" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div>
-                <label style="font-size: 10px; color: var(--service-text); font-weight: 700; display: block; margin-bottom: 2px;">LACRE FINAL</label>
-                <input type="number" class="input-field" id="fim1_${m}" placeholder="Ex: 111296318" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div>
-                <label style="font-size: 10px; color: var(--service-text); font-weight: 700; display: block; margin-bottom: 2px;">TOTAL BAGS</label>
-                <div class="bag-badge" id="bags_${m}">0 BAG</div>
-              </div>
-              <div>
-                <label style="font-size: 10px; color: #38bdf8; font-weight: 800; display: block; margin-bottom: 2px;">⭐ AEROBAG</label>
-                <input type="number" class="input-field" id="p_aero_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()" style="border-color: #0284c7; color: #38bdf8; font-weight: 800;">
-              </div>
-            </div>
-
-            <div id="rolo2_box_${m}" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px dashed #1e3a8a;">
-              <div style="font-size: 11px; color: #a78bfa; font-weight: 700; margin-bottom: 4px;">Troca de Rolo de Lacre (2º Rolo):</div>
-              <div class="service-grid">
-                <div>
-                  <input type="number" class="input-field" id="ini2_${m}" placeholder="Inicial 2" oninput="recalc()" onfocus="this.select()">
-                </div>
-                <div>
-                  <input type="number" class="input-field" id="fim2_${m}" placeholder="Final 2" oninput="recalc()" onfocus="this.select()">
-                </div>
-                <div>
-                  <div class="bag-badge" id="bags2_${m}" style="border-color: #8b5cf6; color: #a78bfa;">0 BAG</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- BLOCO 2: PRODUTOS / ACESSÓRIOS - FUNDO VIOLETA -->
-          <div class="machine-prod-box">
-            <div class="prod-box-header">
-              <span>🛍️ Produtos / Acessórios Vendidos</span>
-              <span style="font-size: 10px; color: #c4b5fd;">OneBoss</span>
-            </div>
-            <div class="prods-grid">
-              <div class="prod-pill">
-                <label title="025 - TSA Chave Latão (R$ ${PROD_PRICES.latao})">TSA CHAVE <span class="p-price">${PROD_PRICES.latao}</span></label>
-                <input type="number" id="p_latao_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div class="prod-pill">
-                <label title="2031 - Cadeado Segredo (R$ ${PROD_PRICES.segredo})">SEGREDO <span class="p-price">${PROD_PRICES.segredo}</span></label>
-                <input type="number" id="p_segredo_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div class="prod-pill">
-                <label title="036 - Cadeado TSA (R$ ${PROD_PRICES.tsa})">TSA <span class="p-price">${PROD_PRICES.tsa}</span></label>
-                <input type="number" id="p_tsa_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div class="prod-pill">
-                <label title="016 - Identificador Duplo / Tag Mala (R$ ${PROD_PRICES.tag})">TAG MALA <span class="p-price">${PROD_PRICES.tag}</span></label>
-                <input type="number" id="p_tag_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div class="prod-pill">
-                <label title="5202 - Tag Localização Digital (R$ ${PROD_PRICES.tagloc})">TAG LOC. <span class="p-price">${PROD_PRICES.tagloc}</span></label>
-                <input type="number" id="p_tagloc_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div class="prod-pill">
-                <label title="100 - Adaptador Internacional (R$ ${PROD_PRICES.adapt})">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
-                <input type="number" id="p_adapt_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-              <div class="prod-pill">
-                <label title="400 - Zip Lock (R$ ${PROD_PRICES.ziplock})">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
-                <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
-              </div>
-            </div>
-          </div>
-
-          <!-- PREVIEW EM TEXTO DA MÁQUINA (WHATSAPP FORMAT) -->
-          <div class="machine-preview-tag" id="preview_text_${m}"></div>
+        const tr = document.createElement('tr');
+        tr.id = `row_${m}`;
+        tr.innerHTML = `
+          <td style="text-align: center;"><span class="tag-cell">${m}</span></td>
+          <td><input type="text" id="op_${m}" class="t-input t-input-op" placeholder="Colaborador" oninput="recalc()"></td>
+          <td><input type="number" id="ini1_${m}" class="t-input t-input-lacre" placeholder="Inicial" oninput="recalc()" onfocus="this.select()"></td>
+          <td><input type="number" id="fim1_${m}" class="t-input t-input-lacre" placeholder="Final" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><span class="badge-bags" id="bags_${m}">0</span></td>
+          <td style="text-align: center;"><input type="number" id="p_aero_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_latao_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_segredo_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_tsa_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_tag_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_tagloc_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_adapt_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><input type="number" id="p_ziplock_${m}" class="t-input t-input-num" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><button class="btn-mini" onclick="toggleRolo2('${m}')">+ 2º</button></td>
         `;
-        container.appendChild(div);
+        tbody.appendChild(tr);
+
+        // Linha oculta para o 2º rolo de lacre
+        const trRolo2 = document.createElement('tr');
+        trRolo2.id = `rolo2_row_${m}`;
+        trRolo2.style.display = 'none';
+        trRolo2.style.background = '#151c2c';
+        trRolo2.innerHTML = `
+          <td></td>
+          <td style="font-size: 11px; color: #a78bfa; font-weight: 700; text-align: right; padding-right: 8px;">2º Rolo Lacre:</td>
+          <td><input type="number" id="ini2_${m}" class="t-input t-input-lacre" placeholder="Inicial 2" oninput="recalc()" onfocus="this.select()"></td>
+          <td><input type="number" id="fim2_${m}" class="t-input t-input-lacre" placeholder="Final 2" oninput="recalc()" onfocus="this.select()"></td>
+          <td style="text-align: center;"><span class="badge-bags" id="bags2_${m}" style="border-color: #8b5cf6; color: #a78bfa;">0</span></td>
+          <td colspan="9"></td>
+        `;
+        tbody.appendChild(trRolo2);
       });
     }
 
     function toggleRolo2(m) {
-      const box = document.getElementById(`rolo2_box_${m}`);
-      box.style.display = box.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function renderPriceTable() {
-      const tbody = document.getElementById('priceTableBody');
-      tbody.innerHTML = '';
-      PRICES.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${p.label}</strong></td>
-          <td style="text-align: center;"><input type="number" id="pr_${p.key}" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()"></td>
-          <td style="text-align: right; font-weight: 700; color: #38bdf8;" id="sub_${p.key}">R$ 0,00</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      const row = document.getElementById(`rolo2_row_${m}`);
+      row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
     }
 
     function recalc() {
@@ -594,13 +403,6 @@
       let totalProdutosValor = 0;
       let waMachinesText = '';
 
-      // Mapa para resumo consolidado de produtos vendidos no turno
-      const prodsTurnoTotals = {};
-      PROD_DEFINITIONS.forEach(p => {
-        prodsTurnoTotals[p.id] = { name: p.name, price: PROD_PRICES[p.id] || 0, qty: 0 };
-      });
-
-      // Máquinas
       MACHINES.forEach(m => {
         const op = (document.getElementById(`op_${m}`)?.value || '').trim();
         const ini1 = parseInt(document.getElementById(`ini1_${m}`)?.value) || 0;
@@ -611,75 +413,56 @@
         const fim2 = parseInt(document.getElementById(`fim2_${m}`)?.value) || 0;
         let b2 = (fim2 >= ini2 && ini2 > 0) ? (fim2 - ini2 + 1) : 0;
         if (b2 > 0 || ini2 > 0) {
-          const rBox = document.getElementById(`rolo2_box_${m}`);
-          if (rBox) rBox.style.display = 'block';
+          const rRow = document.getElementById(`rolo2_row_${m}`);
+          if (rRow) rRow.style.display = 'table-row';
         }
         if (document.getElementById(`bags2_${m}`)) {
-          document.getElementById(`bags2_${m}`).innerText = `${b2} BAG`;
+          document.getElementById(`bags2_${m}`).innerText = b2;
         }
 
         const bTot = b1 + b2;
         if (document.getElementById(`bags_${m}`)) {
-          document.getElementById(`bags_${m}`).innerText = `${bTot} BAG`;
+          document.getElementById(`bags_${m}`).innerText = bTot;
         }
         totalBagsMachines += bTot;
 
-        // Destaque visual nos inputs preenchidos
-        ['ini1', 'fim1', 'ini2', 'fim2'].forEach(field => {
-          const el = document.getElementById(`${field}_${m}`);
-          if (el) el.classList.toggle('has-val', el.value !== '');
-        });
-
         // Produtos
-        const getProdQty = (id) => {
+        const getP = id => {
           const el = document.getElementById(`p_${id}_${m}`);
           const q = parseInt(el?.value) || 0;
           if (el) el.classList.toggle('has-val', q > 0);
           return q;
         };
-        
-        const aero = getProdQty('aero');
-        const latao = getProdQty('latao');
-        const segredo = getProdQty('segredo');
-        const tsa = getProdQty('tsa');
-        const tag = getProdQty('tag');
-        const tagloc = getProdQty('tagloc');
-        const adapt = getProdQty('adapt');
-        const ziplock = getProdQty('ziplock');
 
-        // Acumular no resumo consolidado de produtos
-        prodsTurnoTotals['latao'].qty += latao;
-        prodsTurnoTotals['segredo'].qty += segredo;
-        prodsTurnoTotals['tsa'].qty += tsa;
-        prodsTurnoTotals['tag'].qty += tag;
-        prodsTurnoTotals['tagloc'].qty += tagloc;
-        prodsTurnoTotals['adapt'].qty += adapt;
-        prodsTurnoTotals['ziplock'].qty += ziplock;
+        const aero = getP('aero');
+        const latao = getP('latao');
+        const segredo = getP('segredo');
+        const tsa = getP('tsa');
+        const tag = getP('tag');
+        const tagloc = getP('tagloc');
+        const adapt = getP('adapt');
+        const ziplock = getP('ziplock');
 
         const pCount = latao + segredo + tsa + tag + tagloc + adapt + ziplock;
         totalProdutosCount += pCount;
 
-        const pVal = (latao * (PROD_PRICES.latao || 0)) +
-                     (segredo * (PROD_PRICES.segredo || 0)) +
-                     (tsa * (PROD_PRICES.tsa || 0)) +
-                     (tag * (PROD_PRICES.tag || 0)) +
-                     (tagloc * (PROD_PRICES.tagloc || 0)) +
-                     (adapt * (PROD_PRICES.adapt || 0)) +
-                     (ziplock * (PROD_PRICES.ziplock || 0));
+        const pVal = (latao * PROD_PRICES.latao) +
+                     (segredo * PROD_PRICES.segredo) +
+                     (tsa * PROD_PRICES.tsa) +
+                     (tag * PROD_PRICES.tag) +
+                     (tagloc * PROD_PRICES.tagloc) +
+                     (adapt * PROD_PRICES.adapt) +
+                     (ziplock * PROD_PRICES.ziplock);
         totalProdutosValor += pVal;
 
-        const card = document.getElementById(`card_${m}`);
-        const previewEl = document.getElementById(`preview_text_${m}`);
-
+        const row = document.getElementById(`row_${m}`);
         if (bTot > 0 || op !== '' || aero > 0 || pCount > 0) {
-          card?.classList.add('has-data');
-          
+          row?.classList.add('active-row');
+
           let mText = `${m}${op ? ' - ' + op : ''}\n`;
           if (bTot > 0) {
             mText += `${bTot} BAG ${ini1} - ${fim1}\n`;
-            if (b2 > 0) {
-              mText += `             ${ini2} - ${fim2}\n`;
-            }
+            if (b2 > 0) mText += `             ${ini2} - ${fim2}\n`;
           }
           if (aero > 0) mText += `${aero} AEROBAG\n`;
           if (latao > 0) mText += `${latao} LATAO\n`;
@@ -690,25 +473,23 @@
           if (adapt > 0) mText += `${adapt} ADAPTADOR\n`;
           if (ziplock > 0) mText += `${ziplock} ZIPLOCK\n`;
 
-          if (previewEl) previewEl.innerText = mText.trim();
           waMachinesText += mText + '\n';
         } else {
-          card?.classList.remove('has-data');
-          if (previewEl) previewEl.innerText = '';
+          row?.classList.remove('active-row');
         }
       });
 
-      // 1. SERVIÇOS: Bags por Preço
+      // Bags vendidas
       let totalBagsVenda = 0;
       let totalServicosValor = 0;
       let waBagsPriceText = 'BAGS VENDIDAS\n\n';
 
       PRICES.forEach(p => {
-        const qty = parseInt(document.getElementById(`pr_${p.key}`)?.value) || 0;
+        const el = document.getElementById(`pr_${p.key}`);
+        const qty = parseInt(el?.value) || 0;
+        if (el) el.classList.toggle('has-val', qty > 0);
+
         const sub = qty * p.price;
-        if (document.getElementById(`sub_${p.key}`)) {
-          document.getElementById(`sub_${p.key}`).innerText = formatBRL(sub);
-        }
         totalBagsVenda += qty;
         totalServicosValor += sub;
 
@@ -721,52 +502,27 @@
         }
       });
 
-      document.getElementById('totMalasQty').innerText = totalBagsVenda;
-      document.getElementById('totMalasValor').innerText = formatBRL(totalServicosValor);
       document.getElementById('badgeBagsSum').innerText = `${totalBagsVenda} Bags`;
+      document.getElementById('totMalasValor').innerText = formatBRL(totalServicosValor);
 
-      // 2. PRODUTOS: Renderizar Resumo Consolidado de Produtos do Turno
-      const prodsTbody = document.getElementById('prodsSummaryBody');
-      prodsTbody.innerHTML = '';
-      PROD_DEFINITIONS.forEach(p => {
-        const item = prodsTurnoTotals[p.id];
-        if (item.qty > 0) {
-          const sub = item.qty * item.price;
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${item.name}</td>
-            <td style="text-align: center; font-weight: 700; color: #a5b4fc;">${item.qty}</td>
-            <td style="text-align: right; font-weight: 700; color: #34d399;">${formatBRL(sub)}</td>
-          `;
-          prodsTbody.appendChild(tr);
-        }
-      });
-      if (prodsTbody.children.length === 0) {
-        prodsTbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); font-size: 11px;">Nenhum produto lançado neste turno</td></tr>`;
-      }
-      document.getElementById('totProdsQty').innerText = `${totalProdutosCount} un`;
-      document.getElementById('totProdsValor').innerText = formatBRL(totalProdutosValor);
-      document.getElementById('badgeProdsSum').innerText = `${totalProdutosCount} un`;
-
-      // Atualizar Cards Superiores Separados
+      // Cards topo
       document.getElementById('cardTotalBags').innerText = `${totalBagsMachines} BAG`;
-      document.getElementById('cardServicosValor').innerText = `${formatBRL(totalServicosValor)} (Serviços)`;
+      document.getElementById('cardServicosValor').innerText = formatBRL(totalServicosValor);
 
       document.getElementById('cardTotalProdutos').innerText = `${totalProdutosCount} un`;
-      document.getElementById('cardProdutosValor').innerText = `${formatBRL(totalProdutosValor)} (Produtos)`;
+      document.getElementById('cardProdutosValor').innerText = formatBRL(totalProdutosValor);
 
-      // Total Geral Faturado (Serviços + Produtos)
       const totalGeral = totalServicosValor + totalProdutosValor;
       const dinheiro = parseFloat(document.getElementById('inputDinheiro').value) || 0;
       const cartao = Math.max(0, totalGeral - dinheiro);
 
       document.getElementById('cardTotalGeral').innerText = formatBRL(totalGeral);
-      document.getElementById('cardBagsSub').innerText = `${totalBagsMachines} Malas + ${totalProdutosCount} Produtos`;
+      document.getElementById('cardBagsSub').innerText = `${totalBagsMachines} Malas + ${totalProdutosCount} Prod`;
       document.getElementById('cardDinheiro').innerText = formatBRL(dinheiro);
-      document.getElementById('cardCartao').innerText = `Cartão/PIX: ${formatBRL(cartao)}`;
-      document.getElementById('inputCartao').value = formatBRL(cartao);
+      document.getElementById('cardCartao').innerText = `Cartão: ${formatBRL(cartao)}`;
+      document.getElementById('labelCartaoCalculado').innerText = formatBRL(cartao);
 
-      // WhatsApp Live Preview
+      // WhatsApp Preview
       const rawDate = document.getElementById('dateInput').value;
       const parts = rawDate.split('-');
       const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : new Date().toLocaleDateString('pt-BR');
@@ -811,7 +567,7 @@
       s.dinheiro = document.getElementById('inputDinheiro').value;
 
       appData.shifts[currentShift] = s;
-      localStorage.setItem('fechamento_oneboss_split_v2', JSON.stringify(appData));
+      localStorage.setItem('fechamento_direto_v1', JSON.stringify(appData));
     }
 
     function loadShift(shift) {
@@ -831,8 +587,8 @@
         });
 
         if (mData.ini2 || mData.fim2) {
-          const rBox = document.getElementById(`rolo2_box_${m}`);
-          if (rBox) rBox.style.display = 'block';
+          const rRow = document.getElementById(`rolo2_row_${m}`);
+          if (rRow) rRow.style.display = 'table-row';
         }
       });
 
@@ -854,13 +610,13 @@
       const t = document.getElementById('toast');
       t.innerText = msg;
       t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
+      setTimeout(() => { t.style.display = 'none'; }, 2500);
     }
 
     function copiarWhatsAppOficial() {
       const text = document.getElementById('waLivePreview').innerText;
       navigator.clipboard.writeText(text).then(() => {
-        showToast('📱 Resumo copiado exatamente no modelo oficial do WhatsApp!');
+        showToast('📋 Copiado para o WhatsApp!');
       }).catch(err => {
         alert('Erro ao copiar: ' + err);
       });
@@ -917,7 +673,8 @@
         if (lacre2Match && currentMachine) {
           document.getElementById(`ini2_${currentMachine}`).value = lacre2Match[1];
           document.getElementById(`fim2_${currentMachine}`).value = lacre2Match[2];
-          document.getElementById(`rolo2_box_${currentMachine}`).style.display = 'block';
+          const rRow = document.getElementById(`rolo2_row_${currentMachine}`);
+          if (rRow) rRow.style.display = 'table-row';
           return;
         }
 
@@ -967,7 +724,7 @@
 
       recalc();
       closeImportModal();
-      showToast('✅ Dados do WhatsApp importados com sucesso!');
+      showToast('✅ Dados importados!');
     }
 
     function limparTurnoSilencioso() {
@@ -1003,56 +760,40 @@
         ['FECHAMENTO DE CAIXA PROTECBAG GRU - TURNO ' + currentShift],
         ['Data:', rawDate],
         [],
-        ['--- 1. SERVIÇOS (MÁQUINAS & LACRES) ---'],
-        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG'],
+        ['MÁQUINA', 'OPERADOR', 'INICIAL', 'FINAL', 'BAGS', 'AEROBAG', 'TSA CHAVE (80)', 'SEGREDO (90)', 'TSA (110)', 'TAG MALA (65)', 'TAG LOC (60)', 'ADAPT (85)', 'ZIPLOCK (10)']
       ];
 
       MACHINES.forEach(m => {
         const op = document.getElementById(`op_${m}`)?.value || '';
         const ini1 = document.getElementById(`ini1_${m}`)?.value || '';
         const fim1 = document.getElementById(`fim1_${m}`)?.value || '';
-        const b1 = document.getElementById(`bags_${m}`)?.innerText || '';
-        const ini2 = document.getElementById(`ini2_${m}`)?.value || '';
-        const fim2 = document.getElementById(`fim2_${m}`)?.value || '';
-        const b2 = document.getElementById(`bags2_${m}`)?.innerText || '';
-        const bTot = (parseInt(b1) || 0) + (parseInt(b2) || 0);
-        const aero = document.getElementById(`p_aero_${m}`)?.value || '';
-
-        if (bTot > 0 || op || aero) {
-          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, aero]);
-        }
-      });
-
-      rows.push([]);
-      rows.push(['--- 2. PRODUTOS VENDIDOS POR MÁQUINA ---']);
-      rows.push(['MÁQUINA', 'TSA CHAVE (80)', 'SEGREDO (90)', 'TSA (110)', 'TAG MALA (65)', 'TAG LOC (60)', 'ADAPTADOR (85)', 'ZIPLOCK (10)']);
-      MACHINES.forEach(m => {
+        const b = document.getElementById(`bags_${m}`)?.innerText || '';
         const getP = id => document.getElementById(`p_${id}_${m}`)?.value || '';
-        const latao = getP('latao'), seg = getP('segredo'), tsa = getP('tsa'), tag = getP('tag'), tagloc = getP('tagloc'), adapt = getP('adapt'), zip = getP('ziplock');
-        if (latao || seg || tsa || tag || tagloc || adapt || zip) {
-          rows.push([m, latao, seg, tsa, tag, tagloc, adapt, zip]);
+
+        if (b > 0 || op) {
+          rows.push([m, op, ini1, fim1, b, getP('aero'), getP('latao'), getP('segredo'), getP('tsa'), getP('tag'), getP('tagloc'), getP('adapt'), getP('ziplock')]);
         }
       });
 
       rows.push([]);
-      rows.push(['--- 3. DISTRIBUIÇÃO DE BAGS POR PREÇO (SERVIÇOS) ---']);
+      rows.push(['BAGS VENDIDAS POR VALOR']);
       PRICES.forEach(p => {
         const q = document.getElementById(`pr_${p.key}`)?.value || 0;
         rows.push([p.label, q, p.price, q * p.price]);
       });
 
       rows.push([]);
-      rows.push(['--- 4. TOTAIS FINAIS DO TURNO ---']);
-      rows.push(['TOTAL SERVIÇOS (MALAS):', document.getElementById('cardServicosValor').innerText]);
-      rows.push(['TOTAL PRODUTOS (ACESSÓRIOS):', document.getElementById('cardProdutosValor').innerText]);
+      rows.push(['TOTAIS FINAIS']);
+      rows.push(['TOTAL MALAS (BAGS):', document.getElementById('cardServicosValor').innerText]);
+      rows.push(['TOTAL PRODUTOS:', document.getElementById('cardProdutosValor').innerText]);
       rows.push(['TOTAL GERAL FATURADO:', document.getElementById('cardTotalGeral').innerText]);
-      rows.push(['DINHEIRO EM GAVETA:', document.getElementById('cardDinheiro').innerText]);
-      rows.push(['CARTÃO / PIX:', document.getElementById('inputCartao').value]);
+      rows.push(['DINHEIRO GAVETA:', document.getElementById('cardDinheiro').innerText]);
+      rows.push(['CARTÃO / PIX:', document.getElementById('labelCartaoCalculado').innerText]);
 
       const ws = XLSX.utils.aoa_to_sheet(rows);
       XLSX.utils.book_append_sheet(wb, ws, 'TURNO_' + currentShift);
-      XLSX.writeFile(wb, `FECHAMENTO_CAIXA_TURNO_${currentShift}_${rawDate}.xlsx`);
-      showToast('📊 Planilha Excel exportada!');
+      XLSX.writeFile(wb, `FECHAMENTO_PROTECBAG_TURNO_${currentShift}_${rawDate}.xlsx`);
+      showToast('📊 Excel baixado com sucesso!');
     }
 
     window.onload = init;
