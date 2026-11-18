@@ -394,21 +394,19 @@
     let defaultShifts = {
       'A': {
         machines: {
-          'G1': { op: 'senhorinho', ini1: '111296311', fim1: '111296318', aero: '4' },
-          'G2': { op: 'eduardo l',  ini1: '111296754', fim1: '111296758', aero: '4' },
-          'G5': { op: 'kaue',       ini1: '111301226', fim1: '111301233', aero: '3', latao: '2', segredo: '1' },
-          'G6': { op: 'ricardo l',  ini1: '111305489', fim1: '111305500', ini2: '111306501', fim2: '111306505', aero: '12', tag: '1' },
-          'G8': { op: 'rodrigo s',  ini1: '111307522', fim1: '111307536', aero: '4', latao: '1', segredo: '1', tag: '1' },
-          'G10': { op: 'victor',    ini1: '111298772', fim1: '111298778', aero: '1', tsa: '1' },
-          'G13': { op: 'lucas t',   ini1: '111306004', fim1: '111306005', aero: '1' }
+          'G1':  { op: 'dalton',    ini1: '111296322', fim1: '111296327', aero: '3' },
+          'G2':  { op: 'kauan m',   ini1: '111296777', fim1: '111296784', aero: '4' },
+          'G5':  { op: 'ricardo l', ini1: '111301239', fim1: '111301244', aero: '6', latao: '3' },
+          'G6':  { op: 'pedro',     ini1: '111306535', fim1: '111306544', aero: '5', latao: '1', segredo: '2' },
+          'G8':  { op: 'danilo p',  ini1: '111307584', fim1: '111307596', aero: '3', latao: '1' },
+          'G10': { op: 'victor',    ini1: '111298789', fim1: '111298791', tag: '1' },
+          'G11': { op: 'wilson',    ini1: '111199965', fim1: '111199967', aero: '1' }
         },
         prices: {
-          '199': '29',
-          '149': '23',
-          '129': '1',
-          '90': '1',
-          '179': '5',
-          'cort': '3'
+          '199': '22',
+          '149': '12',
+          '129': '5',
+          '179': '10'
         },
         dinheiro: ''
       },
@@ -417,17 +415,17 @@
     };
 
     let currentShift = 'A';
-    let rawStored = localStorage.getItem('fechamento_oneboss_split_v1');
+    let rawStored = localStorage.getItem('fechamento_oneboss_split_v2');
     let appData = rawStored ? JSON.parse(rawStored) : null;
     if (!appData || !appData.shifts || !appData.shifts.A || Object.keys(appData.shifts.A.machines).length === 0) {
       appData = {
-        date: '2026-11-17',
+        date: '2026-11-18',
         shifts: defaultShifts
       };
     }
 
     function init() {
-      document.getElementById('dateInput').value = appData.date || '2026-11-17';
+      document.getElementById('dateInput').value = appData.date || '2026-11-18';
       renderPricesEditor();
       renderMachinesList();
       renderPriceTable();
@@ -813,7 +811,7 @@
       s.dinheiro = document.getElementById('inputDinheiro').value;
 
       appData.shifts[currentShift] = s;
-      localStorage.setItem('fechamento_oneboss_split_v1', JSON.stringify(appData));
+      localStorage.setItem('fechamento_oneboss_split_v2', JSON.stringify(appData));
     }
 
     function loadShift(shift) {
