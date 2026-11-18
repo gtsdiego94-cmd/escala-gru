@@ -11,6 +11,11 @@ tasks:
     cmds:
       - task --list
 
+  caixa:
+    desc: '💰 Abre o Fechamento de Caixa Digital no navegador'
+    cmds:
+      - start fechamento_caixa.html
+
   sentinela:
     desc: '🛡️  Inicia o Sentinela OneBoss (vigia C:\Relatorios em tempo real)'
     cmds:
