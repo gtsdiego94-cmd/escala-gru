@@ -12,84 +12,108 @@
       --card-border: #3a506b;
       --primary: #3b82f6;
       --primary-hover: #2563eb;
+      --service-bg: #112240;
+      --service-border: #1e3a8a;
+      --service-text: #60a5fa;
+      --prod-bg: #1e1b4b;
+      --prod-border: #4338ca;
+      --prod-text: #a5b4fc;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --accent: #60a5fa;
+      --accent: #38bdf8;
       --wa-bg: #0b2518;
       --wa-bubble: #123524;
       --wa-border: #1b4d35;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh; }
-    .container { max-width: 1440px; margin: 0 auto; }
+    .container { max-width: 1480px; margin: 0 auto; }
     
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); flex-wrap: wrap; gap: 12px; }
-    h1 { font-size: 22px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); flex-wrap: wrap; gap: 12px; }
+    h1 { font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
     
     .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
     .tab-btn { background: #111a2e; border: 1px solid var(--card-border); color: var(--text-muted); padding: 8px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 14px; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     
-    .top-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    /* CARDS DO TOPO SEPARADOS POR CATEGORIA */
+    .top-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 16px; }
-    .card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .card-label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
     .card-val { font-size: 22px; font-weight: 800; color: #fff; }
-    .card-sub { font-size: 12px; color: var(--accent); margin-top: 4px; font-weight: 600; }
-    .card.highlight { border-color: var(--primary); background: linear-gradient(135deg, #1c2541, #1e3a8a); }
-    .card.green { border-color: var(--success); }
+    .card-sub { font-size: 12px; margin-top: 4px; font-weight: 600; }
     
-    .main-layout { display: grid; grid-template-columns: 2.1fr 1fr; gap: 20px; }
-    @media (max-width: 1100px) { .main-layout { grid-template-columns: 1fr; } }
+    .card.service-card { border-color: #3b82f6; background: linear-gradient(135deg, #112240, #172554); }
+    .card.prod-card { border-color: #8b5cf6; background: linear-gradient(135deg, #1e1b4b, #2e1065); }
+    .card.total-card { border-color: #10b981; background: linear-gradient(135deg, #064e3b, #065f46); }
+    .card.finance-card { border-color: #0284c7; background: linear-gradient(135deg, #0c4a6e, #075985); }
+    
+    .main-layout { display: grid; grid-template-columns: 2.15fr 1fr; gap: 20px; }
+    @media (max-width: 1150px) { .main-layout { grid-template-columns: 1fr; } }
 
-    .section-title { font-size: 15px; font-weight: 700; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .section-title { font-size: 15px; font-weight: 800; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     
     /* MÁQUINAS */
     .machines-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-    .machine-row { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; transition: border-color 0.2s; }
-    .machine-row.has-data { border-color: var(--primary); background: #162035; }
+    .machine-row { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; transition: all 0.2s; }
+    .machine-row.has-data { border-color: var(--primary); background: #131d33; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
     
-    .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px; }
-    .machine-tag { font-weight: 800; font-size: 16px; color: #60a5fa; background: #0b132b; padding: 4px 12px; border-radius: 6px; }
+    .row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+    .machine-tag { font-weight: 800; font-size: 16px; color: #60a5fa; background: #0b132b; padding: 4px 12px; border-radius: 6px; border: 1px solid #1e3a8a; }
     .operator-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; width: 280px; }
+    .operator-input:focus { border-color: var(--primary); outline: none; background: #162035; }
     
-    .lacre-grid { display: grid; grid-template-columns: 1fr 1fr 90px; gap: 8px; margin-bottom: 8px; align-items: center; }
-    .lacre-input { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 7px; border-radius: 6px; font-size: 13px; text-align: center; font-weight: 600; width: 100%; }
-    .lacre-input:focus { border-color: var(--primary); outline: none; }
+    /* BLOCO 1: SERVIÇOS DA MÁQUINA (AZUL) */
+    .machine-service-box {
+      background: var(--service-bg); border: 1px solid var(--service-border); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px;
+    }
+    .service-box-header { font-size: 11px; font-weight: 800; color: var(--service-text); text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .service-grid { display: grid; grid-template-columns: 1fr 1fr 90px 110px; gap: 8px; align-items: center; }
+    @media (max-width: 768px) { .service-grid { grid-template-columns: 1fr 1fr; } }
+    
+    .input-field { background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 7px; border-radius: 6px; font-size: 13px; text-align: center; font-weight: 700; width: 100%; }
+    .input-field:focus { border-color: var(--primary); outline: none; background: #162035; }
+    .input-field.has-val { border-color: var(--primary); color: #38bdf8; background: #0f172a; }
     .bag-badge { background: #0b132b; border: 1px solid var(--primary); padding: 7px; border-radius: 6px; font-size: 13px; font-weight: 800; text-align: center; color: #38bdf8; }
     
-    /* LINHA DE PRODUTOS DA MÁQUINA (APENAS ITENS REAIS DO ONEBOSS) */
-    .machine-prods-row {
-      display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: #0b132b;
-      padding: 8px 10px; border-radius: 8px; border: 1px dashed var(--card-border);
+    /* BLOCO 2: PRODUTOS DA MÁQUINA (ROXO / ESMERALDA) */
+    .machine-prod-box {
+      background: var(--prod-bg); border: 1px solid var(--prod-border); border-radius: 8px; padding: 8px 10px;
     }
-    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; background: #111a2e; padding: 4px 7px; border-radius: 6px; border: 1px solid var(--card-border); }
+    .prod-box-header { font-size: 11px; font-weight: 800; color: var(--prod-text); text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .prods-grid { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    
+    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; background: #0f1124; padding: 4px 7px; border-radius: 6px; border: 1px solid #3730a3; }
     .prod-pill label { cursor: pointer; user-select: none; }
-    .prod-pill input { width: 44px; background: #1c2541; border: 1px solid var(--card-border); color: #34d399; padding: 3px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 800; }
-    .prod-pill input:focus { border-color: var(--primary); outline: none; }
-    .prod-pill .p-price { font-size: 10px; color: #60a5fa; margin-left: 2px; }
+    .prod-pill input { width: 44px; background: #1e1b4b; border: 1px solid #4338ca; color: #a5b4fc; padding: 3px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 800; }
+    .prod-pill input:focus { border-color: #818cf8; outline: none; background: #312e81; color: #fff; }
+    .prod-pill input.has-val { background: #312e81; border-color: #a78bfa; color: #34d399; font-weight: 800; }
+    .prod-pill .p-price { font-size: 10px; color: #818cf8; margin-left: 2px; }
 
     .machine-preview-tag {
-      margin-top: 8px; font-family: monospace; font-size: 11px; color: #38bdf8; background: #060b17;
+      margin-top: 8px; font-family: monospace; font-size: 11.5px; color: #38bdf8; background: #060b17;
       padding: 6px 10px; border-radius: 6px; border-left: 3px solid var(--primary); white-space: pre-wrap;
     }
     
-    /* TABELA DE BAGS POR PREÇO */
-    .price-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
-    .price-table th, .price-table td { padding: 7px 8px; border-bottom: 1px solid var(--card-border); }
+    /* TABELAS LATERAIS */
+    .conferencia-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+    .price-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+    .price-table th, .price-table td { padding: 6px 8px; border-bottom: 1px solid var(--card-border); }
     .price-table th { text-align: left; color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
-    .price-table input { width: 65px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 5px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 13px; }
+    .price-table input { width: 65px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 4px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 13px; }
+    .price-table input:focus { border-color: var(--primary); outline: none; }
     
     /* PREVIEW DO WHATSAPP */
-    .wa-preview-box { background: var(--wa-bg); border: 1px solid var(--wa-border); border-radius: 12px; padding: 14px; position: sticky; top: 16px; }
+    .wa-preview-box { background: var(--wa-bg); border: 1px solid var(--wa-border); border-radius: 12px; padding: 14px; position: sticky; top: 16px; margin-bottom: 16px; }
     .wa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--wa-border); }
     .wa-bubble-chat {
       background: var(--wa-bubble); border-radius: 8px; padding: 12px 14px;
       font-family: "SF Pro Text", -apple-system, "Segoe UI", Roboto, monospace;
-      font-size: 12.5px; line-height: 1.45; color: #e9edef; white-space: pre-wrap; word-break: break-word;
-      max-height: 520px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05);
+      font-size: 12px; line-height: 1.45; color: #e9edef; white-space: pre-wrap; word-break: break-word;
+      max-height: 480px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05);
     }
     
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s; }
@@ -102,7 +126,7 @@
     .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; }
     .btn-danger:hover { background: var(--danger); color: #fff; }
     
-    .actions-bar { display: flex; gap: 10px; margin-top: 16px; }
+    .actions-bar { display: flex; gap: 10px; margin-top: 14px; }
     
     .toast { position: fixed; bottom: 20px; right: 20px; background: #059669; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: 700; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); display: none; z-index: 1000; }
     
@@ -111,8 +135,8 @@
     .modal textarea { width: 100%; height: 250px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin: 12px 0; resize: vertical; }
 
     /* EDITÁVEL DE PREÇOS */
-    .price-edit-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 6px 0; }
-    .price-edit-row input { width: 75px; background: #0b132b; border: 1px solid var(--card-border); color: #60a5fa; padding: 4px 6px; border-radius: 4px; text-align: right; font-weight: 700; font-size: 12px; }
+    .price-edit-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 5px 0; }
+    .price-edit-row input { width: 70px; background: #0b132b; border: 1px solid var(--card-border); color: #60a5fa; padding: 3px 6px; border-radius: 4px; text-align: right; font-weight: 700; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -120,8 +144,8 @@
     <!-- TOPO -->
     <header>
       <div>
-        <h1>🛡️ Protecbag GRU - Fechamento de Caixa Oficial</h1>
-        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Auditoria OneBoss: lacres por máquina, produtos oficiais e fechamento diário</p>
+        <h1>🛡️ Protecbag GRU - Fechamento Oficial OneBoss</h1>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Separado por <strong>🧳 Serviços</strong> e <strong>🛍️ Produtos</strong> para preenchimento rápido e conferência de caixa</p>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
         <label style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Data:</label>
@@ -137,77 +161,57 @@
       <button class="tab-btn" onclick="switchShift('C')">TURNO C (Madrugada)</button>
     </div>
 
-    <!-- CARDS RESUMO DO TURNO -->
+    <!-- CARDS DO TOPO COM SEPARAÇÃO EXPLÍCITA: SERVIÇOS VS PRODUTOS -->
     <div class="top-cards">
-      <div class="card highlight" id="cardBagsCheck">
-        <div class="card-label">Total Bags (Máquinas)</div>
+      <!-- CARD 1: SERVIÇOS -->
+      <div class="card service-card" id="cardBagsCheck">
+        <div class="card-label" style="color: #93c5fd;">🧳 1. SERVIÇOS (MALAS)</div>
         <div class="card-val" id="cardTotalBags">0 BAG</div>
-        <div class="card-sub" id="cardBagsStatus">Aguardando dados</div>
+        <div class="card-sub" id="cardServicosValor" style="color: #60a5fa;">R$ 0,00 faturado</div>
       </div>
-      <div class="card green">
-        <div class="card-label">Total Geral Faturado</div>
-        <div class="card-val" style="color: #34d399;" id="cardTotalGeral">R$ 0,00</div>
-        <div class="card-sub" id="cardBagsSub">0 Malas + 0 Produtos</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Total Produtos Vendidos</div>
+
+      <!-- CARD 2: PRODUTOS -->
+      <div class="card prod-card">
+        <div class="card-label" style="color: #c4b5fd;">🛍️ 2. PRODUTOS (ACESSÓRIOS)</div>
         <div class="card-val" id="cardTotalProdutos">0 un</div>
-        <div class="card-sub" style="color: #60a5fa;" id="cardProdutosSub">R$ 0,00 (Automático)</div>
+        <div class="card-sub" id="cardProdutosValor" style="color: #a78bfa;">R$ 0,00 faturado</div>
       </div>
-      <div class="card">
-        <div class="card-label">Dinheiro em Espécie</div>
-        <div class="card-val" style="color: #10b981;" id="cardDinheiro">R$ 0,00</div>
-        <div class="card-sub" id="cardCartao">Cartão/PIX: R$ 0,00</div>
+
+      <!-- CARD 3: TOTAL GERAL -->
+      <div class="card total-card">
+        <div class="card-label" style="color: #a7f3d0;">💰 TOTAL GERAL DO TURNO</div>
+        <div class="card-val" style="color: #34d399;" id="cardTotalGeral">R$ 0,00</div>
+        <div class="card-sub" id="cardBagsSub" style="color: #6ee7b7;">Serviços + Produtos</div>
+      </div>
+
+      <!-- CARD 4: FORMAS DE PAGAMENTO -->
+      <div class="card finance-card">
+        <div class="card-label" style="color: #bae6fd;">💵 GAVETA & CARTÕES</div>
+        <div class="card-val" style="color: #38bdf8;" id="cardDinheiro">R$ 0,00</div>
+        <div class="card-sub" id="cardCartao" style="color: #7dd3fc;">Cartão/PIX: R$ 0,00</div>
       </div>
     </div>
 
     <!-- LAYOUT PRINCIPAL -->
     <div class="main-layout">
       
-      <!-- COLUNA DA ESQUERDA: MÁQUINAS E TABELA DE BAGS -->
+      <!-- COLUNA DA ESQUERDA: MÁQUINAS (COM SEPARAÇÃO VISUAL CLARA) -->
       <div>
-        <!-- LISTA DE MÁQUINAS -->
         <div class="section-title">
-          <span>⚙️ Máquinas em Operação & Lacres (G1 a G13)</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;">11 máquinas ativas</span>
+          <span>⚙️ Máquinas em Operação & Lançamentos (G1 a G13)</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Preenchimento ultra-rápido (Tab seleciona o próximo campo)</span>
         </div>
         <div class="machines-list" id="machinesList">
           <!-- Gerado via JavaScript -->
         </div>
-
-        <!-- TABELA DE VENDAS POR VALOR (BAGS REAIS DO ONEBOSS) -->
-        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px;">
-          <div class="section-title">
-            <span>💰 Bags Vendidas por Preço (OneBoss Oficial)</span>
-            <span id="badgeBagsSum" style="font-size: 12px; background: #0b132b; padding: 3px 8px; border-radius: 4px; color: #38bdf8; font-weight: 700;">Total: 0 Bags</span>
-          </div>
-          <table class="price-table">
-            <thead>
-              <tr>
-                <th>Tipo de Venda (OneBoss)</th>
-                <th style="text-align: center;">Qtd Vendida</th>
-                <th style="text-align: right;">Subtotal (R$)</th>
-              </tr>
-            </thead>
-            <tbody id="priceTableBody">
-              <!-- Gerado via JavaScript -->
-            </tbody>
-            <tfoot>
-              <tr style="font-weight: 700;">
-                <td>TOTAL MALAS:</td>
-                <td style="text-align: center; color: var(--accent);" id="totMalasQty">0</td>
-                <td style="text-align: right; color: #34d399;" id="totMalasValor">R$ 0,00</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
       </div>
 
-      <!-- COLUNA DA DIREITA: PREVIEW DO WHATSAPP AO VIVO & FINANCEIRO -->
+      <!-- COLUNA DA DIREITA: PREVIEW DO WHATSAPP & CONFERÊNCIAS SEPARADAS -->
       <div>
+        <!-- PREVIEW DO WHATSAPP -->
         <div class="wa-preview-box">
           <div class="wa-header">
-            <span style="font-size: 13px; font-weight: 700; color: #25d366; display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 13px; font-weight: 800; color: #25d366; display: flex; align-items: center; gap: 6px;">
               📱 WhatsApp ao Vivo (Atualiza na hora)
             </span>
             <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="copiarWhatsAppOficial()">
@@ -219,10 +223,64 @@
           </div>
         </div>
 
-        <!-- TABELA OFICIAL DE PREÇOS DOS PRODUTOS DO ONEBOSS -->
-        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-top: 20px;">
+        <!-- 1. CONFERÊNCIA DE SERVIÇOS (BAGS VENDIDAS) -->
+        <div class="conferencia-card" style="border-color: #1e3a8a;">
+          <div class="section-title" style="color: #60a5fa;">
+            <span>🧳 Serviços: Venda de Bags por Valor</span>
+            <span id="badgeBagsSum" style="font-size: 11px; background: #0b132b; padding: 2px 6px; border-radius: 4px; color: #38bdf8; font-weight: 700;">0 Bags</span>
+          </div>
+          <table class="price-table">
+            <thead>
+              <tr>
+                <th>Tipo de Venda</th>
+                <th style="text-align: center;">Qtd</th>
+                <th style="text-align: right;">Subtotal (R$)</th>
+              </tr>
+            </thead>
+            <tbody id="priceTableBody">
+              <!-- Gerado via JavaScript -->
+            </tbody>
+            <tfoot>
+              <tr style="font-weight: 800;">
+                <td style="color: #93c5fd;">SUBTOTAL SERVIÇOS:</td>
+                <td style="text-align: center; color: var(--accent);" id="totMalasQty">0</td>
+                <td style="text-align: right; color: #38bdf8;" id="totMalasValor">R$ 0,00</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- 2. CONFERÊNCIA DE PRODUTOS VENDIDOS NO TURNO -->
+        <div class="conferencia-card" style="border-color: #4338ca;">
+          <div class="section-title" style="color: #a5b4fc;">
+            <span>🛍️ Produtos: Resumo Consolidado do Turno</span>
+            <span id="badgeProdsSum" style="font-size: 11px; background: #0b132b; padding: 2px 6px; border-radius: 4px; color: #a78bfa; font-weight: 700;">0 un</span>
+          </div>
+          <table class="price-table">
+            <thead>
+              <tr>
+                <th>Produto (OneBoss)</th>
+                <th style="text-align: center;">Qtd</th>
+                <th style="text-align: right;">Subtotal (R$)</th>
+              </tr>
+            </thead>
+            <tbody id="prodsSummaryBody">
+              <!-- Gerado via JavaScript -->
+            </tbody>
+            <tfoot>
+              <tr style="font-weight: 800;">
+                <td style="color: #c4b5fd;">SUBTOTAL PRODUTOS:</td>
+                <td style="text-align: center; color: #a78bfa;" id="totProdsQty">0</td>
+                <td style="text-align: right; color: #34d399;" id="totProdsValor">R$ 0,00</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- TABELA EDITÁVEL DE PREÇOS DOS PRODUTOS DO ONEBOSS -->
+        <div class="conferencia-card">
           <div class="section-title">
-            <span>🏷️ Tabela OneBoss (Produtos Ativos)</span>
+            <span>🏷️ Tabela OneBoss (Preços Unitários)</span>
             <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="resetarPrecosPadrao()">Resetar</button>
           </div>
           <div id="prodPricesEditor" style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
@@ -231,25 +289,25 @@
         </div>
 
         <!-- FECHAMENTO FINANCEIRO -->
-        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-top: 20px;">
+        <div class="conferencia-card">
           <div class="section-title">
-            <span>💵 Fechamento Financeiro</span>
+            <span>💵 Fechamento de Caixa (Gaveta)</span>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
             <div>
               <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">DINHEIRO EM ESPÉCIE NA GAVETA (R$)</label>
-              <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #10b981; padding: 8px; font-size: 18px; font-weight: 700; border-radius: 6px;" oninput="recalc()">
+              <input type="number" id="inputDinheiro" placeholder="0,00" step="0.01" style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #10b981; padding: 8px; font-size: 18px; font-weight: 800; border-radius: 6px;" oninput="recalc()" onfocus="this.select()">
             </div>
             <div>
-              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">VALOR EM CARTÕES / PIX (CALCULADO)</label>
-              <input type="text" id="inputCartao" readonly style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #38bdf8; padding: 8px; font-size: 16px; font-weight: 700; border-radius: 6px;" value="R$ 0,00">
+              <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">CARTÃO / PIX CALCULADO (FATURAMENTO - DINHEIRO)</label>
+              <input type="text" id="inputCartao" readonly style="width: 100%; background: #0b132b; border: 1px solid var(--card-border); color: #38bdf8; padding: 8px; font-size: 16px; font-weight: 800; border-radius: 6px;" value="R$ 0,00">
             </div>
           </div>
         </div>
 
         <!-- AÇÕES -->
         <div class="actions-bar" style="justify-content: stretch; flex-direction: column;">
-          <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportarExcel()">📊 Baixar Excel (.xlsx)</button>
+          <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportarExcel()">📊 Baixar Excel Separado (.xlsx)</button>
           <button class="btn btn-danger" style="width: 100%; justify-content: center;" onclick="limparTurno()">🗑️ Limpar Turno</button>
         </div>
       </div>
@@ -260,7 +318,7 @@
   <div class="modal" id="importModal">
     <div class="modal-content">
       <h3 style="color: #fff; margin-bottom: 6px;">📥 Importar Resumo do WhatsApp</h3>
-      <p style="color: var(--text-muted); font-size: 13px;">Cole o texto do relatório do WhatsApp aqui para preencher a tela inteira automaticamente:</p>
+      <p style="color: var(--text-muted); font-size: 13px;">Cole o texto do relatório do WhatsApp aqui para preencher tudo automaticamente:</p>
       <textarea id="importText" placeholder="Cole o texto aqui... Ex: G1 - senhorinho 8 BAG 111296311 - 111296318..."></textarea>
       <div style="display: flex; justify-content: flex-end; gap: 10px;">
         <button class="btn btn-outline" onclick="closeImportModal()">Cancelar</button>
@@ -274,7 +332,7 @@
   <script>
     const MACHINES = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G8', 'G10', 'G11', 'G12', 'G13'];
 
-    // DEFINIÇÃO 100% AUDITADA DO ONEBOSS (APENAS O QUE EXISTE)
+    // DEFINIÇÃO OFICIAL ONEBOSS (APENAS PRODUTOS ATIVOS)
     const PROD_DEFINITIONS = [
       { id: 'latao',   code: '025',  name: '025 - TSA Chave (Latão)',       waName: 'LATAO',            defaultPrice: 80.00 },
       { id: 'segredo', code: '2031', name: '2031 - Cadeado Segredo',         waName: 'SEGREDO',          defaultPrice: 90.00 },
@@ -282,14 +340,13 @@
       { id: 'tag',     code: '016',  name: '016 - Tag Mala (Identificador)', waName: 'TAG',              defaultPrice: 65.00 },
       { id: 'tagloc',  code: '5202', name: '5202 - Tag Localização Digital', waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00 },
       { id: 'adapt',   code: '100',  name: '100 - Adaptador Internacional',  waName: 'ADAPTADOR',        defaultPrice: 85.00 },
-      { id: 'ziplock', code: '400',  name: '400 - Zip Lock',                 waName: 'ZIPLOCK',          defaultPrice: 10.00 },
-      { id: 'aero',    code: '5199', name: '5199 - Aerobag (Especial)',      waName: 'AEROBAG',          defaultPrice: 0.00 }
+      { id: 'ziplock', code: '400',  name: '400 - Zip Lock',                 waName: 'ZIPLOCK',          defaultPrice: 10.00 }
     ];
 
-    // PREÇOS SALVOS OU PADRÃO DO ONEBOSS
+    // PREÇOS SALVOS OU PADRÃO
     let PROD_PRICES = {};
     function initPrices() {
-      const savedPrices = localStorage.getItem('protecbag_oneboss_prices_v1');
+      const savedPrices = localStorage.getItem('protecbag_oneboss_prices_v2');
       if (savedPrices) {
         try {
           PROD_PRICES = JSON.parse(savedPrices);
@@ -306,7 +363,7 @@
     initPrices();
 
     function savePrices() {
-      localStorage.setItem('protecbag_oneboss_prices_v1', JSON.stringify(PROD_PRICES));
+      localStorage.setItem('protecbag_oneboss_prices_v2', JSON.stringify(PROD_PRICES));
     }
 
     function resetarPrecosPadrao() {
@@ -322,7 +379,7 @@
       }
     }
 
-    // PREÇOS REAIS DE MALAS NO ONEBOSS (SEM ITENS OBSOLETOS)
+    // SERVIÇOS DE MALAS NO ONEBOSS (BAGS VENDIDAS)
     const PRICES = [
       { key: '199', label: 'BAG R$ 199,00 (Aerobag)',       price: 199 },
       { key: '179', label: 'BAG R$ 179,00 (Aerobag Desc.)', price: 179 },
@@ -360,7 +417,7 @@
     };
 
     let currentShift = 'A';
-    let rawStored = localStorage.getItem('fechamento_oneboss_clean_v1');
+    let rawStored = localStorage.getItem('fechamento_oneboss_split_v1');
     let appData = rawStored ? JSON.parse(rawStored) : null;
     if (!appData || !appData.shifts || !appData.shifts.A || Object.keys(appData.shifts.A.machines).length === 0) {
       appData = {
@@ -390,14 +447,13 @@
       const container = document.getElementById('prodPricesEditor');
       container.innerHTML = '';
       PROD_DEFINITIONS.forEach(p => {
-        if (p.id === 'aero') return; // Aerobag sem preço adicional
         const div = document.createElement('div');
         div.className = 'price-edit-row';
         div.innerHTML = `
           <span>${p.name}:</span>
           <div style="display: flex; align-items: center; gap: 4px;">
             <span style="color: var(--text-muted); font-size: 11px;">R$</span>
-            <input type="number" step="0.50" id="price_edit_${p.id}" value="${PROD_PRICES[p.id]}" onchange="updateSinglePrice('${p.id}')">
+            <input type="number" step="0.50" id="price_edit_${p.id}" value="${PROD_PRICES[p.id]}" onchange="updateSinglePrice('${p.id}')" onfocus="this.select()">
           </div>
         `;
         container.appendChild(div);
@@ -421,73 +477,94 @@
         div.className = 'machine-row';
         div.id = `card_${m}`;
 
-        // Linha com APENAS os 8 produtos reais
-        const pillsHtml = `
-          <span style="font-size: 11px; font-weight: 800; color: #94a3b8; margin-right: 2px;">PRODUTOS:</span>
-          <div class="prod-pill">
-            <label title="Contagem de Aerobag">AEROBAG</label>
-            <input type="number" id="p_aero_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="025 - R$ ${PROD_PRICES.latao}">TSA CHAVE <span class="p-price">${PROD_PRICES.latao}</span></label>
-            <input type="number" id="p_latao_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="2031 - R$ ${PROD_PRICES.segredo}">SEGREDO <span class="p-price">${PROD_PRICES.segredo}</span></label>
-            <input type="number" id="p_segredo_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="036 - R$ ${PROD_PRICES.tsa}">TSA <span class="p-price">${PROD_PRICES.tsa}</span></label>
-            <input type="number" id="p_tsa_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="016 - R$ ${PROD_PRICES.tag}">TAG MALA <span class="p-price">${PROD_PRICES.tag}</span></label>
-            <input type="number" id="p_tag_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="5202 - R$ ${PROD_PRICES.tagloc}">TAG LOC. <span class="p-price">${PROD_PRICES.tagloc}</span></label>
-            <input type="number" id="p_tagloc_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="100 - R$ ${PROD_PRICES.adapt}">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
-            <input type="number" id="p_adapt_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <div class="prod-pill">
-            <label title="400 - R$ ${PROD_PRICES.ziplock}">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
-            <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-        `;
-
         div.innerHTML = `
-          <!-- LINHA 1: MÁQUINA + OPERADOR -->
+          <!-- LINHA TOPO: MÁQUINA + OPERADOR -->
           <div class="row-top">
             <span class="machine-tag">${m}</span>
             <input type="text" class="operator-input" id="op_${m}" placeholder="Nome do Colaborador (ex: senhorinho)" oninput="recalc()">
             <button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;" onclick="toggleRolo2('${m}')">+ 2º Rolo Lacre</button>
           </div>
 
-          <!-- LINHA 2: LACRES 1 E 2 -->
-          <div class="lacre-grid">
-            <input type="number" class="lacre-input" id="ini1_${m}" placeholder="Inicial" oninput="recalc()">
-            <input type="number" class="lacre-input" id="fim1_${m}" placeholder="Final" oninput="recalc()">
-            <div class="bag-badge" id="bags_${m}">0 BAG</div>
-          </div>
+          <!-- BLOCO 1: SERVIÇOS (LACRES & MALAS) - FUNDO AZUL -->
+          <div class="machine-service-box">
+            <div class="service-box-header">
+              <span>🧳 Serviços de Proteção / Lacres</span>
+              <span style="font-size: 10px; color: #93c5fd;">Automático</span>
+            </div>
+            <div class="service-grid">
+              <div>
+                <label style="font-size: 10px; color: var(--service-text); font-weight: 700; display: block; margin-bottom: 2px;">LACRE INICIAL</label>
+                <input type="number" class="input-field" id="ini1_${m}" placeholder="Ex: 111296311" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div>
+                <label style="font-size: 10px; color: var(--service-text); font-weight: 700; display: block; margin-bottom: 2px;">LACRE FINAL</label>
+                <input type="number" class="input-field" id="fim1_${m}" placeholder="Ex: 111296318" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div>
+                <label style="font-size: 10px; color: var(--service-text); font-weight: 700; display: block; margin-bottom: 2px;">TOTAL BAGS</label>
+                <div class="bag-badge" id="bags_${m}">0 BAG</div>
+              </div>
+              <div>
+                <label style="font-size: 10px; color: #38bdf8; font-weight: 800; display: block; margin-bottom: 2px;">⭐ AEROBAG</label>
+                <input type="number" class="input-field" id="p_aero_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()" style="border-color: #0284c7; color: #38bdf8; font-weight: 800;">
+              </div>
+            </div>
 
-          <div id="rolo2_box_${m}" style="display: none; margin-bottom: 8px;">
-            <div style="font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 4px;">Troca de Rolo de Lacre (2º Rolo):</div>
-            <div class="lacre-grid">
-              <input type="number" class="lacre-input" id="ini2_${m}" placeholder="Inicial 2" oninput="recalc()">
-              <input type="number" class="lacre-input" id="fim2_${m}" placeholder="Final 2" oninput="recalc()">
-              <div class="bag-badge" id="bags2_${m}" style="border-color: #8b5cf6; color: #a78bfa;">0 BAG</div>
+            <div id="rolo2_box_${m}" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px dashed #1e3a8a;">
+              <div style="font-size: 11px; color: #a78bfa; font-weight: 700; margin-bottom: 4px;">Troca de Rolo de Lacre (2º Rolo):</div>
+              <div class="service-grid">
+                <div>
+                  <input type="number" class="input-field" id="ini2_${m}" placeholder="Inicial 2" oninput="recalc()" onfocus="this.select()">
+                </div>
+                <div>
+                  <input type="number" class="input-field" id="fim2_${m}" placeholder="Final 2" oninput="recalc()" onfocus="this.select()">
+                </div>
+                <div>
+                  <div class="bag-badge" id="bags2_${m}" style="border-color: #8b5cf6; color: #a78bfa;">0 BAG</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- LINHA 3: PRODUTOS OFICIAIS NA MESMA LINHA -->
-          <div class="machine-prods-row">
-            ${pillsHtml}
+          <!-- BLOCO 2: PRODUTOS / ACESSÓRIOS - FUNDO VIOLETA -->
+          <div class="machine-prod-box">
+            <div class="prod-box-header">
+              <span>🛍️ Produtos / Acessórios Vendidos</span>
+              <span style="font-size: 10px; color: #c4b5fd;">OneBoss</span>
+            </div>
+            <div class="prods-grid">
+              <div class="prod-pill">
+                <label title="025 - TSA Chave Latão (R$ ${PROD_PRICES.latao})">TSA CHAVE <span class="p-price">${PROD_PRICES.latao}</span></label>
+                <input type="number" id="p_latao_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div class="prod-pill">
+                <label title="2031 - Cadeado Segredo (R$ ${PROD_PRICES.segredo})">SEGREDO <span class="p-price">${PROD_PRICES.segredo}</span></label>
+                <input type="number" id="p_segredo_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div class="prod-pill">
+                <label title="036 - Cadeado TSA (R$ ${PROD_PRICES.tsa})">TSA <span class="p-price">${PROD_PRICES.tsa}</span></label>
+                <input type="number" id="p_tsa_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div class="prod-pill">
+                <label title="016 - Identificador Duplo / Tag Mala (R$ ${PROD_PRICES.tag})">TAG MALA <span class="p-price">${PROD_PRICES.tag}</span></label>
+                <input type="number" id="p_tag_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div class="prod-pill">
+                <label title="5202 - Tag Localização Digital (R$ ${PROD_PRICES.tagloc})">TAG LOC. <span class="p-price">${PROD_PRICES.tagloc}</span></label>
+                <input type="number" id="p_tagloc_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div class="prod-pill">
+                <label title="100 - Adaptador Internacional (R$ ${PROD_PRICES.adapt})">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
+                <input type="number" id="p_adapt_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+              <div class="prod-pill">
+                <label title="400 - Zip Lock (R$ ${PROD_PRICES.ziplock})">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
+                <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()" onfocus="this.select()">
+              </div>
+            </div>
           </div>
 
-          <!-- PREVIEW EM TEXTO DA MÁQUINA -->
+          <!-- PREVIEW EM TEXTO DA MÁQUINA (WHATSAPP FORMAT) -->
           <div class="machine-preview-tag" id="preview_text_${m}"></div>
         `;
         container.appendChild(div);
@@ -506,7 +583,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${p.label}</strong></td>
-          <td style="text-align: center;"><input type="number" id="pr_${p.key}" min="0" placeholder="0" oninput="recalc()"></td>
+          <td style="text-align: center;"><input type="number" id="pr_${p.key}" min="0" placeholder="0" oninput="recalc()" onfocus="this.select()"></td>
           <td style="text-align: right; font-weight: 700; color: #38bdf8;" id="sub_${p.key}">R$ 0,00</td>
         `;
         tbody.appendChild(tr);
@@ -518,6 +595,12 @@
       let totalProdutosCount = 0;
       let totalProdutosValor = 0;
       let waMachinesText = '';
+
+      // Mapa para resumo consolidado de produtos vendidos no turno
+      const prodsTurnoTotals = {};
+      PROD_DEFINITIONS.forEach(p => {
+        prodsTurnoTotals[p.id] = { name: p.name, price: PROD_PRICES[p.id] || 0, qty: 0 };
+      });
 
       // Máquinas
       MACHINES.forEach(m => {
@@ -543,8 +626,19 @@
         }
         totalBagsMachines += bTot;
 
-        // Produtos reais do OneBoss
-        const getProdQty = (id) => parseInt(document.getElementById(`p_${id}_${m}`)?.value) || 0;
+        // Destaque visual nos inputs preenchidos
+        ['ini1', 'fim1', 'ini2', 'fim2'].forEach(field => {
+          const el = document.getElementById(`${field}_${m}`);
+          if (el) el.classList.toggle('has-val', el.value !== '');
+        });
+
+        // Produtos
+        const getProdQty = (id) => {
+          const el = document.getElementById(`p_${id}_${m}`);
+          const q = parseInt(el?.value) || 0;
+          if (el) el.classList.toggle('has-val', q > 0);
+          return q;
+        };
         
         const aero = getProdQty('aero');
         const latao = getProdQty('latao');
@@ -554,6 +648,15 @@
         const tagloc = getProdQty('tagloc');
         const adapt = getProdQty('adapt');
         const ziplock = getProdQty('ziplock');
+
+        // Acumular no resumo consolidado de produtos
+        prodsTurnoTotals['latao'].qty += latao;
+        prodsTurnoTotals['segredo'].qty += segredo;
+        prodsTurnoTotals['tsa'].qty += tsa;
+        prodsTurnoTotals['tag'].qty += tag;
+        prodsTurnoTotals['tagloc'].qty += tagloc;
+        prodsTurnoTotals['adapt'].qty += adapt;
+        prodsTurnoTotals['ziplock'].qty += ziplock;
 
         const pCount = latao + segredo + tsa + tag + tagloc + adapt + ziplock;
         totalProdutosCount += pCount;
@@ -597,9 +700,9 @@
         }
       });
 
-      // Bags por Preço
+      // 1. SERVIÇOS: Bags por Preço
       let totalBagsVenda = 0;
-      let totalMalasReais = 0;
+      let totalServicosValor = 0;
       let waBagsPriceText = 'BAGS VENDIDAS\n\n';
 
       PRICES.forEach(p => {
@@ -609,7 +712,7 @@
           document.getElementById(`sub_${p.key}`).innerText = formatBRL(sub);
         }
         totalBagsVenda += qty;
-        totalMalasReais += sub;
+        totalServicosValor += sub;
 
         if (qty > 0) {
           if (p.price > 0) {
@@ -621,33 +724,46 @@
       });
 
       document.getElementById('totMalasQty').innerText = totalBagsVenda;
-      document.getElementById('totMalasValor').innerText = formatBRL(totalMalasReais);
-      document.getElementById('badgeBagsSum').innerText = `Total: ${totalBagsVenda} Bags`;
+      document.getElementById('totMalasValor').innerText = formatBRL(totalServicosValor);
+      document.getElementById('badgeBagsSum').innerText = `${totalBagsVenda} Bags`;
 
-      // Validação Lacres vs Venda
-      const cardCheck = document.getElementById('cardBagsCheck');
-      const cardStatus = document.getElementById('cardBagsStatus');
-      document.getElementById('cardTotalBags').innerText = `${totalBagsMachines} BAG`;
-
-      if (totalBagsMachines === totalBagsVenda) {
-        cardCheck.style.borderColor = 'var(--success)';
-        cardStatus.innerText = '✅ Batendo certinho com a venda!';
-        cardStatus.style.color = '#34d399';
-      } else {
-        cardCheck.style.borderColor = 'var(--warning)';
-        cardStatus.innerText = `⚠️ Diferença: ${totalBagsMachines - totalBagsVenda} bags`;
-        cardStatus.style.color = '#fbbf24';
+      // 2. PRODUTOS: Renderizar Resumo Consolidado de Produtos do Turno
+      const prodsTbody = document.getElementById('prodsSummaryBody');
+      prodsTbody.innerHTML = '';
+      PROD_DEFINITIONS.forEach(p => {
+        const item = prodsTurnoTotals[p.id];
+        if (item.qty > 0) {
+          const sub = item.qty * item.price;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.name}</td>
+            <td style="text-align: center; font-weight: 700; color: #a5b4fc;">${item.qty}</td>
+            <td style="text-align: right; font-weight: 700; color: #34d399;">${formatBRL(sub)}</td>
+          `;
+          prodsTbody.appendChild(tr);
+        }
+      });
+      if (prodsTbody.children.length === 0) {
+        prodsTbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); font-size: 11px;">Nenhum produto lançado neste turno</td></tr>`;
       }
+      document.getElementById('totProdsQty').innerText = `${totalProdutosCount} un`;
+      document.getElementById('totProdsValor').innerText = formatBRL(totalProdutosValor);
+      document.getElementById('badgeProdsSum').innerText = `${totalProdutosCount} un`;
 
-      // Financeiro Total 100% Automático
-      const totalGeral = totalMalasReais + totalProdutosValor;
+      // Atualizar Cards Superiores Separados
+      document.getElementById('cardTotalBags').innerText = `${totalBagsMachines} BAG`;
+      document.getElementById('cardServicosValor').innerText = `${formatBRL(totalServicosValor)} (Serviços)`;
+
+      document.getElementById('cardTotalProdutos').innerText = `${totalProdutosCount} un`;
+      document.getElementById('cardProdutosValor').innerText = `${formatBRL(totalProdutosValor)} (Produtos)`;
+
+      // Total Geral Faturado (Serviços + Produtos)
+      const totalGeral = totalServicosValor + totalProdutosValor;
       const dinheiro = parseFloat(document.getElementById('inputDinheiro').value) || 0;
       const cartao = Math.max(0, totalGeral - dinheiro);
 
       document.getElementById('cardTotalGeral').innerText = formatBRL(totalGeral);
       document.getElementById('cardBagsSub').innerText = `${totalBagsMachines} Malas + ${totalProdutosCount} Produtos`;
-      document.getElementById('cardTotalProdutos').innerText = `${totalProdutosCount} un`;
-      document.getElementById('cardProdutosSub').innerText = `${formatBRL(totalProdutosValor)} (Automático)`;
       document.getElementById('cardDinheiro').innerText = formatBRL(dinheiro);
       document.getElementById('cardCartao').innerText = `Cartão/PIX: ${formatBRL(cartao)}`;
       document.getElementById('inputCartao').value = formatBRL(cartao);
@@ -697,7 +813,7 @@
       s.dinheiro = document.getElementById('inputDinheiro').value;
 
       appData.shifts[currentShift] = s;
-      localStorage.setItem('fechamento_oneboss_clean_v1', JSON.stringify(appData));
+      localStorage.setItem('fechamento_oneboss_split_v1', JSON.stringify(appData));
     }
 
     function loadShift(shift) {
@@ -889,7 +1005,8 @@
         ['FECHAMENTO DE CAIXA PROTECBAG GRU - TURNO ' + currentShift],
         ['Data:', rawDate],
         [],
-        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG', 'TSA CHAVE (80)', 'SEGREDO (90)', 'TSA (110)', 'TAG MALA (65)', 'TAG LOC (60)', 'ADAPTADOR (85)', 'ZIPLOCK (10)']
+        ['--- 1. SERVIÇOS (MÁQUINAS & LACRES) ---'],
+        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG'],
       ];
 
       MACHINES.forEach(m => {
@@ -901,27 +1018,37 @@
         const fim2 = document.getElementById(`fim2_${m}`)?.value || '';
         const b2 = document.getElementById(`bags2_${m}`)?.innerText || '';
         const bTot = (parseInt(b1) || 0) + (parseInt(b2) || 0);
+        const aero = document.getElementById(`p_aero_${m}`)?.value || '';
 
-        const getP = id => document.getElementById(`p_${id}_${m}`)?.value || '';
-
-        if (bTot > 0 || op) {
-          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, getP('aero'), getP('latao'), getP('segredo'), getP('tsa'), getP('tag'), getP('tagloc'), getP('adapt'), getP('ziplock')]);
+        if (bTot > 0 || op || aero) {
+          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, aero]);
         }
       });
 
       rows.push([]);
-      rows.push(['DISTRIBUIÇÃO DE BAGS POR PREÇO']);
+      rows.push(['--- 2. PRODUTOS VENDIDOS POR MÁQUINA ---']);
+      rows.push(['MÁQUINA', 'TSA CHAVE (80)', 'SEGREDO (90)', 'TSA (110)', 'TAG MALA (65)', 'TAG LOC (60)', 'ADAPTADOR (85)', 'ZIPLOCK (10)']);
+      MACHINES.forEach(m => {
+        const getP = id => document.getElementById(`p_${id}_${m}`)?.value || '';
+        const latao = getP('latao'), seg = getP('segredo'), tsa = getP('tsa'), tag = getP('tag'), tagloc = getP('tagloc'), adapt = getP('adapt'), zip = getP('ziplock');
+        if (latao || seg || tsa || tag || tagloc || adapt || zip) {
+          rows.push([m, latao, seg, tsa, tag, tagloc, adapt, zip]);
+        }
+      });
+
+      rows.push([]);
+      rows.push(['--- 3. DISTRIBUIÇÃO DE BAGS POR PREÇO (SERVIÇOS) ---']);
       PRICES.forEach(p => {
         const q = document.getElementById(`pr_${p.key}`)?.value || 0;
         rows.push([p.label, q, p.price, q * p.price]);
       });
 
       rows.push([]);
-      rows.push(['TOTAIS FINAIS']);
-      rows.push(['TOTAL MALAS:', document.getElementById('totMalasValor').innerText]);
-      rows.push(['TOTAL PRODUTOS:', document.getElementById('cardProdutosSub').innerText]);
-      rows.push(['TOTAL GERAL:', document.getElementById('cardTotalGeral').innerText]);
-      rows.push(['DINHEIRO:', document.getElementById('cardDinheiro').innerText]);
+      rows.push(['--- 4. TOTAIS FINAIS DO TURNO ---']);
+      rows.push(['TOTAL SERVIÇOS (MALAS):', document.getElementById('cardServicosValor').innerText]);
+      rows.push(['TOTAL PRODUTOS (ACESSÓRIOS):', document.getElementById('cardProdutosValor').innerText]);
+      rows.push(['TOTAL GERAL FATURADO:', document.getElementById('cardTotalGeral').innerText]);
+      rows.push(['DINHEIRO EM GAVETA:', document.getElementById('cardDinheiro').innerText]);
       rows.push(['CARTÃO / PIX:', document.getElementById('inputCartao').value]);
 
       const ws = XLSX.utils.aoa_to_sheet(rows);
