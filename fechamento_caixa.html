@@ -278,17 +278,17 @@
 
     // DEFINIÇÃO COMPLETA DOS PRODUTOS OFICIAIS PROTECBAG
     const PROD_DEFINITIONS = [
-      { id: 'latao',   name: 'TSA Chave (Latão)', waName: 'LATAO',            defaultPrice: 80.00, primary: true },
-      { id: 'segredo', name: 'Cadeado Segredo',   waName: 'SEGREDO',          defaultPrice: 90.00, primary: true },
-      { id: 'tsa',     name: 'Cadeado TSA',       waName: 'TSA',              defaultPrice: 110.00, primary: true },
-      { id: 'tag',     name: 'Tag Mala',          waName: 'TAG',              defaultPrice: 65.00, primary: true },
-      { id: 'tagloc',  name: 'Tag Localização',   waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00, primary: true },
-      { id: 'adapt',   name: 'Adaptador Tomada',  waName: 'ADAPTADOR',        defaultPrice: 85.00, primary: true },
-      { id: 'cabo',    name: 'Cabo de Aço',       waName: 'CABO DE ACO',      defaultPrice: 130.00, primary: false },
-      { id: 'cinta',   name: 'Cinta Bag',         waName: 'CINTA',            defaultPrice: 70.00, primary: false },
-      { id: 'ziplock', name: 'Ziplock',           waName: 'ZIPLOCK',          defaultPrice: 10.00, primary: false },
-      { id: 'tagseg',  name: 'Tag Seguro',        waName: 'TAG SEGURO',       defaultPrice: 100.00, primary: false },
-      { id: 'aero',    name: 'Aerobag',           waName: 'AEROBAG',          defaultPrice: 0.00, primary: true }
+      { id: 'latao',   name: '025 - TSA Chave (Latão)',       waName: 'LATAO',            defaultPrice: 80.00, primary: true },
+      { id: 'segredo', name: '2031 - Cadeado Segredo',         waName: 'SEGREDO',          defaultPrice: 90.00, primary: true },
+      { id: 'tsa',     name: '036 - Cadeado TSA',             waName: 'TSA',              defaultPrice: 110.00, primary: true },
+      { id: 'tag',     name: '016 - Tag Mala (Identificador)', waName: 'TAG',              defaultPrice: 65.00, primary: true },
+      { id: 'tagloc',  name: '5202 - Tag Localização Digital', waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00, primary: true },
+      { id: 'adapt',   name: '100 - Adaptador Internacional',  waName: 'ADAPTADOR',        defaultPrice: 85.00, primary: true },
+      { id: 'ziplock', name: '400 - Zip Lock',                 waName: 'ZIPLOCK',          defaultPrice: 10.00, primary: true },
+      { id: 'cabo',    name: 'Cabo de Aço (Especial)',         waName: 'CABO DE ACO',      defaultPrice: 130.00, primary: false },
+      { id: 'cinta',   name: 'Cinta Bag (Especial)',           waName: 'CINTA',            defaultPrice: 70.00, primary: false },
+      { id: 'tagseg',  name: 'Tag Seguro (Antiga)',            waName: 'TAG SEGURO',       defaultPrice: 100.00, primary: false },
+      { id: 'aero',    name: '5199 - Aerobag (Especial)',      waName: 'AEROBAG',          defaultPrice: 0.00, primary: true }
     ];
 
     // CARREGAR PREÇOS SALVOS OU PADRÃO
@@ -456,6 +456,10 @@
           <div class="prod-pill">
             <label title="R$ ${PROD_PRICES.adapt}">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
             <input type="number" id="p_adapt_${m}" placeholder="0" min="0" oninput="recalc()">
+          </div>
+          <div class="prod-pill">
+            <label title="R$ ${PROD_PRICES.ziplock}">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
+            <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <button class="btn btn-outline" style="padding: 2px 6px; font-size: 10px; border-radius: 4px;" onclick="toggleMoreProds('${m}')">+ Outros</button>
         `;
