@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fechamento de Caixa Protecbag GRU - Sistema Oficial</title>
+  <title>Fechamento de Caixa Protecbag GRU - OneBoss Oficial</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
@@ -60,18 +60,16 @@
     .lacre-input:focus { border-color: var(--primary); outline: none; }
     .bag-badge { background: #0b132b; border: 1px solid var(--primary); padding: 7px; border-radius: 6px; font-size: 13px; font-weight: 800; text-align: center; color: #38bdf8; }
     
-    /* LINHA DE PRODUTOS DA MÁQUINA */
+    /* LINHA DE PRODUTOS DA MÁQUINA (APENAS ITENS REAIS DO ONEBOSS) */
     .machine-prods-row {
       display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: #0b132b;
       padding: 8px 10px; border-radius: 8px; border: 1px dashed var(--card-border);
     }
-    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; background: #111a2e; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--card-border); }
+    .prod-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; background: #111a2e; padding: 4px 7px; border-radius: 6px; border: 1px solid var(--card-border); }
     .prod-pill label { cursor: pointer; user-select: none; }
     .prod-pill input { width: 44px; background: #1c2541; border: 1px solid var(--card-border); color: #34d399; padding: 3px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 800; }
     .prod-pill input:focus { border-color: var(--primary); outline: none; }
     .prod-pill .p-price { font-size: 10px; color: #60a5fa; margin-left: 2px; }
-
-    .more-prods-box { margin-top: 6px; width: 100%; display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; border-top: 1px dashed #1e293b; }
 
     .machine-preview-tag {
       margin-top: 8px; font-family: monospace; font-size: 11px; color: #38bdf8; background: #060b17;
@@ -113,8 +111,8 @@
     .modal textarea { width: 100%; height: 250px; background: #0b132b; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin: 12px 0; resize: vertical; }
 
     /* EDITÁVEL DE PREÇOS */
-    .price-edit-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 5px 0; }
-    .price-edit-row input { width: 70px; background: #0b132b; border: 1px solid var(--card-border); color: #60a5fa; padding: 3px 6px; border-radius: 4px; text-align: right; font-weight: 700; font-size: 12px; }
+    .price-edit-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 6px 0; }
+    .price-edit-row input { width: 75px; background: #0b132b; border: 1px solid var(--card-border); color: #60a5fa; padding: 4px 6px; border-radius: 4px; text-align: right; font-weight: 700; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -123,7 +121,7 @@
     <header>
       <div>
         <h1>🛡️ Protecbag GRU - Fechamento de Caixa Oficial</h1>
-        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Controle diário de lacres por máquina, produtos e fechamento de turno em tempo real</p>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Auditoria OneBoss: lacres por máquina, produtos oficiais e fechamento diário</p>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
         <label style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Data:</label>
@@ -171,22 +169,22 @@
         <!-- LISTA DE MÁQUINAS -->
         <div class="section-title">
           <span>⚙️ Máquinas em Operação & Lacres (G1 a G13)</span>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;">Total: 11 máquinas cadastradas</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;">11 máquinas ativas</span>
         </div>
         <div class="machines-list" id="machinesList">
           <!-- Gerado via JavaScript -->
         </div>
 
-        <!-- TABELA DE VENDAS POR VALOR (BAGS) -->
+        <!-- TABELA DE VENDAS POR VALOR (BAGS REAIS DO ONEBOSS) -->
         <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px;">
           <div class="section-title">
-            <span>💰 Bags Vendidas por Preço (Conferência de Caixa)</span>
+            <span>💰 Bags Vendidas por Preço (OneBoss Oficial)</span>
             <span id="badgeBagsSum" style="font-size: 12px; background: #0b132b; padding: 3px 8px; border-radius: 4px; color: #38bdf8; font-weight: 700;">Total: 0 Bags</span>
           </div>
           <table class="price-table">
             <thead>
               <tr>
-                <th>Tipo de Venda</th>
+                <th>Tipo de Venda (OneBoss)</th>
                 <th style="text-align: center;">Qtd Vendida</th>
                 <th style="text-align: right;">Subtotal (R$)</th>
               </tr>
@@ -221,10 +219,10 @@
           </div>
         </div>
 
-        <!-- RESUMO & TABELA EDITÁVEL DE PREÇOS DOS PRODUTOS -->
+        <!-- TABELA OFICIAL DE PREÇOS DOS PRODUTOS DO ONEBOSS -->
         <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-top: 20px;">
           <div class="section-title">
-            <span>🏷️ Tabela de Preços dos Produtos (Editável)</span>
+            <span>🏷️ Tabela OneBoss (Produtos Ativos)</span>
             <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="resetarPrecosPadrao()">Resetar</button>
           </div>
           <div id="prodPricesEditor" style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
@@ -276,25 +274,22 @@
   <script>
     const MACHINES = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G8', 'G10', 'G11', 'G12', 'G13'];
 
-    // DEFINIÇÃO COMPLETA DOS PRODUTOS OFICIAIS PROTECBAG
+    // DEFINIÇÃO 100% AUDITADA DO ONEBOSS (APENAS O QUE EXISTE)
     const PROD_DEFINITIONS = [
-      { id: 'latao',   name: '025 - TSA Chave (Latão)',       waName: 'LATAO',            defaultPrice: 80.00, primary: true },
-      { id: 'segredo', name: '2031 - Cadeado Segredo',         waName: 'SEGREDO',          defaultPrice: 90.00, primary: true },
-      { id: 'tsa',     name: '036 - Cadeado TSA',             waName: 'TSA',              defaultPrice: 110.00, primary: true },
-      { id: 'tag',     name: '016 - Tag Mala (Identificador)', waName: 'TAG',              defaultPrice: 65.00, primary: true },
-      { id: 'tagloc',  name: '5202 - Tag Localização Digital', waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00, primary: true },
-      { id: 'adapt',   name: '100 - Adaptador Internacional',  waName: 'ADAPTADOR',        defaultPrice: 85.00, primary: true },
-      { id: 'ziplock', name: '400 - Zip Lock',                 waName: 'ZIPLOCK',          defaultPrice: 10.00, primary: true },
-      { id: 'cabo',    name: 'Cabo de Aço (Especial)',         waName: 'CABO DE ACO',      defaultPrice: 130.00, primary: false },
-      { id: 'cinta',   name: 'Cinta Bag (Especial)',           waName: 'CINTA',            defaultPrice: 70.00, primary: false },
-      { id: 'tagseg',  name: 'Tag Seguro (Antiga)',            waName: 'TAG SEGURO',       defaultPrice: 100.00, primary: false },
-      { id: 'aero',    name: '5199 - Aerobag (Especial)',      waName: 'AEROBAG',          defaultPrice: 0.00, primary: true }
+      { id: 'latao',   code: '025',  name: '025 - TSA Chave (Latão)',       waName: 'LATAO',            defaultPrice: 80.00 },
+      { id: 'segredo', code: '2031', name: '2031 - Cadeado Segredo',         waName: 'SEGREDO',          defaultPrice: 90.00 },
+      { id: 'tsa',     code: '036',  name: '036 - Cadeado TSA',             waName: 'TSA',              defaultPrice: 110.00 },
+      { id: 'tag',     code: '016',  name: '016 - Tag Mala (Identificador)', waName: 'TAG',              defaultPrice: 65.00 },
+      { id: 'tagloc',  code: '5202', name: '5202 - Tag Localização Digital', waName: 'TAG LOCALIZACAO',  defaultPrice: 60.00 },
+      { id: 'adapt',   code: '100',  name: '100 - Adaptador Internacional',  waName: 'ADAPTADOR',        defaultPrice: 85.00 },
+      { id: 'ziplock', code: '400',  name: '400 - Zip Lock',                 waName: 'ZIPLOCK',          defaultPrice: 10.00 },
+      { id: 'aero',    code: '5199', name: '5199 - Aerobag (Especial)',      waName: 'AEROBAG',          defaultPrice: 0.00 }
     ];
 
-    // CARREGAR PREÇOS SALVOS OU PADRÃO
+    // PREÇOS SALVOS OU PADRÃO DO ONEBOSS
     let PROD_PRICES = {};
     function initPrices() {
-      const savedPrices = localStorage.getItem('protecbag_prod_prices_v2');
+      const savedPrices = localStorage.getItem('protecbag_oneboss_prices_v1');
       if (savedPrices) {
         try {
           PROD_PRICES = JSON.parse(savedPrices);
@@ -311,11 +306,11 @@
     initPrices();
 
     function savePrices() {
-      localStorage.setItem('protecbag_prod_prices_v2', JSON.stringify(PROD_PRICES));
+      localStorage.setItem('protecbag_oneboss_prices_v1', JSON.stringify(PROD_PRICES));
     }
 
     function resetarPrecosPadrao() {
-      if (confirm('Restaurar todos os preços para os valores oficiais padrão?')) {
+      if (confirm('Restaurar todos os preços para a tabela oficial do OneBoss?')) {
         PROD_DEFINITIONS.forEach(p => {
           PROD_PRICES[p.id] = p.defaultPrice;
         });
@@ -323,20 +318,20 @@
         renderPricesEditor();
         renderMachinesList();
         recalc();
-        showToast('Preços restaurados!');
+        showToast('Preços OneBoss restaurados!');
       }
     }
 
+    // PREÇOS REAIS DE MALAS NO ONEBOSS (SEM ITENS OBSOLETOS)
     const PRICES = [
-      { key: '199', label: 'BAG R$ 199,00', price: 199 },
-      { key: '149', label: 'BAG R$ 149,00', price: 149 },
-      { key: '129', label: 'BAG R$ 129,00', price: 129 },
-      { key: '90',  label: 'BAG R$ 90,00',  price: 90 },
-      { key: '179', label: 'BAG R$ 179,00', price: 179 },
-      { key: '99',  label: 'BAG R$ 99,00',  price: 99 },
-      { key: '109', label: 'BAG R$ 109,00', price: 109 },
-      { key: '259', label: 'BAG R$ 259,00', price: 259 },
-      { key: 'cort', label: 'CORTESIA',      price: 0 }
+      { key: '199', label: 'BAG R$ 199,00 (Aerobag)',       price: 199 },
+      { key: '179', label: 'BAG R$ 179,00 (Aerobag Desc.)', price: 179 },
+      { key: '149', label: 'BAG R$ 149,00 (Premium)',       price: 149 },
+      { key: '129', label: 'BAG R$ 129,00 (Premium Desc.)', price: 129 },
+      { key: '109', label: 'BAG R$ 109,00 (Desconto Líder)',price: 109 },
+      { key: '90',  label: 'BAG R$ 90,00  (Lacre Líder)',   price: 90 },
+      { key: '60',  label: 'BAG R$ 60,00  (Lacre Plástico)',price: 60 },
+      { key: 'cort',label: 'CORTESIA (Apoio / Reembalar)',  price: 0 }
     ];
 
     let defaultShifts = {
@@ -365,7 +360,7 @@
     };
 
     let currentShift = 'A';
-    let rawStored = localStorage.getItem('fechamento_oficial_data_v3');
+    let rawStored = localStorage.getItem('fechamento_oneboss_clean_v1');
     let appData = rawStored ? JSON.parse(rawStored) : null;
     if (!appData || !appData.shifts || !appData.shifts.A || Object.keys(appData.shifts.A.machines).length === 0) {
       appData = {
@@ -395,7 +390,7 @@
       const container = document.getElementById('prodPricesEditor');
       container.innerHTML = '';
       PROD_DEFINITIONS.forEach(p => {
-        if (p.id === 'aero') return; // Aerobag sem preço
+        if (p.id === 'aero') return; // Aerobag sem preço adicional
         const div = document.createElement('div');
         div.className = 'price-edit-row';
         div.innerHTML = `
@@ -426,63 +421,40 @@
         div.className = 'machine-row';
         div.id = `card_${m}`;
 
-        // Montar pills primárias
-        let pillsHtml = `
+        // Linha com APENAS os 8 produtos reais
+        const pillsHtml = `
           <span style="font-size: 11px; font-weight: 800; color: #94a3b8; margin-right: 2px;">PRODUTOS:</span>
           <div class="prod-pill">
-            <label>AEROBAG</label>
+            <label title="Contagem de Aerobag">AEROBAG</label>
             <input type="number" id="p_aero_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.latao}">TSA CHAVE <span class="p-price">${PROD_PRICES.latao}</span></label>
+            <label title="025 - R$ ${PROD_PRICES.latao}">TSA CHAVE <span class="p-price">${PROD_PRICES.latao}</span></label>
             <input type="number" id="p_latao_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.segredo}">SEGREDO <span class="p-price">${PROD_PRICES.segredo}</span></label>
+            <label title="2031 - R$ ${PROD_PRICES.segredo}">SEGREDO <span class="p-price">${PROD_PRICES.segredo}</span></label>
             <input type="number" id="p_segredo_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.tsa}">TSA <span class="p-price">${PROD_PRICES.tsa}</span></label>
+            <label title="036 - R$ ${PROD_PRICES.tsa}">TSA <span class="p-price">${PROD_PRICES.tsa}</span></label>
             <input type="number" id="p_tsa_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.tag}">TAG MALA <span class="p-price">${PROD_PRICES.tag}</span></label>
+            <label title="016 - R$ ${PROD_PRICES.tag}">TAG MALA <span class="p-price">${PROD_PRICES.tag}</span></label>
             <input type="number" id="p_tag_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.tagloc}">TAG LOC. <span class="p-price">${PROD_PRICES.tagloc}</span></label>
+            <label title="5202 - R$ ${PROD_PRICES.tagloc}">TAG LOC. <span class="p-price">${PROD_PRICES.tagloc}</span></label>
             <input type="number" id="p_tagloc_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.adapt}">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
+            <label title="100 - R$ ${PROD_PRICES.adapt}">ADAPT. <span class="p-price">${PROD_PRICES.adapt}</span></label>
             <input type="number" id="p_adapt_${m}" placeholder="0" min="0" oninput="recalc()">
           </div>
           <div class="prod-pill">
-            <label title="R$ ${PROD_PRICES.ziplock}">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
+            <label title="400 - R$ ${PROD_PRICES.ziplock}">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
             <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()">
-          </div>
-          <button class="btn btn-outline" style="padding: 2px 6px; font-size: 10px; border-radius: 4px;" onclick="toggleMoreProds('${m}')">+ Outros</button>
-        `;
-
-        // Caixa expansível para outros produtos
-        let moreHtml = `
-          <div class="more-prods-box" id="more_box_${m}" style="display: none;">
-            <div class="prod-pill">
-              <label title="R$ ${PROD_PRICES.cabo}">CABO AÇO <span class="p-price">${PROD_PRICES.cabo}</span></label>
-              <input type="number" id="p_cabo_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label title="R$ ${PROD_PRICES.cinta}">CINTA <span class="p-price">${PROD_PRICES.cinta}</span></label>
-              <input type="number" id="p_cinta_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label title="R$ ${PROD_PRICES.ziplock}">ZIPLOCK <span class="p-price">${PROD_PRICES.ziplock}</span></label>
-              <input type="number" id="p_ziplock_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
-            <div class="prod-pill">
-              <label title="R$ ${PROD_PRICES.tagseg}">TAG SEGURO <span class="p-price">${PROD_PRICES.tagseg}</span></label>
-              <input type="number" id="p_tagseg_${m}" placeholder="0" min="0" oninput="recalc()">
-            </div>
           </div>
         `;
 
@@ -510,10 +482,9 @@
             </div>
           </div>
 
-          <!-- LINHA 3: PRODUTOS NA MESMA LINHA DA MÁQUINA -->
+          <!-- LINHA 3: PRODUTOS OFICIAIS NA MESMA LINHA -->
           <div class="machine-prods-row">
             ${pillsHtml}
-            ${moreHtml}
           </div>
 
           <!-- PREVIEW EM TEXTO DA MÁQUINA -->
@@ -526,11 +497,6 @@
     function toggleRolo2(m) {
       const box = document.getElementById(`rolo2_box_${m}`);
       box.style.display = box.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function toggleMoreProds(m) {
-      const box = document.getElementById(`more_box_${m}`);
-      box.style.display = box.style.display === 'none' ? 'flex' : 'none';
     }
 
     function renderPriceTable() {
@@ -577,7 +543,7 @@
         }
         totalBagsMachines += bTot;
 
-        // Produtos
+        // Produtos reais do OneBoss
         const getProdQty = (id) => parseInt(document.getElementById(`p_${id}_${m}`)?.value) || 0;
         
         const aero = getProdQty('aero');
@@ -587,18 +553,9 @@
         const tag = getProdQty('tag');
         const tagloc = getProdQty('tagloc');
         const adapt = getProdQty('adapt');
-        const cabo = getProdQty('cabo');
-        const cinta = getProdQty('cinta');
         const ziplock = getProdQty('ziplock');
-        const tagseg = getProdQty('tagseg');
 
-        // Se houver algum dos produtos secundários preenchidos, abrir o box
-        if (cabo > 0 || cinta > 0 || ziplock > 0 || tagseg > 0) {
-          const mBox = document.getElementById(`more_box_${m}`);
-          if (mBox) mBox.style.display = 'flex';
-        }
-
-        const pCount = latao + segredo + tsa + tag + tagloc + adapt + cabo + cinta + ziplock + tagseg;
+        const pCount = latao + segredo + tsa + tag + tagloc + adapt + ziplock;
         totalProdutosCount += pCount;
 
         const pVal = (latao * (PROD_PRICES.latao || 0)) +
@@ -607,10 +564,7 @@
                      (tag * (PROD_PRICES.tag || 0)) +
                      (tagloc * (PROD_PRICES.tagloc || 0)) +
                      (adapt * (PROD_PRICES.adapt || 0)) +
-                     (cabo * (PROD_PRICES.cabo || 0)) +
-                     (cinta * (PROD_PRICES.cinta || 0)) +
-                     (ziplock * (PROD_PRICES.ziplock || 0)) +
-                     (tagseg * (PROD_PRICES.tagseg || 0));
+                     (ziplock * (PROD_PRICES.ziplock || 0));
         totalProdutosValor += pVal;
 
         const card = document.getElementById(`card_${m}`);
@@ -633,10 +587,7 @@
           if (tag > 0) mText += `${tag} TAG\n`;
           if (tagloc > 0) mText += `${tagloc} TAG LOCALIZACAO\n`;
           if (adapt > 0) mText += `${adapt} ADAPTADOR\n`;
-          if (cabo > 0) mText += `${cabo} CABO DE ACO\n`;
-          if (cinta > 0) mText += `${cinta} CINTA\n`;
           if (ziplock > 0) mText += `${ziplock} ZIPLOCK\n`;
-          if (tagseg > 0) mText += `${tagseg} TAG SEGURO\n`;
 
           if (previewEl) previewEl.innerText = mText.trim();
           waMachinesText += mText + '\n';
@@ -719,11 +670,11 @@
       saveData();
     }
 
+    const PROD_KEYS = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'ziplock'];
+
     function saveData() {
       appData.date = document.getElementById('dateInput').value;
       const s = appData.shifts[currentShift] || { machines: {}, prices: {}, dinheiro: 0 };
-      
-      const prodKeys = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'cabo', 'cinta', 'ziplock', 'tagseg'];
 
       MACHINES.forEach(m => {
         const mM = {
@@ -733,7 +684,7 @@
           ini2: document.getElementById(`ini2_${m}`)?.value || '',
           fim2: document.getElementById(`fim2_${m}`)?.value || ''
         };
-        prodKeys.forEach(k => {
+        PROD_KEYS.forEach(k => {
           mM[k] = document.getElementById(`p_${k}_${m}`)?.value || '';
         });
         s.machines[m] = mM;
@@ -746,12 +697,11 @@
       s.dinheiro = document.getElementById('inputDinheiro').value;
 
       appData.shifts[currentShift] = s;
-      localStorage.setItem('fechamento_oficial_data_v3', JSON.stringify(appData));
+      localStorage.setItem('fechamento_oneboss_clean_v1', JSON.stringify(appData));
     }
 
     function loadShift(shift) {
       const s = appData.shifts[shift] || { machines: {}, prices: {}, dinheiro: '' };
-      const prodKeys = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'cabo', 'cinta', 'ziplock', 'tagseg'];
 
       MACHINES.forEach(m => {
         const mData = s.machines[m] || {};
@@ -761,7 +711,7 @@
         if (document.getElementById(`ini2_${m}`)) document.getElementById(`ini2_${m}`).value = mData.ini2 || '';
         if (document.getElementById(`fim2_${m}`)) document.getElementById(`fim2_${m}`).value = mData.fim2 || '';
 
-        prodKeys.forEach(k => {
+        PROD_KEYS.forEach(k => {
           const el = document.getElementById(`p_${k}_${m}`);
           if (el) el.value = mData[k] || '';
         });
@@ -769,10 +719,6 @@
         if (mData.ini2 || mData.fim2) {
           const rBox = document.getElementById(`rolo2_box_${m}`);
           if (rBox) rBox.style.display = 'block';
-        }
-        if (mData.cabo || mData.cinta || mData.ziplock || mData.tagseg) {
-          const mBox = document.getElementById(`more_box_${m}`);
-          if (mBox) mBox.style.display = 'flex';
         }
       });
 
@@ -877,23 +823,14 @@
           const tagLocM = l.match(/(\d+)\s*TAG\s*LOCALIZA/i);
           if (tagLocM) document.getElementById(`p_tagloc_${currentMachine}`).value = tagLocM[1];
 
-          const tagM = l.match(/(\d+)\s*TAG(?!\s*LOCALIZA|\s*SEGURO)/i);
+          const tagM = l.match(/(\d+)\s*TAG(?!\s*LOCALIZA)/i);
           if (tagM) document.getElementById(`p_tag_${currentMachine}`).value = tagM[1];
 
           const adaptM = l.match(/(\d+)\s*ADAPT/i);
           if (adaptM) document.getElementById(`p_adapt_${currentMachine}`).value = adaptM[1];
 
-          const caboM = l.match(/(\d+)\s*CABO/i);
-          if (caboM) document.getElementById(`p_cabo_${currentMachine}`).value = caboM[1];
-
-          const cintaM = l.match(/(\d+)\s*CINTA/i);
-          if (cintaM) document.getElementById(`p_cinta_${currentMachine}`).value = cintaM[1];
-
           const zipM = l.match(/(\d+)\s*ZIP/i);
           if (zipM) document.getElementById(`p_ziplock_${currentMachine}`).value = zipM[1];
-
-          const tagSegM = l.match(/(\d+)\s*TAG\s*SEGURO/i);
-          if (tagSegM) document.getElementById(`p_tagseg_${currentMachine}`).value = tagSegM[1];
         }
 
         const priceMatch = l.match(/BAG\s*R\$\s*([\d,\.]+)\s*-\s*(\d+)/i);
@@ -920,13 +857,12 @@
     }
 
     function limparTurnoSilencioso() {
-      const prodKeys = ['aero', 'latao', 'segredo', 'tsa', 'tag', 'tagloc', 'adapt', 'cabo', 'cinta', 'ziplock', 'tagseg'];
       MACHINES.forEach(m => {
         ['op', 'ini1', 'fim1', 'ini2', 'fim2'].forEach(f => {
           const el = document.getElementById(`${f}_${m}`);
           if (el) el.value = '';
         });
-        prodKeys.forEach(k => {
+        PROD_KEYS.forEach(k => {
           const el = document.getElementById(`p_${k}_${m}`);
           if (el) el.value = '';
         });
@@ -953,7 +889,7 @@
         ['FECHAMENTO DE CAIXA PROTECBAG GRU - TURNO ' + currentShift],
         ['Data:', rawDate],
         [],
-        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG', 'TSA CHAVE', 'SEGREDO', 'TSA', 'TAG MALA', 'TAG LOC', 'ADAPTADOR', 'CABO AÇO', 'CINTA', 'ZIPLOCK', 'TAG SEGURO']
+        ['MÁQUINA', 'OPERADOR', 'INICIAL 1', 'FINAL 1', 'BAGS 1', 'INICIAL 2', 'FINAL 2', 'BAGS 2', 'TOTAL BAGS', 'AEROBAG', 'TSA CHAVE (80)', 'SEGREDO (90)', 'TSA (110)', 'TAG MALA (65)', 'TAG LOC (60)', 'ADAPTADOR (85)', 'ZIPLOCK (10)']
       ];
 
       MACHINES.forEach(m => {
@@ -969,7 +905,7 @@
         const getP = id => document.getElementById(`p_${id}_${m}`)?.value || '';
 
         if (bTot > 0 || op) {
-          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, getP('aero'), getP('latao'), getP('segredo'), getP('tsa'), getP('tag'), getP('tagloc'), getP('adapt'), getP('cabo'), getP('cinta'), getP('ziplock'), getP('tagseg')]);
+          rows.push([m, op, ini1, fim1, b1, ini2, fim2, b2, bTot, getP('aero'), getP('latao'), getP('segredo'), getP('tsa'), getP('tag'), getP('tagloc'), getP('adapt'), getP('ziplock')]);
         }
       });
 
