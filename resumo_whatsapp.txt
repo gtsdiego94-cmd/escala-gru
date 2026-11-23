@@ -1,35 +1,35 @@
 📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*
-📅 *Data:* 23/11/2026 (23 dias de operação)
+📅 *Data:* 23/11/2026 (5 dias de operação)
 ━━━━━━━━━━━━━━━━━━━━━
 
 *🌅 TURNO A (Manhã)*
-💰 Fat: R$ 380.246,00 | 🧳 Malas: 2221
-🥇 *DALTON DUARTE*: R$ 46.759,00 (278 malas)
-🥈 *EDUARDO LIMA*: R$ 38.139,00 (210 malas)
-🥉 *RICARDO LIMA*: R$ 31.376,00 (174 malas)
-▫️ *LUCAS TRINDADE*: R$ 28.081,00 (176 malas)
-▫️ *RODRIGO SILVA*: R$ 28.035,00 (177 malas)
+💰 Fat: R$ 79.416,00 | 🧳 Malas: 454
+🥇 *DALTON DUARTE*: R$ 11.104,00 (62 malas)
+🥈 *EDUARDO LIMA*: R$ 9.308,00 (49 malas)
+🥉 *LUCAS TRINDADE*: R$ 6.835,00 (40 malas)
+▫️ *PEDRO HENRIQUE DA SILVA SANTOS*: R$ 6.438,00 (32 malas)
+▫️ *JOAO FERREIRA*: R$ 6.199,00 (34 malas)
 
 *☀️ TURNO B (Tarde)*
-💰 Fat: R$ 575.255,00 | 🧳 Malas: 3485
-🥇 *GABRIEL GONCALVES*: R$ 50.992,00 (327 malas)
-🥈 *DAVI ARAUJO*: R$ 50.973,00 (298 malas)
-🥉 *HENRIQUE PEDRO*: R$ 49.588,00 (290 malas)
-▫️ *WESLEY MATHEUS*: R$ 49.400,00 (285 malas)
-▫️ *JOSE MACEDO*: R$ 45.951,00 (269 malas)
+💰 Fat: R$ 100.072,00 | 🧳 Malas: 625
+🥇 *VITOR VIANA*: R$ 14.103,00 (96 malas)
+🥈 *ERIC VINICIUS*: R$ 12.651,00 (76 malas)
+🥉 *RONI OLIVEIRA*: R$ 10.167,00 (54 malas)
+▫️ *HENRIQUE PEDRO*: R$ 9.801,00 (63 malas)
+▫️ *GABRIEL GONCALVES*: R$ 9.673,00 (61 malas)
 
 *🌙 TURNO D (Madrugada)*
-💰 Fat: R$ 94.002,00 | 🧳 Malas: 563
-🥇 *ELTON GIMENESD2*: R$ 15.329,00 (93 malas)
-🥈 *ISRAEL LUCAS*: R$ 13.939,00 (81 malas)
-🥉 *WELLINGTON FERREIRA*: R$ 12.546,00 (89 malas)
-▫️ *GABRIEL DONADELLO*: R$ 10.604,00 (61 malas)
-▫️ *GABRIEL DONADELLOD2*: R$ 10.445,00 (58 malas)
+💰 Fat: R$ 16.921,00 | 🧳 Malas: 102
+🥇 *ELTON GIMENESD2*: R$ 4.049,00 (22 malas)
+🥈 *ISRAEL LUCAS*: R$ 3.266,00 (20 malas)
+🥉 *WELLINGTON FERREIRA*: R$ 2.387,00 (17 malas)
+▫️ *ISRAEL LUCASD2*: R$ 2.287,00 (13 malas)
+▫️ *WELLINGTON FERREIRAD2*: R$ 2.028,00 (14 malas)
 
 ━━━━━━━━━━━━━━━━━━━━━
 🎯 *TOTAL GERAL ACUMULADO*
-💵 *Faturamento Total:* R$ 1.049.503,00
-🧳 *Total de Malas:* 6269
-💳 *Lançamentos:* 6861
+💵 *Faturamento Total:* R$ 196.409,00
+🧳 *Total de Malas:* 1181
+💳 *Lançamentos:* 1303
 
 🚀 *Equipe Protecbag GRU*
