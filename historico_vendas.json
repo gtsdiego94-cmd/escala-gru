@@ -4,100 +4,76 @@
     "mesNome": "Novembro",
     "ano": 2026,
     "periodo": "Novembro / 2026",
-    "faturamentoTotal": 1148567,
-    "totalMalas": 6853,
-    "totalLinhas": 7509,
-    "diasOperacao": 25,
+    "faturamentoTotal": 1049503,
+    "totalMalas": 6269,
+    "totalLinhas": 6861,
+    "diasOperacao": 23,
     "totalDiasMes": 30,
     "turnos": {
       "A": {
-        "fat": 413837.0,
-        "malas": 2403
+        "fat": 380246.0,
+        "malas": 2221
       },
       "B": {
-        "fat": 635653.0,
-        "malas": 3858
+        "fat": 575255.0,
+        "malas": 3485
       },
       "D": {
-        "fat": 99077.0,
-        "malas": 592
+        "fat": 94002.0,
+        "malas": 563
       }
     },
     "colabs": [
       {
         "pos": 1,
-        "nome": "rafael messias",
+        "nome": "gabriel goncalves",
         "turno": "B",
-        "fat": 61152,
-        "malas": 356,
-        "media": 171.78
+        "fat": 50992,
+        "malas": 327,
+        "media": 155.94
       },
       {
         "pos": 2,
         "nome": "Davi Araujo",
         "turno": "B",
-        "fat": 57086,
-        "malas": 330,
-        "media": 172.99
+        "fat": 50973,
+        "malas": 298,
+        "media": 171.05
       },
       {
         "pos": 3,
-        "nome": "Jose Carlos Guilherme",
+        "nome": "Henrique Pedro",
         "turno": "B",
-        "fat": 57050,
-        "malas": 345,
-        "media": 165.36
+        "fat": 49588,
+        "malas": 290,
+        "media": 170.99
       },
       {
         "pos": 4,
-        "nome": "gabriel goncalves",
+        "nome": "Wesley Matheus",
         "turno": "B",
-        "fat": 55080,
-        "malas": 354,
-        "media": 155.59
+        "fat": 49400,
+        "malas": 285,
+        "media": 173.33
       },
       {
         "pos": 5,
-        "nome": "Henrique Pedro",
-        "turno": "B",
-        "fat": 51656,
-        "malas": 317,
-        "media": 162.95
+        "nome": "Dalton Duarte",
+        "turno": "A",
+        "fat": 46759,
+        "malas": 278,
+        "media": 168.2
       },
       {
         "pos": 6,
-        "nome": "Dalton Duarte",
-        "turno": "A",
-        "fat": 51524,
-        "malas": 303,
-        "media": 170.05
+        "nome": "jose macedo",
+        "turno": "B",
+        "fat": 45951,
+        "malas": 269,
+        "media": 170.82
       },
       {
         "pos": 7,
-        "nome": "Wesley Matheus",
-        "turno": "B",
-        "fat": 50374,
-        "malas": 294,
-        "media": 171.34
-      },
-      {
-        "pos": 8,
-        "nome": "jose macedo",
-        "turno": "B",
-        "fat": 49508,
-        "malas": 289,
-        "media": 171.31
-      },
-      {
-        "pos": 9,
-        "nome": "kaique mendes",
-        "turno": "B",
-        "fat": 47262,
-        "malas": 262,
-        "media": 180.39
-      },
-      {
-        "pos": 10,
         "nome": "vitor viana",
         "turno": "B",
         "fat": 45900,
@@ -105,15 +81,15 @@
         "media": 155.07
       },
       {
-        "pos": 11,
-        "nome": "mihael henrique",
+        "pos": 8,
+        "nome": "Jose Carlos Guilherme",
         "turno": "B",
-        "fat": 44601,
-        "malas": 251,
-        "media": 177.69
+        "fat": 45138,
+        "malas": 284,
+        "media": 158.94
       },
       {
-        "pos": 12,
+        "pos": 9,
         "nome": "roni oliveira",
         "turno": "B",
         "fat": 42373,
@@ -121,15 +97,23 @@
         "media": 175.82
       },
       {
-        "pos": 13,
-        "nome": "eduardo lima",
-        "turno": "A",
-        "fat": 41990,
-        "malas": 229,
-        "media": 183.36
+        "pos": 10,
+        "nome": "mihael henrique",
+        "turno": "B",
+        "fat": 41898,
+        "malas": 233,
+        "media": 179.82
       },
       {
-        "pos": 14,
+        "pos": 11,
+        "nome": "rafael messias",
+        "turno": "B",
+        "fat": 40951,
+        "malas": 228,
+        "media": 179.61
+      },
+      {
+        "pos": 12,
         "nome": "eric vinicius",
         "turno": "B",
         "fat": 40838,
@@ -137,47 +121,47 @@
         "media": 160.15
       },
       {
+        "pos": 13,
+        "nome": "kaique mendes",
+        "turno": "B",
+        "fat": 40021,
+        "malas": 223,
+        "media": 179.47
+      },
+      {
+        "pos": 14,
+        "nome": "eduardo lima",
+        "turno": "A",
+        "fat": 38139,
+        "malas": 210,
+        "media": 181.61
+      },
+      {
         "pos": 15,
         "nome": "ricardo lima",
         "turno": "A",
-        "fat": 35972,
-        "malas": 198,
-        "media": 181.68
+        "fat": 31376,
+        "malas": 174,
+        "media": 180.32
       },
       {
         "pos": 16,
-        "nome": "danilo pereira",
+        "nome": "lucas trindade",
         "turno": "A",
-        "fat": 30685,
-        "malas": 172,
-        "media": 178.4
+        "fat": 28081,
+        "malas": 176,
+        "media": 159.55
       },
       {
         "pos": 17,
-        "nome": "Victor Costa Domene dos Santos",
+        "nome": "rodrigo silva",
         "turno": "A",
-        "fat": 30447,
-        "malas": 175,
-        "media": 173.98
+        "fat": 28035,
+        "malas": 177,
+        "media": 158.39
       },
       {
         "pos": 18,
-        "nome": "rodrigo silva",
-        "turno": "A",
-        "fat": 29338,
-        "malas": 184,
-        "media": 159.45
-      },
-      {
-        "pos": 19,
-        "nome": "lucas trindade",
-        "turno": "A",
-        "fat": 27932,
-        "malas": 175,
-        "media": 159.61
-      },
-      {
-        "pos": 20,
         "nome": "matheus senhorinho",
         "turno": "A",
         "fat": 27106,
@@ -185,31 +169,39 @@
         "media": 166.29
       },
       {
-        "pos": 21,
-        "nome": "joao ferreira",
+        "pos": 19,
+        "nome": "danilo pereira",
         "turno": "A",
-        "fat": 24878,
-        "malas": 146,
-        "media": 170.4
+        "fat": 26522,
+        "malas": 150,
+        "media": 176.81
+      },
+      {
+        "pos": 20,
+        "nome": "Victor Costa Domene dos Santos",
+        "turno": "A",
+        "fat": 26225,
+        "malas": 151,
+        "media": 173.68
+      },
+      {
+        "pos": 21,
+        "nome": "Pedro Henrique da Silva Santos",
+        "turno": "A",
+        "fat": 23336,
+        "malas": 120,
+        "media": 194.47
       },
       {
         "pos": 22,
         "nome": "wilson",
         "turno": "A",
-        "fat": 24676,
-        "malas": 141,
-        "media": 175.01
+        "fat": 23034,
+        "malas": 132,
+        "media": 174.5
       },
       {
         "pos": 23,
-        "nome": "Pedro Henrique da Silva Santos",
-        "turno": "A",
-        "fat": 24331,
-        "malas": 125,
-        "media": 194.65
-      },
-      {
-        "pos": 24,
         "nome": "Diego Pereira",
         "turno": "B",
         "fat": 22937,
@@ -217,20 +209,28 @@
         "media": 165.01
       },
       {
+        "pos": 24,
+        "nome": "joao ferreira",
+        "turno": "A",
+        "fat": 22419,
+        "malas": 131,
+        "media": 171.14
+      },
+      {
         "pos": 25,
         "nome": "kaue amorim",
         "turno": "A",
-        "fat": 21496,
-        "malas": 116,
-        "media": 185.31
+        "fat": 20153,
+        "malas": 109,
+        "media": 184.89
       },
       {
         "pos": 26,
         "nome": "kauan geraldo",
         "turno": "A",
-        "fat": 19917,
+        "fat": 19832,
         "malas": 116,
-        "media": 171.7
+        "media": 170.97
       },
       {
         "pos": 27,
@@ -252,28 +252,12 @@
         "pos": 29,
         "nome": "israel lucas",
         "turno": "D",
-        "fat": 14119,
-        "malas": 84,
-        "media": 168.08
+        "fat": 13939,
+        "malas": 81,
+        "media": 172.09
       },
       {
         "pos": 30,
-        "nome": "jose ramos",
-        "turno": "A",
-        "fat": 13355,
-        "malas": 132,
-        "media": 101.17
-      },
-      {
-        "pos": 31,
-        "nome": "gabriel donadello",
-        "turno": "D",
-        "fat": 12644,
-        "malas": 71,
-        "media": 178.08
-      },
-      {
-        "pos": 32,
         "nome": "wellington ferreira",
         "turno": "D",
         "fat": 12546,
@@ -281,28 +265,44 @@
         "media": 140.97
       },
       {
-        "pos": 33,
+        "pos": 31,
+        "nome": "gabriel donadello",
+        "turno": "D",
+        "fat": 10604,
+        "malas": 61,
+        "media": 173.84
+      },
+      {
+        "pos": 32,
         "nome": "gabriel donadellod2",
         "turno": "D",
-        "fat": 10644,
-        "malas": 59,
-        "media": 180.41
+        "fat": 10445,
+        "malas": 58,
+        "media": 180.09
+      },
+      {
+        "pos": 33,
+        "nome": "elton gimenes",
+        "turno": "D",
+        "fat": 9373,
+        "malas": 47,
+        "media": 199.43
       },
       {
         "pos": 34,
-        "nome": "elton gimenes",
-        "turno": "D",
-        "fat": 10616,
-        "malas": 55,
-        "media": 193.02
-      },
-      {
-        "pos": 35,
         "nome": "wellington ferreirad2",
         "turno": "D",
         "fat": 8401,
         "malas": 55,
         "media": 152.75
+      },
+      {
+        "pos": 35,
+        "nome": "jose ramos",
+        "turno": "A",
+        "fat": 7736,
+        "malas": 101,
+        "media": 76.59
       },
       {
         "pos": 36,
@@ -316,9 +316,9 @@
         "pos": 37,
         "nome": "dylan casagrande",
         "turno": "B",
-        "fat": 5647,
-        "malas": 52,
-        "media": 108.6
+        "fat": 4106,
+        "malas": 41,
+        "media": 100.15
       },
       {
         "pos": 38,
@@ -343,26 +343,10 @@
         "fat": 149,
         "malas": 1,
         "media": 149.0
-      },
-      {
-        "pos": 41,
-        "nome": "willy silvad2",
-        "turno": "D",
-        "fat": 110,
-        "malas": 0,
-        "media": 0.0
-      },
-      {
-        "pos": 42,
-        "nome": "Douglas Amorim",
-        "turno": "A",
-        "fat": 0,
-        "malas": 3,
-        "media": 0.0
       }
     ],
     "dataTurno": "23/11/2026",
-    "arquivoNome": "RelatorioMovimentoCaixa 2026-11-23 12-08-12.xlsx",
+    "arquivoNome": "RelatorioMovimentoCaixa 2026-11-23 12-14-09.xlsx",
     "atualizadoEm": "23/11/2026 12:14"
   },
   "2025-11": {
