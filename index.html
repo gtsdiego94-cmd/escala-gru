@@ -181,23 +181,22 @@
     };
   }
 
-  // Dezembro 2026: dia 1 = Terça-feira → índice 1 (0=Seg). Total: 31 dias.
+  // Dezembro 2026: dia 1 = Terça-feira (1=Ter). Total: 31 dias. (14 Colaboradores Oficiais)
   const TURNO_A_DEZ = [
-    {nome:"LUCAS TRINDADE",            dias:["1","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","F","1","1","1","1","1","F","F","F","1"]},
-    {nome:"MATHEUS SENHORINHO",        dias:["1","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","F","1","1","1","F","F","1","1","1","1"]},
-    {nome:"WILSON RAMOS",              dias:["F","1","1","1","F","1","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","1","F","F","1"]},
-    {nome:"RICARDO LIMA",              dias:["F","1","F","1","1","1","1","F","F","1","1","1","F","1","1","F","1","1","1","1","1","F","F","1","1","1","F","1","1","1","F"]},
-    {nome:"DANILO PEREIRA DO SANTOS",  dias:["1","1","F","1","1","1","F","F","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","F","1","1","1","F","1"]},
-    {nome:"KAUAN SANTOS",              dias:["F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","F"]},
-    {nome:"DALTON",                    dias:["F","1","1","1","1","F","1","1","1","F","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1","1","1","1","1","F"]},
-    {nome:"PEDRO",                     dias:["1","1","1","1","F","1","F","F","1","1","F","1","1","1","1","F","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1"]},
-    {nome:"EDUARDO LIMA",              dias:["1","1","1","F","1","1","1","1","F","F","1","1","1","F","F","1","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F"]},
-    {nome:"JOÃO PAULO",                dias:["1","1","F","1","1","1","F","F","1","1","1","1","1","F","F","1","1","1","1","1","1","F","1","1","1","F","1","1","1","1","1"]},
-    {nome:"KAUAN GERALDO SANTOS",      dias:["F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F","1"]},
-    {nome:"JOSE RAMOS",                dias:["F","1","1","1","1","F","1","F","1","1","1","1","1","F","1","1","1","1","1","F","1","1","F","1","1","1","F","F","F","F","1"]},
-    {nome:"KAUE AMORIM",               dias:["1","1","F","1","1","1","1","1","F","1","1","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1","F","F","1","1"]},
-    {nome:"RODRIGO SILVA",             dias:["F","1","1","1","F","1","1","1","1","F","F","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1","1","1","1","F","F"]},
-    {nome:"VICTOR COSTA",              dias:["F","1","F","F","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1","1","F","1","1","1","F","1","1","F","F","1","1"]},
+    {nome:"LUCAS TRINDADE            ", dias:["1","1","1","F","1","1","1","1","1","F","1","1","F","1","1","1","1","1","F","F","1","1","1","1","1","F","F","1","1","1","F"]},
+    {nome:"MATHEUS SENHORINHO        ", dias:["1","1","F","1","F","F","1","1","1","1","F","1","1","1","1","1","F","F","1","1","1","1","1","F","F","1","F","1","1","1","1"]},
+    {nome:"WILSON RAMOS              ", dias:["1","1","1","1","F","F","1","1","1","1","1","F","F","1","1","F","F","1","1","1","F","1","1","1","F","1","1","1","1","1","F"]},
+    {nome:"RICARDO LIMA              ", dias:["F","1","1","1","F","F","F","F","1","1","1","1","1","F","1","1","1","F","1","1","1","F","1","1","1","F","1","1","1","1","1"]},
+    {nome:"DANILO PEREIRA DO SANTOS  ", dias:["1","1","1","1","1","F","F","1","1","F","1","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","F","1","1","1"]},
+    {nome:"KAUAN SANTOS              ", dias:["F","1","1","1","1","F","F","1","1","1","F","1","1","F","F","1","1","1","1","F","1","1","1","1","F","1","1","1","1","F","F"]},
+    {nome:"DALTON                    ", dias:["F","1","1","1","F","F","1","1","F","1","1","1","1","F","1","1","1","F","1","1","1","F","1","1","1","F","F","1","1","1","1"]},
+    {nome:"PEDRO                     ", dias:["1","1","F","1","1","1","1","F","1","1","1","F","F","1","1","1","F","1","1","1","1","1","F","F","1","1","1","1","F","1","1"]},
+    {nome:"EDUARDO LIMA              ", dias:["F","1","1","1","F","F","1","1","1","1","1","1","F","1","1","F","1","1","1","1","1","F","F","1","1","1","1","F","1","1","1"]},
+    {nome:"JOÃO PAULO                ", dias:["1","F","1","1","1","1","1","F","1","1","1","F","F","1","1","1","1","F","1","1","1","1","1","F","F","1","1","1","F","F","1"]},
+    {nome:"KAUAN GERALDO SANTOS      ", dias:["1","F","F","1","1","1","1","1","F","1","1","F","F","1","1","1","F","1","1","1","F","F","1","1","1","1","1","F","1","1","1"]},
+    {nome:"KAUE AMORIM               ", dias:["1","1","1","F","1","1","1","1","F","F","1","1","1","1","F","1","1","1","F","F","1","1","1","F","1","1","1","1","1","F","F"]},
+    {nome:"RODRIGO SILVA             ", dias:["1","1","1","1","1","F","1","1","1","1","F","1","1","1","1","1","F","F","1","1","F","1","1","1","1","F","F","1","1","1","1"]},
+    {nome:"VICTOR COSTA              ", dias:["1","1","F","F","1","1","1","1","1","F","1","1","1","1","F","1","1","1","F","F","1","1","F","1","1","1","1","1","F","1","1"]},
   ];
 
   const MESES_ESCALA = {
@@ -257,7 +256,19 @@
   }
   function getDowNov(d) { return (NOV_OFFSET + d - 1) % 7; }
 
-  function getGruCat(gru, dow) {
+  function getGruCat(gru, dow, isDez) {
+    if (isDez === undefined) {
+      isDez = (typeof activeEscalaKey !== 'undefined' && activeEscalaKey === '2026-12');
+    }
+    // A partir de Dezembro: G2 passa a ser MÉDIA, G10 passa a ser FRACA, G6 e G8 são FORTES
+    if (isDez) {
+      if (gru==="GRU-06"||gru==="GRU-08") return "forte";
+      if (gru==="GRU-02"||gru==="GRU-05") return "media";
+      if (gru==="GRU-01"||gru==="GRU-04"||gru==="GRU-10"||gru==="GRU-13") return "fraca";
+      if (gru==="GRU-11") return "apoio";
+      return "desativada";
+    }
+    // Novembro padrão:
     if (gru==="GRU-06"||gru==="GRU-08") return "forte";
     if (gru==="GRU-02") return GRU02_FORTE.has(dow)?"forte":"media";
     if (gru==="GRU-05"||gru==="GRU-10") return "media";
@@ -266,9 +277,9 @@
     return "desativada";
   }
 
-  function posScore(pos,dow){
+  function posScore(pos, dow, isDez){
     if(pos==="R1"||pos==="R2") return 2;
-    const cat=getGruCat(pos,dow);
+    const cat=getGruCat(pos, dow, isDez);
     if(cat==="forte") return 3; if(cat==="media") return 1; return 0;
   }
 
@@ -281,40 +292,130 @@
   }
 
   function runMonth(turnoData,totalDias,getDow){
+    const isDez = (totalDias === 31);
     const score={};
     turnoData.forEach(e=>score[e.nome]=0);
     const allDays=[];
+
+    // Rastreamento de quinzenas para Dezembro (G6 e G8 pelo menos 1x antes de 15/12 e 1x depois de 15/12)
+    const g6_q1 = {}, g8_q1 = {}, g6_q2 = {}, g8_q2 = {};
+    const lastPos = {};
+    turnoData.forEach(e => {
+      g6_q1[e.nome] = 0; g8_q1[e.nome] = 0;
+      g6_q2[e.nome] = 0; g8_q2[e.nome] = 0;
+      lastPos[e.nome] = null;
+    });
+
     for(let day=1;day<=totalDias;day++){
       const dow=getDow(day);
-      const isGru02Forte=GRU02_FORTE.has(dow);
       const avail=turnoData.filter(e=>e.dias[day-1]==="1");
-      avail.sort((a,b)=>{
-        const diff=score[a.nome]-score[b.nome];
-        if(diff!==0)return diff;
-        return ((nameHash(a.nome) + day * 7) % 23) - ((nameHash(b.nome) + day * 7) % 23);
-      });
-      const strongGrus=isGru02Forte?["GRU-06","GRU-08","GRU-02"]:["GRU-06","GRU-08"];
-      const mediumGrus=isGru02Forte?["GRU-05","GRU-10"]:["GRU-02","GRU-05","GRU-10"];
-      const weakGrus=["GRU-01","GRU-04","GRU-13"];
-      // Desbloqueia GRU-11 a partir do dia 17 (amanhã) ou em Dezembro:
+      const isQ1 = (day <= 15);
       const usaGru11 = (totalDias === 31) || (day >= 17);
-      const positionOrder = usaGru11
-        ? [...strongGrus,"R1","R2",...mediumGrus,...weakGrus,"GRU-11"]
-        : [...strongGrus,"R1","R2",...mediumGrus,...weakGrus];
       const dayResult={postos:{},r1:null,r2:null,apoio:[],availCount:avail.length,gru11Ativa:usaGru11};
       GRUS_ATIVAS.forEach(g=>dayResult.postos[g]=null);
-      avail.forEach((person,i)=>{
-        if(i<positionOrder.length){
-          const pos=positionOrder[i];
-          if(pos==="R1") dayResult.r1=person.nome;
-          else if(pos==="R2") dayResult.r2=person.nome;
-          else dayResult.postos[pos]=person.nome;
-          score[person.nome]+=posScore(pos,dow);
-        } else { dayResult.apoio.push(person.nome); }
-      });
+
+      if (isDez) {
+        // --- MOTOR INTELIGENTE DE DEZEMBRO ---
+        // Regras: G2 é Média (+1), G10 é Fraca (0), G6 e G8 são Fortes (+3)
+        // Regra especial de Quinzena: todo operador presente deve assumir G6 e G8 pelo menos 1x na Q1 e 1x na Q2
+        let remaining = avail.map(e => e.nome);
+
+        function pickTargetOperator(targetGru, countMap) {
+          let pool = remaining.filter(name => lastPos[name] !== targetGru);
+          if (pool.length === 0) pool = remaining.slice();
+
+          // Prioridade 1: Quem AINDA NÃO fez esta máquina nesta quinzena (count === 0)
+          let needing = pool.filter(name => countMap[name] === 0);
+          if (needing.length > 0) {
+            needing.sort((a, b) => {
+              const diff = score[a] - score[b];
+              if (diff !== 0) return diff;
+              return ((nameHash(a) + day * 7) % 23) - ((nameHash(b) + day * 7) % 23);
+            });
+            return needing[0];
+          } else {
+            // Se todos já fizeram, escolhe quem fez menos vezes ou tem menor score
+            pool.sort((a, b) => {
+              const cDiff = countMap[a] - countMap[b];
+              if (cDiff !== 0) return cDiff;
+              const diff = score[a] - score[b];
+              if (diff !== 0) return diff;
+              return ((nameHash(a) + day * 7) % 23) - ((nameHash(b) + day * 7) % 23);
+            });
+            return pool[0];
+          }
+        }
+
+        // 1. Aloca G6 e G8 alternando a prioridade diária para não enviesar
+        const targetPair = (day % 2 === 0)
+          ? [ { gru: "GRU-08", map: isQ1 ? g8_q1 : g8_q2 }, { gru: "GRU-06", map: isQ1 ? g6_q1 : g6_q2 } ]
+          : [ { gru: "GRU-06", map: isQ1 ? g6_q1 : g6_q2 }, { gru: "GRU-08", map: isQ1 ? g8_q1 : g8_q2 } ];
+
+        for (const item of targetPair) {
+          if (remaining.length > 0) {
+            const chosen = pickTargetOperator(item.gru, item.map);
+            dayResult.postos[item.gru] = chosen;
+            item.map[chosen]++;
+            score[chosen] += posScore(item.gru, dow, true);
+            lastPos[chosen] = item.gru;
+            remaining = remaining.filter(n => n !== chosen);
+          }
+        }
+
+        // 2. Ordena os demais operadores disponíveis pelo menor score acumulado
+        remaining.sort((a, b) => {
+          const diff = score[a] - score[b];
+          if (diff !== 0) return diff;
+          return ((nameHash(a) + day * 7) % 23) - ((nameHash(b) + day * 7) % 23);
+        });
+
+        // 3. Ordem dos postos em Dezembro:
+        // R1 (+2), R2 (+2), G02 (+1 Média), G05 (+1 Média), G01 (0 Fraca), G04 (0 Fraca), G10 (0 Fraca), G13 (0 Fraca), G11 (0 Apoio)
+        const postosRestantesDez = ["R1", "R2", "GRU-02", "GRU-05", "GRU-01", "GRU-04", "GRU-10", "GRU-13", "GRU-11"];
+
+        remaining.forEach((personName, idx) => {
+          if (idx < postosRestantesDez.length) {
+            const pos = postosRestantesDez[idx];
+            if (pos === "R1") dayResult.r1 = personName;
+            else if (pos === "R2") dayResult.r2 = personName;
+            else dayResult.postos[pos] = personName;
+            score[personName] += posScore(pos, dow, true);
+            lastPos[personName] = pos;
+          } else {
+            dayResult.apoio.push(personName);
+            lastPos[personName] = "APOIO";
+          }
+        });
+
+      } else {
+        // --- MOTOR DE NOVEMBRO (100% PRESERVADO) ---
+        const isGru02Forte = GRU02_FORTE.has(dow);
+        avail.sort((a,b)=>{
+          const diff=score[a.nome]-score[b.nome];
+          if(diff!==0)return diff;
+          return ((nameHash(a.nome) + day * 7) % 23) - ((nameHash(b.nome) + day * 7) % 23);
+        });
+        const strongGrus=isGru02Forte?["GRU-06","GRU-08","GRU-02"]:["GRU-06","GRU-08"];
+        const mediumGrus=isGru02Forte?["GRU-05","GRU-10"]:["GRU-02","GRU-05","GRU-10"];
+        const weakGrus=["GRU-01","GRU-04","GRU-13"];
+        const positionOrder = usaGru11
+          ? [...strongGrus,"R1","R2",...mediumGrus,...weakGrus,"GRU-11"]
+          : [...strongGrus,"R1","R2",...mediumGrus,...weakGrus];
+
+        avail.forEach((person,i)=>{
+          if(i<positionOrder.length){
+            const pos=positionOrder[i];
+            if(pos==="R1") dayResult.r1=person.nome;
+            else if(pos==="R2") dayResult.r2=person.nome;
+            else dayResult.postos[pos]=person.nome;
+            score[person.nome]+=posScore(pos,dow,false);
+          } else { dayResult.apoio.push(person.nome); }
+        });
+      }
+
       allDays.push(dayResult);
     }
-    return{allDays,score};
+    return{allDays,score,g6_q1,g8_q1,g6_q2,g8_q2};
   }
 
   const resNov = runMonth(TURNO_A_NOV, 30, (d) => (NOV_OFFSET + d - 1) % 7);
@@ -340,7 +441,7 @@
             </select>
             <select id="seletorMesEscala" onchange="trocarMesEscala(this.value)" class="bg-[#18181b] border border-blue-500/40 rounded-xl px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer">
               <option value="2026-11" selected>Novembro 2026 (Oficial)</option>
-              <option value="2026-12" disabled>Dezembro 2026 (Aguardando Gerente)</option>
+              <option value="2026-12">Dezembro 2026 (Oficial - Turno A)</option>
             </select>
           </div>
           <p id="escalaSubtitulo" class="text-[var(--muted-foreground)] text-sm mt-1">Novembro 2026 • 15 Colaboradores • Rodízio Equilibrado</p>
@@ -585,11 +686,43 @@
     apoio: {bg:"bg-emerald-500/15",border:"border-emerald-500/40",text:"text-emerald-400",label:"🛠️ APOIO"},
   };
 
-  function trocarTurno(turno) {
-    activeTurno = turno;
+  function atualizarHeaderTurno() {
     const subEl = document.getElementById('escalaSubtitulo');
     const headerBadges = document.getElementById('header-badges-equidade');
-    
+    const seletorTurno = document.getElementById('seletorTurno');
+    const optTurnoB = (document.querySelector) 
+      ? document.querySelector('#seletorTurno option[value="B"]') 
+      : (seletorTurno && seletorTurno.querySelector ? seletorTurno.querySelector('option[value="B"]') : null);
+
+    if (activeEscalaKey === '2026-12') {
+      // Em Dezembro: APENAS Turno A disponível
+      activeTurno = 'A';
+      if (seletorTurno) seletorTurno.value = 'A';
+      if (optTurnoB) {
+        optTurnoB.disabled = true;
+        optTurnoB.textContent = '☀️ Turno B (Indisponível em Dezembro)';
+      }
+      if (subEl) subEl.textContent = `${activeEscalaConfig.nome} • Turno A (Manhã) • 14 Colaboradores • Rodízio Equilibrado`;
+      if (headerBadges) {
+        headerBadges.innerHTML = `
+          <span class="badge bg-red-500/20 text-red-400 font-bold">🔥 Forte (+3: G6/G8)</span>
+          <span class="badge bg-orange-500/20 text-orange-400 font-bold">🔄 Rendição (+2: R1/R2)</span>
+          <span class="badge bg-yellow-500/20 text-yellow-400">⚡ Média (+1: G2/G5)</span>
+          <span class="badge bg-blue-500/20 text-blue-400">🧊 Fraca (0: G1/G4/G10/G13)</span>
+          <span class="badge bg-emerald-500/20 text-emerald-400 font-bold">🛠️ G11 Apoio</span>
+          <span class="badge bg-purple-500/20 text-purple-300 font-bold">⭐ Quinzena G6/G8 Ativa</span>
+        `;
+      }
+      selectedColab = activeEscalaConfig.dados[0].nome;
+      return;
+    }
+
+    // Novembro: Ambos os turnos permitidos
+    if (optTurnoB) {
+      optTurnoB.disabled = false;
+      optTurnoB.textContent = '☀️ Turno B (Tarde)';
+    }
+
     if (activeTurno === 'B') {
       if (subEl) subEl.textContent = `${activeEscalaConfig.nome} • Turno B (Tarde) • 12 Colaboradores • 🧪 Modo Teste de Máquinas`;
       if (headerBadges) {
@@ -611,9 +744,20 @@
           <span class="badge bg-emerald-500/20 text-emerald-400">🛠️ G11 Apoio</span>
         `;
       }
-      selectedColab = TURNO_A_NOV[0].nome;
+      selectedColab = activeEscalaConfig.dados[0].nome;
     }
-    
+  }
+
+  function trocarTurno(turno) {
+    if (activeEscalaKey === '2026-12' && turno === 'B') {
+      alert('Para Dezembro de 2026, apenas a escala do Turno A está disponível.');
+      const seletorTurno = document.getElementById('seletorTurno');
+      if (seletorTurno) seletorTurno.value = 'A';
+      activeTurno = 'A';
+      return;
+    }
+    activeTurno = turno;
+    atualizarHeaderTurno();
     render();
     if (currentView === 'colab') renderColabView();
     if (currentView === 'matriz') renderMatrizView();
@@ -630,14 +774,14 @@
     } else if (selectedDay > activeEscalaConfig.dias) {
       selectedDay = 1;
     }
-    const subEl = document.getElementById('escalaSubtitulo');
-    if (subEl) {
-      if (activeTurno === 'B') {
-        subEl.textContent = `${activeEscalaConfig.nome} • Turno B (Tarde) • 12 Colaboradores • Escala de Presença e Folgas`;
-      } else {
-        subEl.textContent = `${activeEscalaConfig.nome} • 15 Colaboradores • Rodízio Equilibrado`;
-      }
+
+    // Se for Dezembro, força Turno A (apenas Turno A disponível)
+    if (activeEscalaKey === '2026-12') {
+      activeTurno = 'A';
     }
+
+    atualizarHeaderTurno();
+
     const topPeriodo = document.getElementById('nav-top-periodo');
     if (topPeriodo) {
       topPeriodo.textContent = activeEscalaConfig.nome;
