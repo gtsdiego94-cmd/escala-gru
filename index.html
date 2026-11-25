@@ -519,6 +519,60 @@
         </div>
       </div>
 
+      <!-- ESCALA REAL DO DIA (PÓS-05:00 - TURNO A) -->
+      <div id="container-escala-real" class="bg-[var(--card)] border border-amber-500/30 rounded-xl p-4 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border)]/50">
+          <div>
+            <h2 class="font-bold text-lg text-amber-300 flex items-center gap-2">
+              <span>⏱️</span> Escala Real do Dia <span class="text-xs font-normal text-[var(--muted-foreground)]">(Pós-05:00)</span>
+            </h2>
+            <p class="text-xs text-[var(--muted-foreground)] mt-0.5">
+              A Escala Oficial acima não é alterada. Registre aqui apenas atrasos após as 05:00 — prioridade de troca: <span class="text-amber-300 font-medium">G4 → R2 → R1 → G13 → G11 → G10 → G1</span> (quem atrasa vai para o fim da fila).
+            </p>
+          </div>
+          <span id="escala-real-status" class="badge bg-zinc-800 text-zinc-300 text-xs font-semibold whitespace-nowrap self-start sm:self-center"></span>
+        </div>
+
+        <!-- Formulário de Registro de Atraso -->
+        <div class="bg-[#18181b]/70 border border-[var(--border)]/60 rounded-xl p-3 space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+            <div class="sm:col-span-6">
+              <label for="atraso-colaborador" class="block text-[11px] font-semibold text-[var(--muted-foreground)] mb-1">Colaborador que atrasou</label>
+              <select id="atraso-colaborador" onchange="atualizarPreviewAtraso()" class="w-full bg-[#09090b] border border-[var(--border)] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"></select>
+            </div>
+            <div class="sm:col-span-3">
+              <label for="atraso-horario" class="block text-[11px] font-semibold text-[var(--muted-foreground)] mb-1">Horário de chegada</label>
+              <input type="time" id="atraso-horario" value="05:15" class="w-full bg-[#09090b] border border-[var(--border)] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div class="sm:col-span-3 flex gap-2">
+              <button type="button" onclick="registrarAtraso()" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs sm:text-sm px-3 py-2.5 rounded-lg transition cursor-pointer">
+                Registrar Atraso
+              </button>
+            </div>
+          </div>
+
+          <div id="atraso-preview" class="text-xs text-zinc-300 bg-black/30 border border-white/5 rounded-lg px-3 py-2"></div>
+
+          <div id="atraso-acoes-extras" class="hidden flex flex-wrap gap-2 pt-1">
+            <button type="button" onclick="desfazerUltimoAtraso()" class="text-xs px-2.5 py-1.5 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition cursor-pointer">
+              ↩️ Desfazer último
+            </button>
+            <button type="button" onclick="limparAtrasosDia()" class="text-xs px-2.5 py-1.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 transition cursor-pointer">
+              🗑️ Limpar registros do dia
+            </button>
+          </div>
+        </div>
+
+        <!-- Histórico de movimentações do dia -->
+        <div id="escala-real-log" class="space-y-1.5"></div>
+
+        <!-- Grade da Escala Real após 05:00 -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-2">Posições Reais Após as 05:00</h3>
+          <div id="escala-real-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+        </div>
+      </div>
+
       <!-- CONTAINER TURNO B (MODO TESTE DE MÁQUINAS) -->
       <div id="container-turno-b" class="hidden space-y-4">
         <!-- Banner de Modo Teste -->
@@ -890,9 +944,11 @@
           <div class="text-xs text-[var(--muted-foreground)]">Dia ${selectedDay}/${mesNum} • ${WEEKDAY_NAMES[dow]} ${isFotoValidated ? '• 🧪 Validado da Foto' : ''}</div></div>`;
 
       const elPostosA = document.getElementById('container-postos-a');
+      const elEscalaReal = document.getElementById('container-escala-real');
       const elTurnoB = document.getElementById('container-turno-b');
       const elEquidade = document.getElementById('container-equidade');
       if (elPostosA) elPostosA.classList.add('hidden');
+      if (elEscalaReal) elEscalaReal.classList.add('hidden');
       if (elTurnoB) elTurnoB.classList.remove('hidden');
       if (elEquidade) elEquidade.classList.add('hidden');
 
@@ -969,9 +1025,11 @@
 
     // Turno A: restaura painéis normais
     const elPostosA = document.getElementById('container-postos-a');
+    const elEscalaReal = document.getElementById('container-escala-real');
     const elTurnoB = document.getElementById('container-turno-b');
     const elEquidade = document.getElementById('container-equidade');
     if (elPostosA) elPostosA.classList.remove('hidden');
+    if (elEscalaReal) elEscalaReal.classList.remove('hidden');
     if (elTurnoB) elTurnoB.classList.add('hidden');
     if (elEquidade) elEquidade.classList.remove('hidden');
 
@@ -1059,6 +1117,9 @@
               <span class="text-[10px] font-bold text-white drop-shadow">${pts}</span></div></div></div>`;
       }).join('')}</div>`;
 
+    // Escala Real do Dia (pós-05:00)
+    renderEscalaReal(day, dow);
+
     // Frase do dia
     const f = FRASES[(selectedDay - 1) % FRASES.length];
     if (f) {
@@ -1066,6 +1127,311 @@
       document.getElementById('frase-autor').textContent = '— ' + f.autor;
       document.getElementById('frase-fonte').textContent  = f.fonte;
     }
+  }
+
+  // ===== ESCALA REAL DO DIA (PÓS-05:00 - TURNO A) =====
+  const FILA_PRIORIDADE_ATRASO = ["GRU-04", "R2", "R1", "GRU-13", "GRU-11", "GRU-10", "GRU-01"];
+
+  function formatarNomePosto(codigo) {
+    if (!codigo) return '—';
+    if (codigo === 'R1' || codigo === 'R2' || codigo === 'APOIO') return codigo;
+    if (codigo.startsWith('GRU-')) return 'G' + parseInt(codigo.replace('GRU-', ''), 10);
+    return codigo;
+  }
+
+  function getEscalaRealKey(mesKey, dia) {
+    return `escala_real_${mesKey}_${String(dia).padStart(2, '0')}`;
+  }
+
+  function carregarAtrasosDia(mesKey, dia) {
+    try {
+      if (typeof localStorage === 'undefined') return [];
+      const raw = localStorage.getItem(getEscalaRealKey(mesKey, dia));
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function salvarAtrasosDia(mesKey, dia, registros) {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      if (!registros || registros.length === 0) {
+        localStorage.removeItem(getEscalaRealKey(mesKey, dia));
+      } else {
+        localStorage.setItem(getEscalaRealKey(mesKey, dia), JSON.stringify(registros));
+      }
+    } catch (e) {
+      // ignora erro de armazenamento
+    }
+  }
+
+  function calcularEscalaReal(day, registros) {
+    const postoParaColab = {};
+    const postoOficial = {};
+    const postosLista = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-11","GRU-13"];
+
+    postosLista.forEach(gru => {
+      if (day.postos[gru]) {
+        postoParaColab[gru] = day.postos[gru];
+        postoOficial[gru] = day.postos[gru];
+      }
+    });
+    if (day.r1) { postoParaColab["R1"] = day.r1; postoOficial["R1"] = day.r1; }
+    if (day.r2) { postoParaColab["R2"] = day.r2; postoOficial["R2"] = day.r2; }
+
+    const colabParaPosto = {};
+    Object.entries(postoParaColab).forEach(([p, nome]) => {
+      colabParaPosto[nome] = p;
+    });
+    (day.apoio || []).forEach(nome => {
+      colabParaPosto[nome] = "APOIO";
+    });
+
+    const atrasadosMap = {};
+    const promovidosMap = {};
+    const logs = [];
+
+    (registros || []).forEach(reg => {
+      const nome = reg.nome;
+      const horario = reg.horario || '05:00';
+      const postoAtualAtrasado = colabParaPosto[nome];
+      if (!postoAtualAtrasado) return;
+
+      atrasadosMap[nome] = horario;
+
+      if (postoAtualAtrasado === "APOIO") {
+        logs.push({
+          nome,
+          horario,
+          postoOrigem: "APOIO",
+          postoDestino: "APOIO",
+          substituto: null,
+          trocou: false
+        });
+        return;
+      }
+
+      const idxAtrasado = FILA_PRIORIDADE_ATRASO.indexOf(postoAtualAtrasado);
+      let postoDoador = null;
+
+      for (let i = 0; i < FILA_PRIORIDADE_ATRASO.length; i++) {
+        const candidato = FILA_PRIORIDADE_ATRASO[i];
+        if (candidato === postoAtualAtrasado) continue;
+        // Se quem atrasou já está na fila, só troca com quem está depois dele (fim da fila)
+        if (idxAtrasado !== -1 && i <= idxAtrasado) continue;
+        const ocupante = postoParaColab[candidato];
+        if (ocupante && !atrasadosMap[ocupante]) {
+          postoDoador = candidato;
+          break;
+        }
+      }
+
+      if (postoDoador) {
+        const substituto = postoParaColab[postoDoador];
+        postoParaColab[postoAtualAtrasado] = substituto;
+        postoParaColab[postoDoador] = nome;
+        colabParaPosto[substituto] = postoAtualAtrasado;
+        colabParaPosto[nome] = postoDoador;
+
+        promovidosMap[substituto] = { de: postoDoador, para: postoAtualAtrasado };
+        logs.push({
+          nome,
+          horario,
+          postoOrigem: postoAtualAtrasado,
+          postoDestino: postoDoador,
+          substituto,
+          trocou: true
+        });
+      } else {
+        logs.push({
+          nome,
+          horario,
+          postoOrigem: postoAtualAtrasado,
+          postoDestino: postoAtualAtrasado,
+          substituto: null,
+          trocou: false
+        });
+      }
+    });
+
+    return { postoParaColab, postoOficial, colabParaPosto, atrasadosMap, promovidosMap, logs };
+  }
+
+  function atualizarPreviewAtraso() {
+    const sel = document.getElementById('atraso-colaborador');
+    const previewEl = document.getElementById('atraso-preview');
+    if (!sel || !previewEl) return;
+
+    const nome = sel.value;
+    if (!nome) {
+      previewEl.innerHTML = '<span class="text-zinc-500">Todos os colaboradores escalados hoje já tiveram atraso registrado ou não há operadores disponíveis.</span>';
+      return;
+    }
+
+    const currentRes = getActiveRes();
+    const day = currentRes.allDays[selectedDay - 1];
+    const registros = carregarAtrasosDia(activeEscalaKey, selectedDay);
+    const horarioInput = document.getElementById('atraso-horario');
+    const horario = horarioInput ? horarioInput.value || '05:15' : '05:15';
+
+    const simulado = calcularEscalaReal(day, [...registros, { nome, horario }]);
+    const ultimoLog = simulado.logs[simulado.logs.length - 1];
+    if (!ultimoLog) {
+      previewEl.textContent = '';
+      return;
+    }
+
+    if (ultimoLog.trocou) {
+      previewEl.innerHTML = `💡 <span class="text-amber-300 font-semibold">Prévia da cascata:</span> <strong>${ultimoLog.substituto}</strong> (${formatarNomePosto(ultimoLog.postoDestino)}) assume <strong>${formatarNomePosto(ultimoLog.postoOrigem)}</strong> → <strong>${ultimoLog.nome}</strong> vai para <strong>${formatarNomePosto(ultimoLog.postoDestino)}</strong>.`;
+    } else {
+      previewEl.innerHTML = `💡 <span class="text-zinc-300 font-semibold">Prévia:</span> <strong>${ultimoLog.nome}</strong> já está no fim da fila (${formatarNomePosto(ultimoLog.postoOrigem)}) — permanece no posto com atraso registrado.`;
+    }
+  }
+
+  function registrarAtraso() {
+    if (activeTurno !== 'A') return;
+    const sel = document.getElementById('atraso-colaborador');
+    const horarioInput = document.getElementById('atraso-horario');
+    if (!sel || !sel.value) return;
+
+    const nome = sel.value;
+    const horario = (horarioInput && horarioInput.value) ? horarioInput.value : '05:15';
+    const registros = carregarAtrasosDia(activeEscalaKey, selectedDay);
+    if (registros.some(r => r.nome === nome)) return;
+
+    registros.push({ nome, horario });
+    salvarAtrasosDia(activeEscalaKey, selectedDay, registros);
+    render();
+  }
+
+  function desfazerUltimoAtraso() {
+    const registros = carregarAtrasosDia(activeEscalaKey, selectedDay);
+    if (!registros.length) return;
+    registros.pop();
+    salvarAtrasosDia(activeEscalaKey, selectedDay, registros);
+    render();
+  }
+
+  function limparAtrasosDia() {
+    salvarAtrasosDia(activeEscalaKey, selectedDay, []);
+    render();
+  }
+
+  function renderEscalaReal(day, dow) {
+    const statusEl = document.getElementById('escala-real-status');
+    const sel = document.getElementById('atraso-colaborador');
+    const acoesEl = document.getElementById('atraso-acoes-extras');
+    const logEl = document.getElementById('escala-real-log');
+    const gridEl = document.getElementById('escala-real-grid');
+    if (!statusEl || !sel || !logEl || !gridEl) return;
+
+    const registros = carregarAtrasosDia(activeEscalaKey, selectedDay);
+    const calc = calcularEscalaReal(day, registros);
+
+    if (registros.length === 0) {
+      statusEl.className = 'badge bg-emerald-500/15 text-emerald-400 text-xs font-semibold whitespace-nowrap self-start sm:self-center';
+      statusEl.textContent = '✅ Sem atrasos registrados';
+    } else {
+      statusEl.className = 'badge bg-amber-500/20 text-amber-300 text-xs font-semibold whitespace-nowrap self-start sm:self-center';
+      statusEl.textContent = `⚠️ ${registros.length} atraso${registros.length > 1 ? 's' : ''} registrado${registros.length > 1 ? 's' : ''}`;
+    }
+
+    if (acoesEl) {
+      if (registros.length > 0) acoesEl.classList.remove('hidden');
+      else acoesEl.classList.add('hidden');
+    }
+
+    // Popula dropdown com colaboradores escalados hoje que ainda não atrasaram
+    const opcoes = [];
+    const postosOrdemSelect = ["GRU-06","GRU-08","GRU-02","GRU-05","R1","R2","GRU-01","GRU-04","GRU-10","GRU-11","GRU-13"];
+    postosOrdemSelect.forEach(p => {
+      const pessoa = calc.postoParaColab[p];
+      if (pessoa && !calc.atrasadosMap[pessoa]) {
+        opcoes.push({ nome: pessoa, posto: p });
+      }
+    });
+    (day.apoio || []).forEach(pessoa => {
+      if (!calc.atrasadosMap[pessoa]) {
+        opcoes.push({ nome: pessoa, posto: 'APOIO' });
+      }
+    });
+
+    sel.innerHTML = opcoes.length
+      ? opcoes.map(o => `<option value="${o.nome}">${o.nome} (${formatarNomePosto(o.posto)})</option>`).join('')
+      : '<option value="">Nenhum colaborador disponível</option>';
+
+    atualizarPreviewAtraso();
+
+    // Renderiza histórico do dia
+    if (calc.logs.length === 0) {
+      logEl.innerHTML = '';
+    } else {
+      logEl.innerHTML = `
+        <div class="text-xs font-bold uppercase tracking-wider text-amber-300/90 mb-1">Registro de Movimentações Pós-05:00</div>
+        ${calc.logs.map((l, idx) => `
+          <div class="flex items-center gap-2 text-xs bg-amber-500/10 border border-amber-500/25 rounded-lg px-3 py-2">
+            <span class="badge bg-amber-500/25 text-amber-200 font-mono">${l.horario}</span>
+            <div class="flex-1 text-zinc-200">
+              ${l.trocou
+                ? `<strong>${l.nome}</strong> atrasou na <strong>${formatarNomePosto(l.postoOrigem)}</strong> → <strong>${l.substituto}</strong> assumiu <strong>${formatarNomePosto(l.postoOrigem)}</strong> e <strong>${l.nome}</strong> assumiu <strong>${formatarNomePosto(l.postoDestino)}</strong>.`
+                : `<strong>${l.nome}</strong> atrasou e permaneceu em <strong>${formatarNomePosto(l.postoOrigem)}</strong> (fim da fila).`
+              }
+            </div>
+            <span class="text-[10px] text-zinc-500">#${idx + 1}</span>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    // Renderiza grade real de postos pós-05:00
+    const postosExibicao = ["GRU-06","GRU-08","GRU-02","GRU-05","R1","R2","GRU-01","GRU-04","GRU-10","GRU-11","GRU-13"];
+    const cards = postosExibicao.map(p => {
+      if (p === "GRU-11" && !day.gru11Ativa) return '';
+      const oficial = calc.postoOficial[p];
+      const real = calc.postoParaColab[p];
+      if (!oficial && !real) return '';
+
+      const mudou = oficial !== real;
+      const atrasadoAqui = real && calc.atrasadosMap[real];
+      const promovidoAqui = real && calc.promovidosMap[real];
+
+      let borderClass = 'border-[var(--border)] bg-[#18181b]/60';
+      let tagHtml = '<span class="text-[10px] text-zinc-500">Sem alteração</span>';
+
+      if (atrasadoAqui) {
+        borderClass = 'border-red-500/40 bg-red-500/10';
+        tagHtml = `<span class="badge bg-red-500/20 text-red-300 text-[10px]">⏰ Atrasou ${atrasadoAqui}${mudou ? ` (era ${formatarNomePosto(oficial === real ? p : calc.logs.find(l => l.nome === real)?.postoOrigem)})` : ''}</span>`;
+      } else if (promovidoAqui) {
+        borderClass = 'border-amber-500/40 bg-amber-500/10';
+        tagHtml = `<span class="badge bg-amber-500/20 text-amber-300 text-[10px]">🔄 Subiu de ${formatarNomePosto(promovidoAqui.de)}</span>`;
+      }
+
+      return `
+        <div class="rounded-lg border ${borderClass} px-3 py-2 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="font-bold text-sm min-w-[2.4rem] ${p.startsWith('R') ? 'text-orange-400' : 'text-zinc-200'}">${formatarNomePosto(p)}</span>
+            <span class="font-medium text-sm text-white truncate">${real || '—'}</span>
+          </div>
+          ${tagHtml}
+        </div>
+      `;
+    }).filter(Boolean);
+
+    if (day.apoio && day.apoio.length) {
+      cards.push(`
+        <div class="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="font-bold text-sm min-w-[2.4rem] text-emerald-400">APOIO</span>
+            <span class="font-medium text-sm text-white truncate">${day.apoio.join(', ')}</span>
+          </div>
+          <span class="text-[10px] text-emerald-400/80">Apoio</span>
+        </div>
+      `);
+    }
+
+    gridEl.innerHTML = cards.join('');
   }
 
   // 2. RENDER DA VISÃO POR COLABORADOR
