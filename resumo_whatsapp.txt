@@ -1,35 +1,35 @@
 📊 *RELATÓRIO OPERACIONAL GRU - ONEBOSS*
-📅 *Data:* 25/11/2026 (3 dias de operação)
+📅 *Data:* 25/11/2026 (25 dias de operação)
 ━━━━━━━━━━━━━━━━━━━━━
 
 *🌅 TURNO A (Manhã)*
-💰 Fat: R$ 44.452,00 | 🧳 Malas: 270
-🥇 *KAUAN MIRANDA*: R$ 12.399,00 (73 malas)
-🥈 *MATHEUS SENHORINHO*: R$ 4.690,00 (29 malas)
-🥉 *RICARDO LIMA*: R$ 4.158,00 (28 malas)
-▫️ *JOAO FERREIRA*: R$ 3.979,00 (22 malas)
-▫️ *LUCAS TRINDADE*: R$ 3.708,00 (25 malas)
+💰 Fat: R$ 413.141,00 | 🧳 Malas: 2437
+🥇 *DALTON DUARTE*: R$ 46.759,00 (278 malas)
+🥈 *EDUARDO LIMA*: R$ 39.262,00 (217 malas)
+🥉 *RICARDO LIMA*: R$ 35.534,00 (202 malas)
+▫️ *MATHEUS SENHORINHO*: R$ 30.323,00 (185 malas)
+▫️ *LUCAS TRINDADE*: R$ 29.900,00 (189 malas)
 
 *☀️ TURNO B (Tarde)*
-💰 Fat: R$ 49.386,00 | 🧳 Malas: 323
-🥇 *GABRIEL GONCALVES*: R$ 9.247,00 (56 malas)
-🥈 *JOSE MACEDO*: R$ 7.046,00 (46 malas)
-🥉 *RAFAEL MESSIAS*: R$ 6.296,00 (35 malas)
-▫️ *DIEGO PEREIRA*: R$ 5.110,00 (35 malas)
-▫️ *WALKER SANTOS*: R$ 5.091,00 (38 malas)
+💰 Fat: R$ 624.641,00 | 🧳 Malas: 3818
+🥇 *GABRIEL GONCALVES*: R$ 60.239,00 (383 malas)
+🥈 *DAVI ARAUJO*: R$ 53.879,00 (314 malas)
+🥉 *JOSE MACEDO*: R$ 52.997,00 (315 malas)
+▫️ *HENRIQUE PEDRO*: R$ 52.015,00 (303 malas)
+▫️ *VITOR VIANA*: R$ 50.489,00 (327 malas)
 
 *🌙 TURNO D (Madrugada)*
-💰 Fat: R$ 8.782,00 | 🧳 Malas: 52
-🥇 *ISRAEL LUCAS*: R$ 2.187,00 (14 malas)
-🥈 *GABRIEL DONADELLO*: R$ 1.960,00 (10 malas)
-🥉 *GABRIEL DONADELLOD2*: R$ 1.343,00 (7 malas)
-▫️ *ELTON GIMENESD2*: R$ 1.264,00 (7 malas)
-▫️ *WELLINGTON FERREIRAD2*: R$ 944,00 (6 malas)
+💰 Fat: R$ 101.094,00 | 🧳 Malas: 604
+🥇 *ISRAEL LUCAS*: R$ 16.126,00 (95 malas)
+🥈 *ELTON GIMENESD2*: R$ 16.046,00 (96 malas)
+🥉 *WELLINGTON FERREIRA*: R$ 12.855,00 (91 malas)
+▫️ *GABRIEL DONADELLO*: R$ 12.564,00 (71 malas)
+▫️ *GABRIEL DONADELLOD2*: R$ 11.589,00 (64 malas)
 
 ━━━━━━━━━━━━━━━━━━━━━
 🎯 *TOTAL GERAL ACUMULADO*
-💵 *Faturamento Total:* R$ 102.620,00
-🧳 *Total de Malas:* 645
-💳 *Lançamentos:* 717
+💵 *Faturamento Total:* R$ 1.138.876,00
+🧳 *Total de Malas:* 6859
+💳 *Lançamentos:* 7517
 
 🚀 *Equipe Protecbag GRU*
