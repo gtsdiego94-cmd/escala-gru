@@ -572,7 +572,9 @@
 
   <script>
   let activeTurno = 'A'; // 'A' ou 'B'
-  let selectedDay = 17; // Inicia em 17/11 (amanhã) com a GRU-11 desbloqueada
+  // Acompanha automaticamente o dia atual do calendário (ou ajusta aos limites do mês)
+  const dataHoje = new Date();
+  let selectedDay = Math.min(Math.max(dataHoje.getDate(), 1), activeEscalaConfig.dias);
   let currentView = 'dia';
   let selectedColab = TURNO_A_NOV[0].nome;
 
@@ -621,7 +623,11 @@
     if (!MESES_ESCALA[chave]) return;
     activeEscalaKey = chave;
     activeEscalaConfig = MESES_ESCALA[chave];
-    if (selectedDay > activeEscalaConfig.dias) {
+    const dataAtual = new Date();
+    const chaveAtual = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}`;
+    if (chave === chaveAtual) {
+      selectedDay = Math.min(Math.max(dataAtual.getDate(), 1), activeEscalaConfig.dias);
+    } else if (selectedDay > activeEscalaConfig.dias) {
       selectedDay = 1;
     }
     const subEl = document.getElementById('escalaSubtitulo');
