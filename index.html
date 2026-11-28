@@ -4,50 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Operacional GRU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     :root {
-      --background: #09090b; --card: #121215; --content: #18181b;
-      --border: #27272a; --foreground: #f4f4f5; --muted-foreground: #a1a1aa;
-      --primary: #2563eb; --primary-foreground: #ffffff; --accent: #27272a;
+      --background: #07090d; --card: #0e1218; --content: #141923;
+      --border: #1e2530; --foreground: #f1f5f9; --muted-foreground: #94a3b8;
+      --primary: #3b82f6; --primary-foreground: #ffffff; --accent: #1e293b;
     }
-    body { background-color: #09090b !important; color: #f4f4f5 !important; }
+    body {
+      background-color: #07090d !important;
+      color: #f1f5f9 !important;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-variant-numeric: tabular-nums;
+    }
     .card-hover { transition: all 0.15s ease; }
-    .card-hover:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
-    .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:9999px; font-size:0.7rem; font-weight:600; }
-    .gru-row { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0.75rem; border-radius:0.5rem; }
+    .card-hover:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.45); border-color: #2d3748; }
+    .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:6px; font-size:0.68rem; font-weight:700; letter-spacing:0.02em; }
+    .gru-row { display:flex; align-items:center; gap:0.75rem; padding:0.55rem 0.75rem; border-radius:0.5rem; transition: background-color 0.12s ease; }
     .metric-card { transition: all 0.2s ease; }
     .metric-card:hover { transform: translateY(-2px); }
     .progress-bar-glow { box-shadow: 0 0 14px rgba(234,179,8,0.45); }
     
     /* Scrollbar personalizada para tabelas */
     ::-webkit-scrollbar { height: 8px; width: 8px; }
-    ::-webkit-scrollbar-track { background: #121215; }
-    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    ::-webkit-scrollbar-track { background: #0e1218; }
+    ::-webkit-scrollbar-thumb { background: #1e2530; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
     
-    .sticky-col { position: sticky; left: 0; background: #121215; z-index: 10; }
+    .sticky-col { position: sticky; left: 0; background: #0e1218; z-index: 10; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
-<body class="bg-[#09090b] text-[#f4f4f5] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-5">
+<body class="bg-[#07090d] text-[#f1f5f9] antialiased p-3 sm:p-5 max-w-7xl mx-auto space-y-4">
 
-  <!-- NAV SUPERIOR -->
-  <nav class="bg-[#121215] border border-[#27272a] rounded-2xl p-2.5 shadow-lg flex items-center justify-between gap-3 sticky top-2 z-50">
-    <div class="flex items-center gap-2 pl-2">
-      <span class="text-2xl">✈️</span>
-      <span class="font-black text-base sm:text-lg tracking-tight hidden sm:inline text-white">GRU PORTAL</span>
+  <!-- NAV SUPERIOR CCO -->
+  <nav class="bg-[#0e1218]/95 backdrop-blur border border-[#1e2530] rounded-2xl px-3 py-2 shadow-xl flex items-center justify-between gap-2 sticky top-2 z-50">
+    <div class="flex items-center gap-2.5 pl-1">
+      <div class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+      </div>
+      <div class="leading-tight">
+        <span class="font-extrabold text-sm sm:text-base tracking-tight text-white block">GRU CCO</span>
+        <span class="text-[10px] font-mono-code text-emerald-400 uppercase tracking-wider hidden sm:block">● Operação Ativa</span>
+      </div>
     </div>
-    <div class="flex items-center gap-2 bg-[#18181b] border border-[#27272a] p-1 rounded-xl">
-      <button id="tab-btn-novembro" onclick="switchTab('novembro')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-blue-600 text-white shadow-sm">
-        <span>📅</span> <span>Nov/2026</span>
+    <div class="flex items-center gap-1.5 bg-[#141923] border border-[#1e2530] p-1 rounded-xl">
+      <button id="tab-btn-novembro" onclick="switchTab('novembro')" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer bg-blue-600 text-white shadow-sm">
+        <span>Escala</span>
       </button>
-      <button id="tab-btn-vendas" onclick="switchTab('vendas')" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer text-[#a1a1aa] hover:text-white hover:bg-[#27272a]" title="Vendas & Metas">
-        <span>💰</span> <span class="hidden sm:inline">Vendas</span>
+      <button id="tab-btn-vendas" onclick="switchTab('vendas')" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer text-[#94a3b8] hover:text-white hover:bg-[#1e2530]" title="Vendas & Metas">
+        <span>Vendas</span>
       </button>
     </div>
-    <div class="pr-2 text-xs text-[#a1a1aa] hidden md:block font-medium">Novembro 2026</div>
+    <div class="flex items-center gap-2 pr-1">
+      <button id="btn-briefing-mode" onclick="toggleBriefingMode()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold border border-[#1e2530] bg-[#141923] text-[#94a3b8] hover:text-white hover:border-blue-500/40 transition cursor-pointer" title="Oculta gráficos e frases para leitura rápida na passagem de turno">
+        Modo Briefing
+      </button>
+    </div>
   </nav>
 
   <!-- ABA NOVEMBRO -->
@@ -429,91 +449,105 @@
   <!-- UI PRINCIPAL -->
   <div class="max-w-5xl mx-auto space-y-4">
 
-    <!-- HEADER -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-      <div class="flex items-center justify-between flex-wrap gap-3">
+    <!-- HEADER CCO -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm">
+      <div class="flex items-start sm:items-center justify-between flex-wrap gap-3">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-2xl font-black tracking-tight text-white">🏭 Escala Operacional GRU</h1>
-            <select id="seletorTurno" onchange="trocarTurno(this.value)" class="bg-[#18181b] border border-amber-500/40 rounded-xl px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-amber-500 cursor-pointer">
-              <option value="A" selected>🌅 Turno A (Manhã)</option>
-              <option value="B">☀️ Turno B (Tarde)</option>
+            <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">Escala Operacional GRU</h1>
+            <select id="seletorTurno" onchange="trocarTurno(this.value)" class="bg-[#141923] border border-amber-500/40 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-amber-500 cursor-pointer">
+              <option value="A" selected>Turno A • 05:00</option>
+              <option value="B">Turno B • 14:00</option>
             </select>
-            <select id="seletorMesEscala" onchange="trocarMesEscala(this.value)" class="bg-[#18181b] border border-blue-500/40 rounded-xl px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer">
+            <select id="seletorMesEscala" onchange="trocarMesEscala(this.value)" class="bg-[#141923] border border-blue-500/40 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer">
               <option value="2026-11" selected>Novembro 2026 (Oficial)</option>
               <option value="2026-12">Dezembro 2026 (Oficial - Turno A)</option>
             </select>
           </div>
-          <p id="escalaSubtitulo" class="text-[var(--muted-foreground)] text-sm mt-1">Novembro 2026 • 15 Colaboradores • Rodízio Equilibrado</p>
+          <p id="escalaSubtitulo" class="text-[var(--muted-foreground)] text-xs sm:text-sm mt-1">Novembro 2026 • 15 Colaboradores • Rodízio Equilibrado</p>
         </div>
-        <div id="header-badges-equidade" class="flex items-center gap-2 flex-wrap text-xs">
-          <span class="badge bg-red-500/20 text-red-400">🔥 Forte (+3)</span>
-          <span class="badge bg-orange-500/20 text-orange-400">🔄 Rendição (+2)</span>
-          <span class="badge bg-yellow-500/20 text-yellow-400">⚡ Média (+1)</span>
-          <span class="badge bg-blue-500/20 text-blue-400">🧊 Fraca (0)</span>
-          <span class="badge bg-emerald-500/20 text-emerald-400">🛠️ G11 Apoio</span>
+        <div id="header-badges-equidade" class="flex items-center gap-1.5 flex-wrap text-xs">
+          <span class="badge bg-red-500/15 text-red-400 border border-red-500/25">FORTE +3</span>
+          <span class="badge bg-orange-500/15 text-orange-400 border border-orange-500/25">RENDIÇÃO +2</span>
+          <span class="badge bg-amber-500/15 text-amber-300 border border-amber-500/25">MÉDIA +1</span>
+          <span class="badge bg-sky-500/15 text-sky-400 border border-sky-500/25">FRACA 0</span>
+          <span class="badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">G11 APOIO</span>
         </div>
       </div>
 
       <!-- SELETOR DE MODO DE VISUALIZAÇÃO -->
-      <div class="mt-5 pt-4 border-t border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
-        <div class="flex items-center gap-1.5 bg-[#18181b] p-1 rounded-xl border border-[var(--border)]">
-          <button id="view-btn-dia" onclick="switchView('dia')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-blue-600 text-white shadow-sm cursor-pointer">
-            <span>📅</span> <span>Visão Diária</span>
+      <div class="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-1 bg-[#141923] p-1 rounded-xl border border-[var(--border)]">
+          <button id="view-btn-dia" onclick="switchView('dia')" class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-blue-600 text-white shadow-sm cursor-pointer">
+            <span>Visão Diária</span>
           </button>
-          <button id="view-btn-colab" onclick="switchView('colab')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#a1a1aa] hover:text-white hover:bg-[#27272a] cursor-pointer">
-            <span>👤</span> <span>Por Colaborador</span>
+          <button id="view-btn-colab" onclick="switchView('colab')" class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#94a3b8] hover:text-white hover:bg-[#1e2530] cursor-pointer">
+            <span>Por Colaborador</span>
           </button>
-          <button id="view-btn-matriz" onclick="switchView('matriz')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#a1a1aa] hover:text-white hover:bg-[#27272a] cursor-pointer">
-            <span>📊</span> <span>Tabela Geral do Mês</span>
+          <button id="view-btn-matriz" onclick="switchView('matriz')" class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-[#94a3b8] hover:text-white hover:bg-[#1e2530] cursor-pointer">
+            <span>Tabela do Mês</span>
           </button>
         </div>
-        <div class="text-xs text-[var(--muted-foreground)] hidden sm:block">
-          Toque para alternar o modo de exibição
-        </div>
+        <div id="status-operacional-topo" class="flex items-center gap-2 text-xs"></div>
       </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- 1. MODO VISÃO DIÁRIA (Original melhorada) -->
+    <!-- 1. MODO VISÃO DIÁRIA -->
     <!-- ========================================== -->
     <div id="view-content-dia" class="space-y-4">
 
-      <!-- SELETOR DE DIA -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-sm font-semibold text-[var(--muted-foreground)]">📅 Selecione o dia de Novembro</p>
-          <span id="dia-selecionado-badge" class="badge bg-blue-500/20 text-blue-400 text-xs"></span>
+      <!-- BARRA COMPACTA DE NAVEGAÇÃO DIÁRIA + CALENDÁRIO EXPANSÍVEL -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-sm">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="mudarDia(-1)" class="w-8 h-8 rounded-lg bg-[#141923] border border-[var(--border)] hover:border-blue-500/50 text-white font-bold flex items-center justify-center transition cursor-pointer" title="Dia anterior">‹</button>
+            <div class="px-3 py-1.5 rounded-lg bg-[#141923] border border-[var(--border)] flex items-center gap-2">
+              <span id="dia-selecionado-badge" class="font-mono-code text-xs sm:text-sm font-bold text-white"></span>
+              <span id="dia-hoje-pill" class="hidden badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px]">HOJE</span>
+            </div>
+            <button type="button" onclick="mudarDia(1)" class="w-8 h-8 rounded-lg bg-[#141923] border border-[var(--border)] hover:border-blue-500/50 text-white font-bold flex items-center justify-center transition cursor-pointer" title="Próximo dia">›</button>
+          </div>
+          <button type="button" id="btn-toggle-calendario" onclick="toggleCalendario()" class="px-3 py-1.5 rounded-lg bg-[#141923] border border-[var(--border)] hover:border-blue-500/40 text-xs font-semibold text-[#94a3b8] hover:text-white transition cursor-pointer flex items-center gap-1.5">
+            <span>Calendário do Mês</span>
+            <span id="calendario-seta" class="font-mono-code text-[10px]">▾</span>
+          </button>
         </div>
-        <div id="dayGrid" class="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-15 gap-1.5"></div>
+        <div id="calendario-wrapper" class="hidden mt-3 pt-3 border-t border-[var(--border)]/60">
+          <div id="dayGrid" class="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-15 gap-1.5"></div>
+        </div>
       </div>
 
       <!-- STATS DO DIA -->
-      <div id="stats" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+      <div id="stats" class="grid grid-cols-2 md:grid-cols-5 gap-2.5"></div>
 
       <!-- POSTOS + RENDIÇÕES/APOIO TURNO A -->
-      <div id="container-postos-a" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h2 class="font-bold text-lg mb-3">📍 Postos GRU</h2>
+      <div id="container-postos-a" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border)]/60">
+            <h2 class="font-bold text-base tracking-tight text-white uppercase">Postos GRU <span class="text-xs font-normal text-[var(--muted-foreground)] normal-case ml-1">• Escala Oficial</span></h2>
+            <span class="font-mono-code text-[11px] text-[var(--muted-foreground)]">INÍCIO 05:00</span>
+          </div>
           <div id="postos" class="space-y-1.5"></div>
-          <div id="ausentes" class="mt-4 pt-3 border-t border-[var(--border)]/30"></div>
+          <div id="ausentes" class="mt-4 pt-3 border-t border-[var(--border)]/40"></div>
         </div>
-        <div class="space-y-4">
+        <div class="lg:col-span-5 space-y-4">
           <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-            <h2 class="font-bold text-lg mb-3">🔄 Rendições <span class="text-sm font-normal text-[var(--muted-foreground)]">(início 07:00)</span></h2>
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border)]/60">
+              <h2 class="font-bold text-base tracking-tight text-white uppercase">Rendições</h2>
+              <span class="font-mono-code text-[11px] text-orange-400 font-bold">07:00</span>
+            </div>
             <div id="rendicoes" class="space-y-2"></div>
           </div>
           <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-            <h2 class="font-bold text-lg mb-3">🛠️ Apoio <span class="text-sm font-normal text-[var(--muted-foreground)]">(reposição de filmes e produtos)</span></h2>
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border)]/60">
+              <h2 class="font-bold text-base tracking-tight text-white uppercase">Apoio</h2>
+              <span class="text-[11px] text-[var(--muted-foreground)]">Reposição & Suporte</span>
+            </div>
             <div id="apoio"></div>
-          </div>
-          <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-sm opacity-40">
-            <h2 class="font-semibold text-sm mb-2">⛔ Desativadas</h2>
-            <div class="flex flex-wrap gap-1.5 text-xs">
-              <span class="badge bg-gray-500/20 text-gray-400">GRU-03</span>
-              <span class="badge bg-gray-500/20 text-gray-400">GRU-07</span>
-              <span class="badge bg-gray-500/20 text-gray-400">GRU-09</span>
-              <span class="badge bg-gray-500/20 text-gray-400">GRU-12</span>
+            <div class="mt-3 pt-3 border-t border-[var(--border)]/40 flex items-center justify-between gap-2 text-[11px] text-[#64748b]">
+              <span class="font-semibold uppercase tracking-wider">Desativadas:</span>
+              <span class="font-mono-code">G3 • G7 • G9 • G12</span>
             </div>
           </div>
         </div>
@@ -732,13 +766,45 @@
   let selectedDay = Math.min(Math.max(dataHoje.getDate(), 1), activeEscalaConfig.dias);
   let currentView = 'dia';
   let selectedColab = TURNO_A_NOV[0].nome;
+  let briefingMode = false;
 
   const CAT_STYLE = {
-    forte: {bg:"bg-red-500/15",   border:"border-red-500/40",    text:"text-red-400",    label:"🔥 FORTE"},
-    media: {bg:"bg-yellow-500/15",border:"border-yellow-500/40", text:"text-yellow-400", label:"⚡ MÉDIA"},
-    fraca: {bg:"bg-blue-500/15",  border:"border-blue-500/40",   text:"text-blue-400",   label:"🧊 FRACA"},
-    apoio: {bg:"bg-emerald-500/15",border:"border-emerald-500/40",text:"text-emerald-400",label:"🛠️ APOIO"},
+    forte: {bg:"bg-[#141923]", border:"border-[#1e2530] border-l-4 border-l-red-500",     badgeBg:"bg-red-500/15",     text:"text-red-400",     label:"FORTE"},
+    media: {bg:"bg-[#141923]", border:"border-[#1e2530] border-l-4 border-l-amber-400",   badgeBg:"bg-amber-500/15",   text:"text-amber-300",   label:"MÉDIA"},
+    fraca: {bg:"bg-[#141923]", border:"border-[#1e2530] border-l-4 border-l-sky-400",     badgeBg:"bg-sky-500/15",     text:"text-sky-400",     label:"FRACA"},
+    apoio: {bg:"bg-[#141923]", border:"border-[#1e2530] border-l-4 border-l-emerald-400", badgeBg:"bg-emerald-500/15", text:"text-emerald-400", label:"APOIO"},
   };
+
+  function mudarDia(delta) {
+    const totalDias = activeEscalaConfig.dias;
+    selectedDay = Math.min(Math.max(selectedDay + delta, 1), totalDias);
+    render();
+  }
+
+  function toggleCalendario() {
+    const wrap = document.getElementById('calendario-wrapper');
+    const seta = document.getElementById('calendario-seta');
+    if (!wrap) return;
+    const hidden = wrap.classList.toggle('hidden');
+    if (seta) seta.textContent = hidden ? '▾' : '▴';
+  }
+
+  function toggleBriefingMode() {
+    briefingMode = !briefingMode;
+    const btn = document.getElementById('btn-briefing-mode');
+    if (btn) {
+      btn.className = briefingMode
+        ? 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold border border-blue-500 bg-blue-600 text-white transition cursor-pointer'
+        : 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold border border-[#1e2530] bg-[#141923] text-[#94a3b8] hover:text-white hover:border-blue-500/40 transition cursor-pointer';
+      btn.textContent = briefingMode ? 'Briefing Ativo' : 'Modo Briefing';
+    }
+    render();
+  }
+
+  function irParaEscalaReal() {
+    const el = document.getElementById('container-escala-real');
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   function atualizarHeaderTurno() {
     const subEl = document.getElementById('escalaSubtitulo');
@@ -759,12 +825,12 @@
       if (subEl) subEl.textContent = `${activeEscalaConfig.nome} • Turno A (Manhã) • 14 Colaboradores • Rodízio Equilibrado`;
       if (headerBadges) {
         headerBadges.innerHTML = `
-          <span class="badge bg-red-500/20 text-red-400 font-bold">🔥 Forte (+3: G6/G8)</span>
-          <span class="badge bg-orange-500/20 text-orange-400 font-bold">🔄 Rendição (+2: R1/R2)</span>
-          <span class="badge bg-yellow-500/20 text-yellow-400">⚡ Média (+1: G2/G5)</span>
-          <span class="badge bg-blue-500/20 text-blue-400">🧊 Fraca (0: G1/G4/G10/G13)</span>
-          <span class="badge bg-emerald-500/20 text-emerald-400 font-bold">🛠️ G11 Apoio</span>
-          <span class="badge bg-purple-500/20 text-purple-300 font-bold">⭐ Quinzena G6/G8 Ativa</span>
+          <span class="badge bg-red-500/15 text-red-400 border border-red-500/25">FORTE +3 (G6/G8)</span>
+          <span class="badge bg-orange-500/15 text-orange-400 border border-orange-500/25">RENDIÇÃO +2 (R1/R2)</span>
+          <span class="badge bg-amber-500/15 text-amber-300 border border-amber-500/25">MÉDIA +1 (G2/G5)</span>
+          <span class="badge bg-sky-500/15 text-sky-400 border border-sky-500/25">FRACA 0 (G1/G4/G10/G13)</span>
+          <span class="badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">G11 APOIO</span>
+          <span class="badge bg-purple-500/15 text-purple-300 border border-purple-500/30">QUINZENA G6/G8 ATIVA</span>
         `;
       }
       selectedColab = activeEscalaConfig.dados[0].nome;
@@ -791,11 +857,11 @@
       if (subEl) subEl.textContent = `${activeEscalaConfig.nome} • 15 Colaboradores • Rodízio Equilibrado`;
       if (headerBadges) {
         headerBadges.innerHTML = `
-          <span class="badge bg-red-500/20 text-red-400">🔥 Forte (+3)</span>
-          <span class="badge bg-orange-500/20 text-orange-400">🔄 Rendição (+2)</span>
-          <span class="badge bg-yellow-500/20 text-yellow-400">⚡ Média (+1)</span>
-          <span class="badge bg-blue-500/20 text-blue-400">🧊 Fraca (0)</span>
-          <span class="badge bg-emerald-500/20 text-emerald-400">🛠️ G11 Apoio</span>
+          <span class="badge bg-red-500/15 text-red-400 border border-red-500/25">FORTE +3</span>
+          <span class="badge bg-orange-500/15 text-orange-400 border border-orange-500/25">RENDIÇÃO +2</span>
+          <span class="badge bg-amber-500/15 text-amber-300 border border-amber-500/25">MÉDIA +1</span>
+          <span class="badge bg-sky-500/15 text-sky-400 border border-sky-500/25">FRACA 0</span>
+          <span class="badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">G11 APOIO</span>
         `;
       }
       selectedColab = activeEscalaConfig.dados[0].nome;
@@ -893,7 +959,17 @@
     const dow = getDowCurrent(selectedDay);
     const mesNum = activeEscalaKey === '2026-12' ? '12' : '11';
     const badgeEl = document.getElementById('dia-selecionado-badge');
-    if(badgeEl) badgeEl.textContent = `Dia ${selectedDay}/${mesNum} • ${WEEKDAY_NAMES[dow]}`;
+    if(badgeEl) badgeEl.textContent = `${WEEKDAY_NAMES[dow].toUpperCase()} • ${String(selectedDay).padStart(2,'0')}/${mesNum}`;
+
+    const hojePill = document.getElementById('dia-hoje-pill');
+    if (hojePill) {
+      const chaveHoje = `${dataHoje.getFullYear()}-${String(dataHoje.getMonth() + 1).padStart(2, '0')}`;
+      if (activeEscalaKey === chaveHoje && selectedDay === dataHoje.getDate()) {
+        hojePill.classList.remove('hidden');
+      } else {
+        hojePill.classList.add('hidden');
+      }
+    }
 
     if (activeTurno === 'B') {
       const isFotoValidated = selectedDay >= 7 && selectedDay <= 12;
@@ -1031,29 +1107,42 @@
     if (elPostosA) elPostosA.classList.remove('hidden');
     if (elEscalaReal) elEscalaReal.classList.remove('hidden');
     if (elTurnoB) elTurnoB.classList.add('hidden');
-    if (elEquidade) elEquidade.classList.remove('hidden');
+    if (elEquidade) {
+      if (briefingMode) elEquidade.classList.add('hidden');
+      else elEquidade.classList.remove('hidden');
+    }
 
     const currentRes = getActiveRes();
     const day = currentRes.allDays[selectedDay - 1];
     const gruCount = Object.values(day.postos).filter(v=>v).length;
     const rendCount = (day.r1?1:0)+(day.r2?1:0);
 
+    const atrasosHoje = carregarAtrasosDia(activeEscalaKey, selectedDay);
+    const statusTopoEl = document.getElementById('status-operacional-topo');
+    if (statusTopoEl) {
+      if (atrasosHoje.length === 0) {
+        statusTopoEl.innerHTML = `<span class="badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 font-mono-code">● OPERAÇÃO NORMAL • 05:00</span>`;
+      } else {
+        statusTopoEl.innerHTML = `<button type="button" onclick="irParaEscalaReal()" class="badge bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition cursor-pointer font-mono-code">● ${atrasosHoje.length} ALTERAÇÃO PÓS-05:00 • VER ↓</button>`;
+      }
+    }
+
     document.getElementById('stats').innerHTML = `
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center card-hover">
-        <div class="text-2xl font-bold">${day.availCount}</div>
-        <div class="text-xs text-[var(--muted-foreground)]">Disponíveis</div></div>
-      <div class="bg-[var(--card)] border border-red-500/30 rounded-xl p-3 text-center card-hover">
-        <div class="text-2xl font-bold text-red-400">${gruCount}</div>
-        <div class="text-xs text-[var(--muted-foreground)]">Nos Postos</div></div>
-      <div class="bg-[var(--card)] border border-orange-500/30 rounded-xl p-3 text-center card-hover">
-        <div class="text-2xl font-bold text-orange-400">${rendCount}</div>
-        <div class="text-xs text-[var(--muted-foreground)]">Rendições</div></div>
-      <div class="bg-[var(--card)] border border-green-500/30 rounded-xl p-3 text-center card-hover">
-        <div class="text-2xl font-bold text-green-400">${day.apoio.length}</div>
-        <div class="text-xs text-[var(--muted-foreground)]">Apoio</div></div>
-      <div class="bg-[var(--card)] border border-purple-500/30 rounded-xl p-3 text-center card-hover">
-        <div class="text-2xl font-bold text-purple-400">${WEEKDAY_NAMES[dow]}</div>
-        <div class="text-xs text-[var(--muted-foreground)]">Dia ${selectedDay}/${mesNum}</div></div>`;
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 card-hover">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Disponíveis</div>
+        <div class="text-2xl font-extrabold font-mono-code text-white mt-0.5">${day.availCount}</div></div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 card-hover">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Nos Postos</div>
+        <div class="text-2xl font-extrabold font-mono-code text-red-400 mt-0.5">${gruCount}</div></div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 card-hover">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Rendições</div>
+        <div class="text-2xl font-extrabold font-mono-code text-orange-400 mt-0.5">${rendCount}</div></div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 card-hover">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Apoio</div>
+        <div class="text-2xl font-extrabold font-mono-code text-emerald-400 mt-0.5">${day.apoio.length}</div></div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 card-hover col-span-2 md:col-span-1">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">Plantão</div>
+        <div class="text-xl font-extrabold font-mono-code text-blue-400 mt-1">${WEEKDAY_NAMES[dow].toUpperCase()} • ${String(selectedDay).padStart(2,'0')}/${mesNum}</div></div>`;
 
     const gruOrder = ["GRU-01","GRU-02","GRU-04","GRU-05","GRU-06","GRU-08","GRU-10","GRU-11","GRU-13"];
     document.getElementById('postos').innerHTML = gruOrder.map(gru => {
@@ -1062,38 +1151,41 @@
       const person = day.postos[gru];
       const isGru11Inativa = (gru === "GRU-11" && !day.gru11Ativa);
       const displayPerson = isGru11Inativa 
-        ? '<span class="text-zinc-500 italic text-xs">Desativada até dia 16</span>'
+        ? '<span class="text-slate-500 italic text-xs">Desativada até dia 16</span>'
         : (person || '<span class="text-[var(--muted-foreground)] italic">—</span>');
-      const badgeLabel = isGru11Inativa ? '⛔ INATIVA' : s.label;
-      const badgeStyle = isGru11Inativa ? 'bg-zinc-800 text-zinc-500' : `${s.bg} ${s.text}`;
-      return `<div class="gru-row ${s.bg} border ${s.border}">
-        <span class="font-bold text-lg min-w-[3rem]">G${parseInt(gru.replace("GRU-",""))}</span>
-        <span class="flex-1 font-medium">${displayPerson}</span>
-        <span class="badge ${badgeStyle} text-xs">${badgeLabel}</span></div>`;
+      const badgeLabel = isGru11Inativa ? 'INATIVA' : s.label;
+      const badgeStyle = isGru11Inativa ? 'bg-slate-800 text-slate-500' : `${s.badgeBg} ${s.text}`;
+      const rowBorder = isGru11Inativa ? 'border-[#1e2530] border-l-4 border-l-slate-700 opacity-60' : s.border;
+      return `<div class="gru-row ${s.bg} border ${rowBorder}">
+        <span class="font-mono-code font-extrabold text-base min-w-[2.75rem] text-white">G${parseInt(gru.replace("GRU-",""))}</span>
+        <span class="flex-1 font-semibold text-sm text-slate-100 truncate">${displayPerson}</span>
+        <span class="badge ${badgeStyle} font-mono-code text-[10px]">${badgeLabel}</span></div>`;
     }).join('');
 
     const folga  = activeEscalaConfig.dados.filter(e=>e.dias[selectedDay-1]==="F");
     const ferias = activeEscalaConfig.dados.filter(e=>e.dias[selectedDay-1]==="FERIAS");
-    document.getElementById('ausentes').innerHTML = `<div class="space-y-2">
-      ${folga.length  ? `<div class="flex items-start gap-2 text-xs text-[var(--muted-foreground)]"><span>😴</span><div><span class="font-semibold opacity-70">Folga (${folga.length}):</span> <span class="opacity-60">${folga.map(e=>e.nome).join(', ')}</span></div></div>` : ''}
-      ${ferias.length ? `<div class="flex items-start gap-2 text-xs text-[var(--muted-foreground)]"><span>🏖️</span><div><span class="font-semibold opacity-70">Férias (${ferias.length}):</span> <span class="opacity-60">${ferias.map(e=>e.nome).join(', ')}</span></div></div>` : ''}
+    document.getElementById('ausentes').innerHTML = `<div class="space-y-1.5">
+      ${folga.length  ? `<div class="text-xs text-[var(--muted-foreground)]"><span class="font-bold text-slate-300">Folga (${folga.length}):</span> <span class="opacity-80">${folga.map(e=>e.nome).join(', ')}</span></div>` : ''}
+      ${ferias.length ? `<div class="text-xs text-[var(--muted-foreground)]"><span class="font-bold text-slate-300">Férias (${ferias.length}):</span> <span class="opacity-80">${ferias.map(e=>e.nome).join(', ')}</span></div>` : ''}
     </div>`;
 
     const gru02cat = GRU02_FORTE.has(dow) ? "Forte" : "Média";
     document.getElementById('rendicoes').innerHTML = `
-      <div class="gru-row bg-orange-500/10 border border-orange-500/30 rounded-lg">
-        <span class="font-bold text-lg text-orange-400 min-w-[3rem]">R1</span>
-        <div class="flex-1"><div class="font-semibold">${day.r1||'<span class="italic text-[var(--muted-foreground)]">—</span>'}</div>
-        <div class="text-xs text-[var(--muted-foreground)] mt-0.5">Rende: <span class="font-medium text-red-400">GRU-06</span> → <span class="font-medium ${gru02cat==='Forte'?'text-red-400':'text-yellow-400'}">GRU-02</span> → <span class="font-medium text-blue-400">GRU-01</span> <span class="ml-2 opacity-70">⏰ 07:00</span></div></div></div>
-      <div class="gru-row bg-orange-500/10 border border-orange-500/30 rounded-lg">
-        <span class="font-bold text-lg text-orange-400 min-w-[3rem]">R2</span>
-        <div class="flex-1"><div class="font-semibold">${day.r2||'<span class="italic text-[var(--muted-foreground)]">—</span>'}</div>
-        <div class="text-xs text-[var(--muted-foreground)] mt-0.5">Rende: <span class="font-medium text-red-400">GRU-08</span> → <span class="font-medium text-yellow-400">GRU-10</span> → finaliza na <span class="font-medium text-yellow-400">GRU-05</span> <span class="ml-2 opacity-70">⏰ 07:00</span></div></div></div>`;
+      <div class="gru-row bg-[#141923] border border-[#1e2530] border-l-4 border-l-orange-500 rounded-lg">
+        <span class="font-mono-code font-extrabold text-base text-orange-400 min-w-[2.75rem]">R1</span>
+        <div class="flex-1 min-w-0"><div class="font-semibold text-sm text-white truncate">${day.r1||'<span class="italic text-[var(--muted-foreground)]">—</span>'}</div>
+        <div class="text-[11px] font-mono-code text-[var(--muted-foreground)] mt-0.5"><span class="text-red-400">G6</span> → <span class="${gru02cat==='Forte'?'text-red-400':'text-amber-300'}">G2</span> → <span class="text-sky-400">G1</span></div></div>
+        <span class="badge bg-orange-500/15 text-orange-400 font-mono-code text-[10px]">07:00</span></div>
+      <div class="gru-row bg-[#141923] border border-[#1e2530] border-l-4 border-l-orange-500 rounded-lg">
+        <span class="font-mono-code font-extrabold text-base text-orange-400 min-w-[2.75rem]">R2</span>
+        <div class="flex-1 min-w-0"><div class="font-semibold text-sm text-white truncate">${day.r2||'<span class="italic text-[var(--muted-foreground)]">—</span>'}</div>
+        <div class="text-[11px] font-mono-code text-[var(--muted-foreground)] mt-0.5"><span class="text-red-400">G8</span> → <span class="text-amber-300">G10</span> → <span class="text-amber-300">G5</span></div></div>
+        <span class="badge bg-orange-500/15 text-orange-400 font-mono-code text-[10px]">07:00</span></div>`;
 
     const apoioEl = document.getElementById('apoio');
     apoioEl.innerHTML = day.apoio.length
-      ? day.apoio.map(p=>`<span class="badge bg-green-500/15 text-green-400 py-1.5 px-3 mr-1.5 mb-1.5">${p}</span>`).join('')
-      : '<p class="text-sm text-[var(--muted-foreground)] italic">Todos alocados — nenhum apoio hoje</p>';
+      ? `<div class="flex flex-wrap gap-1.5">${day.apoio.map(p=>`<span class="badge bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 py-1 px-2.5 text-xs">${p}</span>`).join('')}</div>`
+      : '<p class="text-xs text-[var(--muted-foreground)] italic">Todos alocados — nenhum apoio hoje</p>';
 
     const entries = Object.entries(currentRes.score).sort((a,b)=>b[1]-a[1]);
     const max = Math.max(...entries.map(e=>e[1]),1);
